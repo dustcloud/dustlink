@@ -1,0 +1,113 @@
+
+body {
+   background-image: url(background.jpg);
+   background-repeat:repeat;
+}
+
+.logo {
+   position: fixed;
+}
+
+.logotext {
+   position:    absolute;
+   top:         -40px;
+   text-align:  center;
+   width:       100%;
+   font-family: Sans-serif;
+   font-size:   200%;
+   color:       #00AEDA;
+}
+
+.logoimage {
+   top:      0;
+   left:     0;
+}
+
+.draggable {
+   position: relative;
+   cursor: move;
+}
+
+.widget {
+   float:                 left;
+   width:                 170px;
+   height:                210px;
+   background-color:      #fefefe;
+   -moz-box-shadow:       2px 2px 6px 3px #bbbbbb;
+/*   -webkit-box-shadow:    3px 3px 5px 3px #bbbbbb;*/
+   box-shadow:            2px 2px 6px 3px #bbbbbb;
+   margin: 0px 9px 9px 0px;
+}
+
+.viz {
+   position:              relative;
+   width:                 150px;
+   height:                150px;
+   top:                   10px;
+   left:                  10px;
+   background-color:      green;
+}
+
+.source {
+   position:              relative;
+   width:                 150px;
+   height:                20px;
+   left:                  10px;
+   bottom:                -29px;
+   background-color:      white;
+   font-size:             x-small;
+   text-align:            center;
+   font-family:           Lucida Console;
+}
+
+.timeline {
+   position:              relative;
+   width:                 150px;
+   left:                  10px;
+   bottom:                -29px;
+   background-color:      white;
+   font-size:             x-small;
+   text-align:            right;
+   font-family:           Lucida Console;
+}
+
+.temperature {
+   text-align:            center;
+   color:                 white;
+   font-size:             xx-large;
+   font-family:           Lucida Console;
+   line-height:           4em;
+}
+
+#spreadsheetkey{
+   width:                 350px;
+}
+#lightbox {
+   position:              absolute;
+   top:                   0;
+   left:                  50%;
+   width:                 500px;
+   margin-left:           -250px;
+   background:            #fff;
+   z-index:               2001;
+   display:               none;
+   box-shadow:            0px 0px 1em white;
+}
+#lightbox-shadow {
+   position:              absolute;
+   top:                   0;
+   left:                  0;
+   width:                 100%;
+   height:                100%;
+   background:            #000;
+   filter:                alpha(opacity=75);
+   opacity:               0.75;
+   z-index:               2000;
+   display:               none;
+}
+
+.settings {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}

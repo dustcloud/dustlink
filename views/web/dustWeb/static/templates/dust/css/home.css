@@ -1,0 +1,148 @@
+@CHARSET "UTF-8";
+
+body {
+	background: #fff;	
+}
+
+#titlewrapper {
+	width: 100%;
+	/*height: 147px;*/
+   height: 80px;
+	position: absolute;
+	top: 80px;
+	z-index: 5;
+}
+
+#titlebar {
+	/*background-image: url(/static/templates/dust/images/home_banner.jpg);*/
+   background-image: url(/static/templates/dust/images/headerbar.png);
+	background-repeat: no-repeat;
+	background-position:  top center;	
+	width: 1000px;
+	/*height: 147px;*/
+   height: 80px;
+	z-index: 15;
+	position: relative;
+}
+
+#container {
+	background: none;	
+}
+
+#center {
+	/*margin-top: 147px;*/
+   margin-top: 80px;
+	min-height: 100px;
+	border: 0;
+}
+
+
+#home-blocks {
+	width: 772px;
+	margin: 50px auto;
+}
+
+.block-block {
+	width: 173px;
+	height: 173px;
+	margin: 0 10px;
+	float: left;
+}
+
+.block-block>h2 {
+	display: none;
+}
+
+.introbox {
+	color: #fff;
+	position: relative;
+	height: 173px;
+}
+
+.introbox a {
+	color: #fff;	
+}
+
+.introbox p {
+	line-height: 1.2em;	
+}
+
+.introimage {
+	height: 65px;
+	text-align: center;
+	width: 173px;
+	margin: auto;
+}
+
+.introcontent {
+	position: absolute;
+	top: 70px;
+	width: 157px;
+	margin: 0 8px;
+	font-size: 12px;
+}
+
+.introcontent h2 {
+	font-weight: normal;
+	font-size: 16px;
+}
+
+#block-block-23 .introbox {
+	background: transparent url('/static/templates/dust/images/block_datacenter.png') top left no-repeat;
+}
+#block-block-24 .introbox {
+	background: transparent url('/static/templates/dust/images/block_building.png') top left no-repeat;	
+}
+#block-block-25 .introbox {
+	background: transparent url('/static/templates/dust/images/block_industrial.png') top left no-repeat;	
+}
+#block-block-26 .introbox {
+	background: transparent url('/static/templates/dust/images/block_solararray.jpg') top left no-repeat;	
+}
+#block-block-31 .introbox {
+	background: transparent url('/images/homepage/block_chip.png') top left no-repeat;	
+}
+
+.learnmore {
+	position: absolute;
+	bottom: 5px;
+	right: -5px;
+	height: 15px;
+	width: 90px;
+}
+
+.node {
+	border: none;
+	clear: both;
+}
+
+#crawl {
+	background-color: #062f39;
+	border-top: 4px solid #00b4ed;
+	padding: 0px;
+	position: relative;
+	width: 1000px;
+	height: 36px;
+	margin: auto;
+	z-index: 50;
+	/*top: 147px;*/
+   top: 80px;
+}
+
+#crawl ul, #crawl ul li {
+	width: 700px;
+	margin: auto;
+}
+
+#crawl ul li a, #crawl ul li {
+	color: #dddddd;
+}
+
+#crawl ul li a {
+	padding-right: 12px;
+	background: transparent url('images/bullet_arrow.png') center right no-repeat;
+}
+
+#crawl ul li a:hover {
+	text-decoration: underline;
+}

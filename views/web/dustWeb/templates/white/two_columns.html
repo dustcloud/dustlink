@@ -1,0 +1,91 @@
+$def with (pageTitle, hierarchy, currentPath, logFrameCode, headerCode, bodyCode, documentation)
+
+$def menu(hierarchy):
+   <li>
+   <a href="$hierarchy['url']" title="$hierarchy['title']">$hierarchy['title']</a>
+   <ul>
+   $for c in hierarchy['children']:
+      $:menu(c)
+   </ul>
+   </li>
+
+<html>
+   <head>
+    <script type="text/javascript" src="/static/javascript/jquery-1.8.0.min.js"></script>
+      <!--- html title --->
+      <title>
+            $:pageTitle - Dust Networks
+      </title>
+      <!--- /html title --->
+      <!--- headerCode --->
+      $:headerCode
+      <!--- /headerCode --->
+   </head>
+   <body>
+      <table>
+         <tr>
+            <table>
+               <tr>
+                  <td style="border-width:1px;border-style:solid;">
+                     <h3>pageTitle</h3>
+                     <p>$pageTitle</p>
+                  </td>
+                  
+                  <td style="border-width:1px;border-style:solid;">
+                     <h3>hierarchy</h3>
+                        <ul>
+                           $:menu(hierarchy)
+                        </ul>
+                  </td>
+                  
+                  <td style="border-width:1px;border-style:solid;">
+                     <h3>currentPath</h3>
+                     <ul>
+                     $for p in currentPath:
+                        <li>$p</li>
+                     </ul>
+                  </td>
+               </tr>
+            </table>
+         </tr>
+         <tr>
+            <table>
+               <tr>
+                  <td style="border-width:1px;border-style:solid;">
+                     <h3>logFrameCode</h3>
+                     $:logFrameCode
+                  </td>
+               </tr>
+            </table>
+         </tr>
+         <tr>
+            <table>
+               <tr>
+                  <td style="border-width:1px;border-style:solid;width=800px">
+                     <h3>bodyCode</h3>
+                     $:documentation
+                     $:bodyCode
+                  </td>
+               </tr>
+            </table>
+         </tr>
+         <tr>
+            <table>
+               <tr>
+                  <td style="border-width:1px;border-style:solid;">
+                     <h3>headerCode (as text)</h3>
+                     <p>Note: also copied in the header, printed here as plain text</p>
+                     <pre>$headerCode</pre>
+                  </td>
+                  
+                  <td style="border-width:1px;border-style:solid;">
+                     <h3>bodyCode (as Text)</h3>
+                     <p>Note: also copied in the header, printed here as plain text</p>
+                     <pre>$bodyCode</pre>
+                  </td>
+               </tr>
+            </table>
+         </tr>
+      </table>
+   </body>
+</html>

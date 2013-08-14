@@ -1,0 +1,1 @@
+This directory contains files of the different web templates.

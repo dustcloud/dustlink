@@ -1,0 +1,1 @@
+This directory contains the static files served by the web server.

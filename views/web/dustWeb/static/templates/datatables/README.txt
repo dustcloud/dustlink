@@ -1,0 +1,1 @@
+This directory contains styling elements for the dataTables.

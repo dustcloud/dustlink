@@ -1,0 +1,114 @@
+.show {
+    display: inherit;
+}
+
+.hide {
+    display: none;
+}
+
+.container-div {
+    margin-bottom: 3em;
+}
+
+.container-indent {
+    padding-left: 20px;
+}
+
+.viz-header-div {
+    border-color: #DDD;
+    border-style: solid;
+    border-width: 0px 0px 2px 0px;
+}
+
+.viz-header {
+    float: left;
+}
+
+.viz-headercommon {
+    float: right;
+}
+
+.viz-autorefresh {
+    background-color: #DDD;
+    padding: 2px 2px 0px 2px;
+    display: inline-block;
+    height: 100%;
+    cursor: pointer;
+}
+
+.viz-status svg {
+    display: inline;
+    vertical-align: middle;
+}
+
+.viz-status svg circle {
+	fill: white;
+}
+
+.doc-container {
+    margin-bottom: 1em;
+}
+
+.doc-show-more {
+    color: #009AAD;
+    font-weight: 600;
+}
+
+.doc-show-more:before {
+    content: "\B7\A0";
+    color: #CCC;
+}
+
+.doc-show-more:hover {
+    color: #009AAD;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.doc-more {
+    padding: 1em;
+    border: 1px solid #AAA;
+    background-color: #EEE;
+}
+
+.doc-less {
+    float: right;
+    cursor: pointer;
+    font-size: 150%;
+    font-weight: 200;
+}
+
+.doc-less:hover {
+    text-decoration: none;
+}
+
+.doc-header {
+    font-weight: 600;
+}
+
+.doc-success {
+    color: green;
+}
+
+.doc-success:before {
+    content: "Success: ";
+    font-weight: 600;
+}
+
+.doc-warning {
+    color: red;
+}
+
+.doc-warning:before {
+    content: "Warning: ";
+    font-weight: 600;
+}
+
+.doc-note {
+    color: brown;
+}
+
+.doc-note:before {
+    content: "Note: ";
+    font-weight: 600;
+}

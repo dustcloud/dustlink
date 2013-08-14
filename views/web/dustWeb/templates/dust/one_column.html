@@ -1,0 +1,134 @@
+$def with (pageTitle, hierarchy, currentPath, logFrameCode, headerCode, bodyCode, documentation)
+
+$def topmenu(hierarchy):
+   <li class="menuparent menu-763 menu-path-node-289">
+   <a href="$hierarchy['url']" title="$hierarchy['title']" class="$hierarchy['class']">$hierarchy['title']</a>
+   $if hierarchy['children']:
+      <ul>
+      $for c in hierarchy['children']:
+         $:topmenu(c)
+      </ul>
+   </li>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="/static/templates/dust/images/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="Dust Networks, a pioneer in wireless sensor networking, connects smart devices with ultra low power, reliability, scalability and security." />
+    
+    <!-- html title -->
+    <title>
+      $:pageTitle - Dust Networks
+    </title>
+    <!-- /html title -->
+    
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/itweak_upload.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/book.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/node.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/defaults.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/system.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/system-menus.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/user.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/content-module.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/ctools.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/date.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/logintoboggan.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/mollom.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/nice_menus.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/nice_menus_default.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/fieldgroup.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/views.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/style.css?0" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/menus.css?0" />
+    <link type="text/css" rel="stylesheet" media="print" href="/static/templates/dust/css/print.css?0" />
+    <!--<script type="text/javascript" src="/static/templates/dust/javascript/jquery.js?0"></script>-->
+    <!--<script type="text/javascript" src="/static/templates/dust/javascript/common.js?0"></script>-->
+    <script type="text/javascript" src="/static/templates/dust/javascript/modernizr.js?0"></script>
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/home.css?19" />
+    <link type="text/css" rel="stylesheet" media="all"   href="/static/templates/dust/css/viz.css?0" />
+    <script type="text/javascript" src="/static/javascript/dustWeb.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery-1.8.0.min.js"></script>
+    <!-- =================  -->
+    $:headerCode
+    <!-- =================  -->
+  </head>
+  <body class="">
+    
+    
+    <div id="wrapper">
+      <div id="titlewrapper">
+        <div id="titlebar"></div>
+      </div>
+      <div id="container" class="clear-block">
+      
+        <!-- header -->
+        <div id="header">
+        
+          <!-- top menu -->
+          <div id="menubar">
+            <div id="menubar-left"></div>
+            <div id="menubar-right"></div>
+            <div id="block-nice_menus-1" class="clear-block block block-nice_menus">
+              <div class="content">
+                <ul class="nice-menu nice-menu-down" id="nice-menu-1">
+                  <!-- =================  -->
+                  $for c in hierarchy['children']:
+                     $:topmenu(c)
+                  <!-- =================  -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- /top menu -->
+          
+          <!-- login -->
+          <div id="searchbox">
+             $:logFrameCode
+          </div>
+          <!-- /login -->
+          
+          <!-- logo -->
+          <div id="logo-floater">
+            <h1>
+              <a href="/" title="Dust Networks"><img src="/static/templates/dust/images/logo.jpg" alt="Dust Networks" id="logo" name="logo" /></a>
+            </h1>
+          </div>
+          <!-- /logo -->
+          
+        </div>
+        <!-- /header -->
+        
+        <div id="contentcontainer" class="clear-block">
+        
+          <!-- center data -->
+          <div id="center">
+            $:documentation
+            <!-- =================  -->
+            $:bodyCode
+            <!-- =================  -->
+          </div>
+          <!-- /center data -->
+        
+        </div>
+      </div>
+      
+      <!-- footer -->
+      <div id="footer">
+        <div style="position: absolute; top:10px; right:20px;">
+        </div>
+        <div class="block">
+          <ul>
+            <li>Dust Networks, Inc. All Rights Reserved.</li>
+          </ul>
+        </div>
+        <div class="corner-sw"></div>
+        <div class="corner-se"></div>
+      </div>
+      <!-- /footer -->
+      
+    </div>
+    
+  </body>
+</html>

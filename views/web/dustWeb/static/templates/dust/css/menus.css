@@ -1,0 +1,480 @@
+/* $Id: nice_menus_default.css,v 1.6 2007/10/29 16:38:28 add1sun Exp $ */
+/*
+  This is the default layout template for nice menus, and will provide
+  a starting point for the look of your menus. To customize, it's
+  recommended to create a custom CSS file using this file as a template,
+  then configure the module to use your custom CSS file
+  (this is done in the global settings tab of the theme administration.)
+
+  To help understand the CSS, the HTML looks like this, where
+    x is a number;
+    TYPE is down/left/right;
+    PATH is the menu path such as node/343;
+    MID is the menu id such as 33):
+  <ul id='nice-menu-x' class='nice-menu nice-menu-TYPE'>
+    <li id='menu-MID' class='menu-path-PATH'><a href='#'>This is a menu item</a></li>
+    <li class='menuparent menu-path-PATH'><a href='#'>A submenu</a>
+      <ul...><li...>...</li>
+      </ul>
+    </li>
+    ...
+  </ul>
+
+  If you have more than one nice-menu and want to target a particular one,
+  use its id (e.g. ul#nice-menu-2).
+
+  See README.txt and the handbook page (http://drupal.org/node/185543)
+  for some CSS customization examples.
+*/
+
+/******************************
+ Global CSS for ALL menu types
+******************************/
+
+ul.nice-menu,
+ul.nice-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+}
+
+ul.nice-menu li.menuheader {
+  border: none !important;
+  float: left;
+  background-color: none;
+  /* Additional overrides to deal with Garland theme. */
+  margin: 0;
+  padding-left: 0;
+  background-image: none;
+}
+
+/* Overrides for Garland header. */
+#header-region ul.nice-menu li {
+  margin: 0;
+  /* Padding rules are needed to deal with Garland's header line-height. */
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  background: none;
+}
+
+ul.nice-menu a {
+  padding: 0.3em 5px 0.3em 5px;
+}
+
+ul.nice-menu ul,
+/* Repeat for Garland header. */
+#header-region ul.nice-menu ul {
+  top: 1.8em;
+  left: -1px;
+  border: 0;
+  border-top: none;
+  margin-right: 0;
+}
+
+/* Override for Garland header. */
+#header-region ul.nice-menu ul {
+  top: 1.7em;
+}
+
+ul.nice-menu ul li {
+  width: 12.5em;
+}
+
+/******************************
+ VERTICAL (left/right) menus
+******************************/
+
+/* This is the default width of all vertical menus. */
+ul.nice-menu-right, ul.nice-menu-left,
+ul.nice-menu-right li, ul.nice-menu-left li {
+  width: 12.5em;
+}
+
+/* VERTICAL menus where submenus pop RIGHT (default). */
+ul.nice-menu-right ul {
+  width: 12.5em;
+  left: 12.5em;
+  top: -1px;
+}
+
+ul.nice-menu-right ul ul {
+  width: 12.5em;
+  left: 12.5em;
+  top: -1px;
+}
+
+ul.nice-menu-right li.menuparent,
+ul.nice-menu-right li li.menuparent {
+  background: none;
+}
+
+ul.nice-menu-right li.menuparent:hover,
+ul.nice-menu-right li.over,
+ul.nice-menu-right li li.menuparent:hover,
+ul.nice-menu-right li li.over {
+  background: none;
+}
+
+/* VERTICAL menus where submenus pop LEFT. */
+ul.nice-menu-left li ul {
+  width: 12.5em;
+  left: -12.65em;
+  top: -1px;
+}
+
+ul.nice-menu-left li ul li ul {
+  width: 12.5em;
+  left: -12.65em;
+  top: -1px;
+}
+
+ul.nice-menu-left li.menuparent,
+ul.nice-menu-left li li.menuparent {
+  background: none;
+}
+
+ul.nice-menu-left li.menuparent:hover,
+ul.nice-menu-left li.over,
+ul.nice-menu-left li li.menuparent:hover,
+ul.nice-menu-left li li.over {
+  background: none;
+}
+
+ul.nice-menu-left a, ul.nice-menu-left ul a {
+  padding-left: 14px;
+}
+
+/******************************
+ HORIZONTAL (down) menus
+******************************/
+
+ul.nice-menu-down {
+  float: left;
+  border: 0;
+}
+
+ul.nice-menu-down li {
+  border-top: none;
+}
+
+ul.nice-menu-down li li {
+  border-top: 0;
+}
+
+ul.nice-menu-down ul {
+  left: 0;
+}
+
+ul.nice-menu-down ul li {
+  clear: both;
+}
+
+ul.nice-menu-down li ul li ul,
+/* Repeat for Garland header. */
+#header-region ul.nice-menu-down li ul li ul {
+  left: 12.5em;
+  top: -1px;
+}
+
+ul.nice-menu-down .menuparent a {
+  padding-right: 0;
+}
+
+ul.nice-menu-down>li.menuparent>a {
+  padding-right: 15px;		
+}
+
+ul.nice-menu-down li.menuparent,
+/* Repeat for Garland header. */
+#header-region ul.nice-menu-down li.menuparent {
+  background: none;
+}
+
+ul.nice-menu-down li.menuparent:hover,
+ul.nice-menu-down li.over,
+/* Repeat for Garland header. */
+#header-region ul.nice-menu-down li.menuparent:hover,
+#header-region ul.nice-menu-down li.over {
+  background: none;
+}
+
+ul.nice-menu-down li li.menuparent,
+/* Repeat for Garland header. */
+#header-region ul.nice-menu-down li li.menuparent {
+  background: none;
+}
+
+ul.nice-menu-down li li.menuparent:hover,
+ul.nice-menu-down li li.over,
+/* Repeat for Garland header. */
+#header-region ul.nice-menu-down li li.menuparent:hover,
+#header-region ul.nice-menu-down li li.over {
+  background: none;
+}
+
+/* $Id: nice_menus.css,v 1.27.2.1 2008/07/11 16:05:10 add1sun Exp $ */
+/*
+  This file contains the basic logic for nice menus, and should not be
+  edited.  To customize the menus, it's recommended to create a custom CSS
+  file using nice_menus_default.css as a template, then configure the module
+  to use your custom CSS file (this is done in the global settings tab of
+  the theme administration.)
+*/
+
+/* Below should fix menu being a few pixels away in some themes, and menus disappearing behind other stuff. */
+.block-nice_menus {
+  line-height: normal;
+  z-index: 10;
+}
+
+ul.nice-menu,
+ul.nice-menu ul {
+  z-index: 5;
+  position: relative;
+}
+
+/* We only indent the tertiary nested menu items */
+ul.nice-menu>li.menuparent>ul>li.menuparent>ul>li.menuparent>ul, ul.nice-menu>li.menuparent>ul>li.menuparent>ul {
+	margin-left: 8px;
+}
+
+ul.nice-menu>li.menuparent>ul>li.menuheader>ul {
+	margin-left: 0;	
+}
+
+
+/* quarternary menu items are not shown in the main menu */
+ul.nice-menu>li.menuparent>ul>li.menuparent>ul>li.menuparent>ul>li ul {
+	margin-left:10px;
+	position: static;
+}
+
+ul.nice-menu li {
+  position: relative;
+	display: block;
+}
+
+ul.nice-menu a {
+  display: block;
+}
+
+ul.nice-menu ul,
+/* For Garland header. */
+#header-region ul.nice-menu>ul {
+  position: absolute;
+  visibility: hidden;
+}
+
+ul.nice-menu ul li {
+	display: inline;
+	font-weight: normal;
+	text-transform: none;
+}
+
+/* primary level only */
+ul.nice-menu>li {
+	padding-bottom: 4px;	
+	text-transform: uppercase;
+}
+
+ul.nice-menu>li.menuparent>ul {
+  visibility: hidden;		
+  background-color: #eee;
+  border: 1px solid #aaa !important;
+  opacity: .98;
+	z-index: 20;
+}
+
+ul.nice-menu>li#menu-2774 {
+	clear: both;
+}
+
+/* Products */
+ul.nice-menu>li#menu-2724>ul {
+	width: 420px;
+	padding-bottom: 20px !important;
+}
+
+ul.nice-menu>li#menu-2724>ul li {
+	width: 210px;
+}
+
+
+/* Technology */
+ul.nice-menu>li.menu-763>ul {
+	width: auto;
+	padding-bottom: 20px !important;
+}
+
+ul.nice-menu>li.menu-763>ul li {
+	width: 240px;
+}
+
+/* Applications */
+ul.nice-menu>li#menu-338>ul {
+	width: auto;
+	padding-bottom: 20px !important;
+}
+
+ul.nice-menu>li#menu-338>ul li {
+	width: 220px;
+}
+
+/* About */
+ul.nice-menu>li#menu-336>ul {
+	width: 180px;
+	padding-bottom: 20px !important;
+}
+
+ul.nice-menu>li#menu-336>ul li {
+	width: 180px;
+}
+
+
+ul.nice-menu>li.menuparent>ul a {
+	color: #5895BE;
+}
+
+/* second level header menu items */
+ul.nice-menu>li.menuparent>ul>li.menuparent {
+	clear: none; 	
+}
+
+/* first link of the menu group */
+ul.nice-menu>li.menuparent>ul>li:first-child {
+	margin-top: 10px;
+}
+
+ul.nice-menu>li.menuparent>ul>li.menuparent {
+	margin-top: 10px;
+}
+/*
+ul.nice-menu>li.menuparent>ul>li.menuparent>ul {
+	margin-left: 10px;
+}
+*/
+
+/* Heading li items */
+ul.nice-menu .menuheader span{
+  padding-left: 17px;
+  padding-bottom: 10px;
+  line-height: 20px;
+  cursor: default;
+}
+
+ul.nice-menu li.menuheader {
+  margin-top: 10px;	
+  padding-bottom: 10px;
+}
+
+ul.nice-menu>li.menuparent>ul>li.menuparent>ul {
+	clear: left !important;
+	left: 0px;
+	position: relative;
+	
+}
+
+ul.nice-menu>li.menuparent>ul>li.menuparent>ul>li.menuparent>ul {
+	visibility: hidden;
+	clear: left;
+	position: relative;
+	left: 0;
+}
+
+ul.nice-menu li.over ul {
+  visibility: visible;
+}
+
+ul.nice-menu ul li {
+  display: block;
+}
+
+ul.nice-menu:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* Show submenus when over their parents. */
+ul.nice-menu li:hover ul,
+ul.nice-menu li.menuparent li:hover ul,
+ul.nice-menu li.menuparent li.menuparent li:hover ul,
+ul.nice-menu li.menuparent li.menuparent li.menuparent li:hover ul,
+ul.nice-menu li.over ul,
+ul.nice-menu li.menuparent li.over ul,
+ul.nice-menu li.menuparent li.menuparent li.over ul,
+ul.nice-menu li.menuparent li.menuparent li.menuparent li.over ul,
+/* Repeat all this stuff just for Garland headers. */
+#header-region ul.nice-menu li:hover ul,
+#header-region ul.nice-menu li.menuparent li:hover ul,
+#header-region ul.nice-menu li.menuparent li.menuparent li:hover ul,
+#header-region ul.nice-menu li.over ul,
+#header-region ul.nice-menu li.menuparent li.over ul,
+#header-region ul.nice-menu li.menuparent li.menuparent li.over ul {
+  visibility: visible !important;
+}
+
+/* Hide sub-menus initially. */
+ul.nice-menu li:hover ul ul,
+ul.nice-menu li:hover ul ul ul,
+ul.nice-menu li:hover li:hover ul ul,
+ul.nice-menu li:hover li:hover ul ul ul,
+ul.nice-menu li:hover li:hover li:hover ul ul,
+ul.nice-menu li:hover li:hover li:hover ul ul ul,
+ul.nice-menu li.over ul ul,
+ul.nice-menu li.over ul ul ul,
+ul.nice-menu li.over li.over ul ul,
+ul.nice-menu li.over li.over ul ul ul,
+ul.nice-menu li.over li.over li.over ul ul,
+ul.nice-menu li.over li.over li.over ul ul ul,
+/* Repeat all this stuff just for Garland headers. */
+#header-region ul.nice-menu li:hover ul ul,
+#header-region ul.nice-menu li:hover ul ul ul,
+#header-region ul.nice-menu li:hover li:hover ul ul,
+#header-region ul.nice-menu li:hover li:hover ul ul ul,
+#header-region ul.nice-menu li:hover li:hover li:hover ul ul,
+#header-region ul.nice-menu li:hover li:hover li:hover ul ul ul,
+#header-region ul.nice-menu li.over ul ul,
+#header-region ul.nice-menu li.over ul ul ul,
+#header-region ul.nice-menu li.over li.over ul ul,
+#header-region ul.nice-menu li.over li.over ul ul ul,
+#header-region ul.nice-menu li.over li.over li.over ul ul,
+#header-region ul.nice-menu li.over li.over li.over ul ul ul {
+  visibility: hidden;
+}
+
+ul.nice-menu,
+ul.nice-menu ul,
+ul.nice-menu li {
+  border: 0;
+  background: none;
+}
+
+/***************
+ IE 6 Fixes
+***************/
+
+/* Iframe to fix z-index bug when menu hovers over <select> fields. */
+ul.nice-menu li.menuparent ul,
+/* For Garland header. */
+#header-region ul.nice-menu li.menuparent ul {
+	overflow: visible !important;
+	/* overflow: hidden; */
+}
+
+ul.nice-menu li.menuparent ul iframe,
+/* For Garland header. */
+#header-region ul.nice-menu li.menuparent ul iframe {
+	display: none;
+	display/**/: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	filter: mask();
+	width: 20px;
+	height: 20px;
+}
