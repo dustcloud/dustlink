@@ -39,9 +39,9 @@ class APIError(Exception) :
         self.desc  = desc
 
     def __str__(self) :
-        return "Command {0} returns RC={1} ({2})".format(self.cmd,
-                                                         self.rc,
-                                                         self.desc)
+        return "Command {0} returns RC={1} {2}".format(self.cmd,
+                                                       self.rc,
+                                                       self.desc)
 
 class NotificationError(Exception) :
     def __init__(self, notifIds, params):
@@ -68,7 +68,6 @@ class CommandError(Exception):
     UNKNOWN_FIELD            = 10
     MALFORMED_FIELD          = 11
     TOO_FEW_BYTES            = 12
-    TOO_MANY_BYTES           = 13
     VALUE_NOT_IN_OPTIONS     = 14
     
     descriptions = { 
@@ -84,7 +83,6 @@ class CommandError(Exception):
         UNKNOWN_FIELD:       'Unknown field', 
         MALFORMED_FIELD:     'Field malformed',
         TOO_FEW_BYTES:       'Too few bytes in received packet',
-        TOO_MANY_BYTES:      'Too many bytes in received packet',
         VALUE_NOT_IN_OPTIONS:'The value of this field is not in the valid options',
     }
     

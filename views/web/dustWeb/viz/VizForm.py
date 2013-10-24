@@ -60,13 +60,13 @@ class VizForm(VizjQuery.VizjQuery):
                 }},
                 500: function() {{
                     updateStatus(statusDivId,'failure','Internal server error.');
-                }},
+                }}
             }},
             error: function(jqXHR, textStatus, errorThrown) {{
                 if (textStatus=='timeout') {{
                     updateStatus(statusDivId,'failure','Server unreachable.');
                 }}
-            }},
+            }}
         }});
     }}
     
@@ -80,7 +80,7 @@ class VizForm(VizjQuery.VizjQuery):
         
         // draw new table
         $('<table/>', {{
-            'class': 'formTable_{VIZID}',
+            'class': 'formTable_{VIZID}'
         }}).appendTo('#chart_div_{VIZID}');
         for (var i = 0; i < data.length; i++) {{
             cells             = [];
@@ -198,7 +198,7 @@ class VizForm(VizjQuery.VizjQuery):
             }} else if (formElems[i].type=='select-one') {{
                 fieldValue = formElems[i].options[formElems[i].selectedIndex].value;
             }} else {{
-                alert('WARNING post: unexpected type '+formElems[i].type);
+                console.log('WARNING: in post, unexpected type '+formElems[i].type);
             }}
             dataToSend[fieldName] = fieldValue;
         }}
@@ -224,13 +224,13 @@ class VizForm(VizjQuery.VizjQuery):
                 }},
                 500: function() {{
                     updateStatus(statusDivId,'failure','Internal server error.');
-                }},
+                }}
             }},
             error: function(jqXHR, textStatus, errorThrown) {{
                 if (textStatus=='timeout') {{
                     updateStatus(statusDivId,'failure','Server unreachable.');
                 }}
-            }},
+            }}
         }});
     }}
     

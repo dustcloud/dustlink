@@ -11,12 +11,14 @@ log.addHandler(NullHandler())
 from DustLinkData import DustLinkData, \
                          DataVaultException
 
+from dustWeb import WebPage
+
 import MoteDataPages
 import DashboardPages
 import MotesPages
 import NetworksPages
 import AppsPages
-import TestResultsPages
+import HealthPages
 import FirewallPages
 import DataFlowsPages
 import DustLinkWebDoc
@@ -29,6 +31,16 @@ from dustWeb import DustWeb
 # \defgroup DustLinkWeb DustLinkWeb
 # \{
 #
+
+#===== /banner
+
+class Banner(object):
+    
+    def GET(self,subResource=''):
+        return DustLinkData.DustLinkData()._getBanner()
+    
+    def POST(self,subResource=''):
+        DustLinkData.DustLinkData()._resetBanner()
 
 class DustLinkWeb(DustWeb.DustWeb):
     
@@ -49,13 +61,24 @@ class DustLinkWeb(DustWeb.DustWeb):
                                       defaultUrl='/system/welcome',
                                       defaultUsername=DustLinkData.DustLinkData.USER_ANONYMOUS)
         
-        # add sub pages
+        # add banner
+        self.registerPage(
+            WebPage.WebPage(
+                webServer    = self,
+                url          = 'banner',
+                title        = 'Banner',
+                webHandler   = Banner,
+                hidden       = True,
+            ),
+        )
+        
+        # add (visible) sub pages
         self.registerPage(MoteDataPages.MoteDataPages(self))
         self.registerPage(DashboardPages.DashboardPages(self))
         self.registerPage(MotesPages.MotesPages(self))
         self.registerPage(NetworksPages.NetworksPages(self))
         self.registerPage(AppsPages.AppsPages(self))
-        self.registerPage(TestResultsPages.TestResultsPages(self))
+        self.registerPage(HealthPages.HealthPages(self))
         self.registerPage(FirewallPages.FirewallPages(self))
         self.registerPage(DataFlowsPages.DataFlowsPages(self))
         self.registerPage(UsersPages.UsersPages(self))
@@ -93,7 +116,6 @@ class DustLinkWeb(DustWeb.DustWeb):
         # page names to hide
         hiddenPageTitles          = []
         hiddenPageTitles         += ['MoteData']
-        hiddenPageTitles         += ['TestResults']
         if DustLinkData.DustLinkData.MODULE_LBR not in dld.getEnabledModules():
             hiddenPageTitles     += ['Firewall','DataFlows']
         

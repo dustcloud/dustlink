@@ -20,24 +20,26 @@ import MemSessionStore
 #============================ helpers =========================================
 
 def simplifyWebInputFormat(fields):
+        
         returnVal = {}
         for (k,v) in fields.items():
-            if   v in ['true']:
-                returnVal[str(k)] = True
-            elif v in ['false']:
-                returnVal[str(k)] = False
-            elif 'IP' in k:
-                returnVal[str(k)] = str(v)
+            k = str(k)
+            if   v     in ['true']:
+                returnVal[k] = True
+            elif v     in ['false']:
+                returnVal[k] = False
+            elif 'IP'  in k:
+                returnVal[k] = str(v)
             elif 'MAC' in k:
-                returnVal[str(k)] = str(v)
+                returnVal[k] = str(v)
             else:
                 try:
-                    returnVal[str(k)] = int(v)
+                    returnVal[k] = int(v)
                 except (TypeError,ValueError):
                     if not isinstance(v,(list,dict)):
-                        returnVal[str(k)] = str(v)
+                        returnVal[k] = str(v)
                     else:
-                        returnVal[str(k)] = v
+                        returnVal[k] = v
         return returnVal
 
 #============================ pages ===========================================

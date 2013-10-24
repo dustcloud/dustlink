@@ -61,13 +61,13 @@ class VizHtml(VizjQuery.VizjQuery):
                     }},
                     500: function() {{
                         updateStatus(statusDivId,'failure','Internal server error.');
-                    }},
+                    }}
                 }},
                 error: function(jqXHR, textStatus, errorThrown) {{
                     if (textStatus=='timeout') {{
                         updateStatus(statusDivId,'failure','Server unreachable.');
                     }}
-                }},
+                }}
             }});
         }};
     }}

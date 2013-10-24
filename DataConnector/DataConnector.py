@@ -21,6 +21,7 @@ import AppDataPublisher
 import AppInjector
 import MirrorEngine
 import GoogleSyncEngine
+import XivelySyncEngine
 from   DustLinkData  import DustLinkData
 from   DustLinkData  import DataVaultException
 
@@ -52,6 +53,7 @@ class DataConnector(threading.Thread):
         self.appInjectors         = {}
         self.mirrorEngine         = MirrorEngine.MirrorEngine()
         self.googleSyncEngine     = GoogleSyncEngine.GoogleSyncEngine()
+        self.xivelySyncEngine     = XivelySyncEngine.XivelySyncEngine()
         
         # connect to dispatcher
         dispatcher.connect(
@@ -84,46 +86,51 @@ class DataConnector(threading.Thread):
                 
                 # sleep a bit
                 time.sleep(self.refresh_period)
-         
-        
+            
             #===== kill associated threads
             
             # udpListeners
             for port,listener in self.udpListeners.items():
                 listener.tearDown()
-            self.udpListeners         = {}
+            self.udpListeners          = {}
             
             # appIdentifier
             if self.appIdentifier:
                 self.appIdentifier.tearDown()
-                self.appIdentifier    = None
+                self.appIdentifier     = None
             
             # appPayloadParsers
             for app,parser in self.appPayloadParsers.items():
                 parser.tearDown()
-            self.appPayloadParsers    = {}
+            self.appPayloadParsers     = {}
             
             # appDataPublishers
             for app,publisher in self.appDataPublishers.items():
                 publisher.tearDown()
-            self.appDataPublishers    = {}
+            self.appDataPublishers     = {}
             
             # appInjectors
             for app,injector in self.appInjectors.items():
                 injector.tearDown()
-            self.appInjectors         = {}
+            self.appInjectors          = {}
             
             log.debug('killing mirrorEngine')
             
             # mirrorEngine
             self.mirrorEngine.tearDown()
-            self.mirrorEngine         = None
+            self.mirrorEngine          = None
             
             log.debug('killing googleSyncEngine')
             
             # googleSyncEngine
             self.googleSyncEngine.tearDown()
-            self.googleSyncEngine     = None
+            self.googleSyncEngine      = None
+            
+            log.debug('killing XivelySyncEngine')
+            
+            # xivelySyncEngine
+            self.xivelySyncEngine.tearDown()
+            self.xivelySyncEngine   = None
             
             #===== disconnect from dispatcher
             dispatcher.disconnect(
@@ -245,4 +252,4 @@ class DataConnector(threading.Thread):
             if app not in self.appInjectors.keys():
                 log.info('starting app injector for {0}'.format(app))
                 self.appInjectors[app] = AppInjector.AppInjector(app)
-        
+    

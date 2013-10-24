@@ -3,13 +3,12 @@
 // make sure IE does not return cached results.
 jQuery.ajaxSetup({ cache: false });
 
-
 //========== defines
 
 var dashboardData  = [];
 var dashboardElems = [];
 
-//========== admin
+//=========================== admin ===========================================
 
 function refreshDashboard() {
    // get new data
@@ -18,7 +17,7 @@ function refreshDashboard() {
 function refreshDashboard_cb(newInput) {
    var redraw;
    
-   newData = newInput['data'];
+   newData    = newInput['data'];
    
    // decide whether to update or redraw
    redraw = false;
@@ -27,10 +26,8 @@ function refreshDashboard_cb(newInput) {
    } else {
       for (var i = 0; i < newData.length; i++) {
          if (
-               newData[i].source != dashboardData[i].source ||
-               newData[i].type   != dashboardData[i].type   ||
-               newData[i].min    != dashboardData[i].min    ||
-               newData[i].max    != dashboardData[i].max
+               newData[i].mac    != dashboardData[i].mac   ||
+               newData[i].type   != dashboardData[i].type
             ) {
             redraw = true;
             break;
@@ -43,12 +40,18 @@ function refreshDashboard_cb(newInput) {
    
    // refresh the dashboard
    if (redraw) {
-      redrawDashboard(newInput['config']);
+      redrawDashboard();
    } else {
       updateDashboard();
    }
 }
 
+//=========================== redraw/update ===================================
+
+/*
+This functions is needed because one VizPressure widget is used for 2 pressure
+readings.
+*/
 function getPressureViz() {
    returnVal = null;
    for (var e = 0; e < dashboardElems.length; e++) {
@@ -59,7 +62,7 @@ function getPressureViz() {
    return returnVal;
 }
 
-function redrawDashboard(config) {
+function redrawDashboard() {
    
    // clear the dashboard
    document.getElementById('demodashboard').innerHTML = '';    // html
@@ -70,39 +73,52 @@ function redrawDashboard(config) {
       switch(dashboardData[i].type) {
          case 'pressure':
             if (getPressureViz()==null) {
-               dashboardElems.push(new VizPressure(config));
+               dashboardElems.push(
+                  new VizPressure(
+                     dashboardData[i]
+                  )
+               );
             } else {
                dashboardElems.push(null);
             }
             break;
          case 'energysource':
-            dashboardElems.push(new VizEnergysource(
-                                       dashboardData[i].source,
-                                       config
-                               ));
+            dashboardElems.push(
+               new VizEnergySource(
+                  dashboardData[i]
+               )
+            );
             break;
          case 'temperature':
-            dashboardElems.push(new VizTemperature(
-                                       dashboardData[i].source,
-                                       dashboardData[i].min,
-                                       dashboardData[i].max,
-                                       config
-                               ));
+            dashboardElems.push(
+               new VizTemperature(
+                  dashboardData[i]
+               )
+            );
+            break;
+         case 'voltage':
+            dashboardElems.push(
+               new VizVoltage(
+                  dashboardData[i]
+               )
+            );
             break;
          case 'acceleration':
-            dashboardElems.push(new VizAcceleration(
-                                       dashboardData[i].source,
-                                       config
-                               ));
+            dashboardElems.push(
+               new VizAcceleration(
+                  dashboardData[i]
+               )
+            );
             break;
          case 'led':
-            dashboardElems.push(new VizLed(
-                                       dashboardData[i].source,
-                                       config
-                               ));
+            dashboardElems.push(
+               new VizLed(
+                  dashboardData[i]
+               )
+            );
             break;
          default:
-            alert('unexpected data type "'+dashboardData[i].type+'"');
+            console.log('WARNING: unexpected data type "'+dashboardData[i].type+'"');
       }
    }
    
@@ -111,17 +127,14 @@ function redrawDashboard(config) {
 }
 
 function updateDashboard() {
-   for (var i = 0; i < dashboardData.length; i++) {
+   for (var i=0; i<dashboardData.length; i++) {
       if (dashboardData[i].type=='pressure') {
          getPressureViz().update(
-            dashboardData[i].source,
-            dashboardData[i].lastvalue,
-            parseInt(dashboardData[i].lastupdated)
+            dashboardData[i]
          );
       } else {
          dashboardElems[i].update(
-            dashboardData[i].lastvalue,
-            parseInt(dashboardData[i].lastupdated)
+            dashboardData[i]
          );
       }
    }
@@ -167,57 +180,63 @@ function toggleColors(vizId) {
    }
 }
 
-//===== VizWithTimeline
-function Viz() {
-   Viz.prototype.init.call(this);
-}
-Viz.prototype.init = function() {
-}
+//===== Viz
 
-Viz.prototype.createNewWidget = function(vizHeight, showTimeline, showSettings) {
+function Viz(data) {
+   Viz.prototype.init.call(this,data);
+}
+Viz.prototype.init = function(data) {
+}
+Viz.prototype.createNewWidget = function(data) {
+   
+   // retrieve a unique identifier for this widget
    vizId = dashboardElems.length;
+   
    var widgetId = 'widget_'+vizId;
+   
    // widget
    $('<div/>', {
-      'id':    widgetId,
-      'class': 'draggable widget',
-      'ontouchstart': 'OnMouseDown(event)',
-      'ontouchmove': 'OnMouseMove(event)',
-      'ontouchend': 'OnMouseUp(event)'
+      'id':             widgetId,
+      'class':          'draggable widget',
+      'ontouchstart':   'OnMouseDown(event)',
+      'ontouchmove':    'OnMouseMove(event)',
+      'ontouchend':     'OnMouseUp(event)'
    }).appendTo('#demodashboard');
 
    widgetId = '#' + widgetId;
    
    // viz
    $('<div/>', {
-      'id':    'viz_'+vizId,
-      'class': 'viz'
+      'id':             'viz_'+vizId,
+      'class':          'viz'
    }).appendTo(widgetId);
    
-   // source
+   // mac
    $('<div/>', {
-      'id':    'source_'+vizId,
-      'class': 'source'
+      'id':             'mac_'+vizId,
+      'class':          'mac'
    }).appendTo(widgetId);
    
-   if (showTimeline) {
-      var timelineId = 'timeline_' + vizId;
+   // link
+   if (data.linkText && data.linkUrl) {
+      var id = 'datalink_' + vizId;
       $('<div />', {
-         'id':  timelineId,
-         'class': 'timeline'
+         'id':          id,
+         'class':       'datalink'
       }).appendTo(widgetId);
-      timelineId = '#' + timelineId;
-      $(timelineId).append($('<a >/', {
-         'href': '/motedata?mac=' + this.source + '&app=' + this.appName()
-      }).append("timeline"));
+      $('#'+id).append($('<a >/', {
+         'href':        data.linkUrl,
+         'target':      '_new'
+      }).append(data.linkText));
    }
    
-   if (showSettings) {
+   // configuration
+   if (data.isConfigurable) {
       var settingsId = 'settings_' + vizId;
       var that = this;
       $('<div />', {
-         'id':  settingsId,
-         'class': 'settings'
+         'id':          settingsId,
+         'class':       'settings'
       }).appendTo(widgetId);
       settingsId = '#' + settingsId;
       $(settingsId).append($('<a >/').click(function(event){
@@ -226,80 +245,82 @@ Viz.prototype.createNewWidget = function(vizHeight, showTimeline, showSettings) 
       }).append('<svg style="overflow: hidden;" height="30" version="1.1" width="30" xmlns="http://www.w3.org/2000/svg"><path style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1; fill-opacity: 1;" fill="white" stroke="none" d="M26.834,14.693C28.65,12.605,29.015,9.754999999999999,28.027,7.359L24.381,11.611L20.787,10.912L19.596,7.45L23.233,3.208C20.731,2.5780000000000003,17.975,3.338,16.167,5.418C14.260000000000002,7.611000000000001,13.948000000000002,10.647,15.128000000000002,13.111L5.624,24.04C4.6129999999999995,25.201999999999998,4.736,26.964,5.898,27.974999999999998C7.06,28.985,8.822,28.863,9.833,27.700999999999997L19.326,16.782999999999998C21.939,17.625,24.918,16.896,26.834,14.693Z" transform="matrix(0.75,0,0,0.75,4,4)" opacity="1" fill-opacity="1"></path></svg>'));
    }
    
-   // update height
-   if (vizHeight) {
-      increment = vizHeight-$('#viz_'+vizId).height();
+   // height
+   if (data.vizHeight) {
+      increment = data.vizHeight-$('#viz_'+vizId).height();
       $(widgetId).height($(widgetId).height()+increment);
       $('#viz_'+vizId).height($('#viz_'+vizId).height()+increment);
    }
    
    return vizId;
 }
-
 Viz.prototype.settings = function(event) {
    
 }
 
-//===== VizTimeline
-function VizTimeline(source) {
-   VizTimeline.prototype.init.call(this, source)
-}
-VizTimeline.prototype = new Viz;
-VizTimeline.prototype.init = function(source) {
-   this.source = source;
-}
-VizTimeline.prototype.getSource = function() {
-   return this.source;
-}
-
 //===== VizPressure
 
-function VizPressure(config) {
-   this.init(config);
+function VizPressure(data) {
+   this.init(data);
 }
 VizPressure.prototype = new Viz;
-VizPressure.prototype.init = function(config) {
-   Viz.call(this);
-   this.mac_1          = null;
-   this.lastvalue_1    = null;
-   this.offset_1       = null;
-   this.lastupdated_1  = null;
-   this.mac_2          = null;
-   this.lastvalue_2    = null;
-   this.offset_2       = null;
-   this.lastupdated_2  = null;
-   this.vizId          = this.createNewWidget(600,config['showTimeline'], false);
+VizPressure.prototype.init = function(data) {
    
+   // store params
+   
+   // initialize parent
+   Viz.call(this,data);
+   
+   // local variables
+   this.mac_1           = null;
+   this.lastvalue_1     = null;
+   this.offset_1        = null;
+   this.lastupdated_1   = null;
+   this.mac_2           = null;
+   this.lastvalue_2     = null;
+   this.offset_2        = null;
+   this.lastupdated_2   = null;
+   
+   // create widget
+   data.vizHeight       = 600;
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // customize widget
    $('#viz_'+this.vizId).append('<img id="image_'+this.vizId+'" src="pressure.png"/>');
    $('#image_'+this.vizId).css('position',      'absolute');
    $('#image_'+this.vizId).css('left',          ($('#viz_'+this.vizId).width()-128)/2);
-}
-VizPressure.prototype.update = function(source, valueString, lastupdated) {
    
-   // parse valueString into lastvalue and offset
-   var m = new RegExp('^([0-9.-]+)_([0-9.-]+)$').exec(valueString);
+   // update
+   this.update(data);
+}
+VizPressure.prototype.update = function(data) {
+   
+   // parse lastvalue into lastvalue and offset
+   var m = new RegExp('^([0-9.-]+)_([0-9.-]+)$').exec(data.lastvalue);
    if (m) {
-      lastvalue = parseInt(m[1]);
-      offset    = parseInt(m[2]);
-      calibrate = false;
+      lastvalue    = parseInt(m[1]);
+      offset       = parseInt(m[2]);
+      calibrate    = false;
    } else {
-      var m = new RegExp('^([0-9.-]+)_([0-9.-]+)_calibrate$').exec(valueString);
+      var m = new RegExp('^([0-9.-]+)_([0-9.-]+)_calibrate$').exec(data.lastvalue);
       if (m) {
          lastvalue = parseInt(m[1]);
          offset    = parseInt(m[2]);
          calibrate = true;
       } else {
-         console.log('could not parse VizPressure update '+this.lastvalue);
+         console.log('ERROR: could not parse VizPressure update '+data.lastvalue);
          return;
       }
    }
    
    // figure out which mac to update
    macToUpdate = null;
-   if ((this.mac_1==null) || (this.mac_1==source)) {
+   if ((this.mac_1==null) || (this.mac_1==data.mac)) {
       macToUpdate = 1;
    }
-   if ((this.mac_2==null) || (this.mac_2==source)) {
+   if ((this.mac_2==null) || (this.mac_2==data.mac)) {
       macToUpdate = 2;
    }
    
@@ -307,23 +328,23 @@ VizPressure.prototype.update = function(source, valueString, lastupdated) {
    wasUpdated = false;
    switch(macToUpdate) {
       case 1:
-         this.mac_1          = source;
+         this.mac_1          = data.mac;
          this.lastvalue_1    = lastvalue+offset;
          if (lastvalue!=this.lastupdated_1) {
             wasUpdated = true;
          }
-         this.lastupdated_1  = lastupdated;
+         this.lastupdated_1  = data.lastupdated;
          break;
       case 2:
-         this.mac_2          = source;
+         this.mac_2          = data.mac;
          this.lastvalue_2    = lastvalue+offset;
          if (lastvalue!=this.lastupdated_2) {
             wasUpdated = true;
          }
-         this.lastupdated_2  = lastupdated;
+         this.lastupdated_2  = data.lastupdated;
          break;
       default:
-         console.log('ERROR unexpected VizPressure source='+source);
+         console.log('ERROR: unexpected VizPressure mac='+data.mac);
          break;
    }
    
@@ -340,32 +361,32 @@ VizPressure.prototype.update = function(source, valueString, lastupdated) {
       $('#image_'+this.vizId).css('bottom', bottomValue+'px');
    }
    
-   // update source
-   sourceText = ''
+   // update mac
+   macText = ''
    if        ((this.mac_1!=null) && (this.mac_2!=null)) {
       if (this.lastvalue_2>this.lastvalue_1) {
-         sourceText = this.mac_1+'<br/>'+this.mac_2;
+         macText = this.mac_1+'<br/>'+this.mac_2;
       } else {
-         sourceText = this.mac_2+'<br/>'+this.mac_1;
+         macText = this.mac_2+'<br/>'+this.mac_1;
       }
    } else if ( this.mac_1!=null) {
-      sourceText = this.mac_1+'<br/>??';
+      macText = this.mac_1+'<br/>??';
    } else if ( this.mac_2!=null) {
-      sourceText = this.mac_2+'<br/>??';
+      macText = this.mac_2+'<br/>??';
    }
-   $('#source_'+this.vizId).html(sourceText);
+   $('#mac_'+this.vizId).html(macText);
    
    // update calibrate button
    if (calibrate) {
-      if ($('#button_'+this.vizId+'_nodrag').length==0) {
-         $('#viz_'+this.vizId).append('<button id="button_'+this.vizId+'_nodrag"/>');
-         $('#button_'+this.vizId+'_nodrag').html('calibrate');
-         $('#button_'+this.vizId+'_nodrag').css('position','absolute');
-         $('#button_'+this.vizId+'_nodrag').css('bottom',  '0px');
-         $('#button_'+this.vizId+'_nodrag').live('click',this.calibrateClick);
+      if ($('#button_'+this.vizId).length==0) {
+         $('#viz_'+this.vizId).append('<button id="button_'+this.vizId+'"/>');
+         $('#button_'+this.vizId).html('calibrate');
+         $('#button_'+this.vizId).css('position','absolute');
+         $('#button_'+this.vizId).css('bottom',  '0px');
+         $('#button_'+this.vizId).live('click',this.calibrateClick);
       }
    } else {
-      $('#button_'+this.vizId+'_nodrag').remove();
+      $('#button_'+this.vizId).remove();
    }
    
 }
@@ -377,74 +398,101 @@ VizPressure.prototype.calibrateClick = function(e) {
       data:       JSON.stringify({'calibrate':'pressure'})
    });
 }
-VizPressure.prototype.appName = function() {
-   return 'SPIPressure';
-}
 
-//===== VizEnergysource
+//===== VizEnergySource
 
-function VizEnergysource(source,config) {
-   this.init(source,config);
+function VizEnergySource(data) {
+   this.init(data);
 }
-VizEnergysource.prototype = new VizTimeline;
-VizEnergysource.prototype.init = function(source,config) {
-   VizTimeline.call(this, source);
-   this.lastvalue      = null;
-   this.lastupdated    = null;
-   this.vizId          = this.createNewWidget(null,config['showTimeline'], false);
+VizEnergySource.prototype = new Viz;
+VizEnergySource.prototype.init = function(data) {
    
+   // store params
+   this.lastvalue       = data.lastvalue;
+   this.lastupdated     = data.lastupdated;
+   
+   // initialize parent
+   Viz.call(this,data);
+   
+   // local variables
+   
+   // create widget
+   data.vizHeight       = null;
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // customize widget
    $('#viz_'+this.vizId).append('<img id="image_'+this.vizId+'"/>');
    $('#image_'+this.vizId).css('position',      'absolute');
+   $('#mac_'+this.vizId).html(data.mac);
    
-   $('#source_'+this.vizId).html(this.source);
+   // update
+   this.update(data);
 }
-VizEnergysource.prototype.update = function(lastvalue,lastupdated) {
-   if (lastupdated!=this.lastupdated) {
+VizEnergySource.prototype.update = function(data) {
+   
+   // toggle color
+   if (data.lastupdated!=this.lastupdated) {
       toggleColors(this.vizId);
    }
-   this.lastvalue      = lastvalue;
-   this.lastupdated    = lastupdated;
    
+   // store new values
+   this.lastvalue      = data.lastvalue;
+   this.lastupdated    = data.lastupdated;
+   
+   // update widget
    $('#image_'+this.vizId).attr('src',this.lastvalue+'.png');
    $('#image_'+this.vizId).css('left',  ($('#viz_'+this.vizId).width() -128)/2);
    $('#image_'+this.vizId).css('bottom',($('#viz_'+this.vizId).height()-128)/2);
 }
-VizEnergysource.prototype.appName = function() {
-   return 'GPIONet';
-}
 
 //===== VizTemperature
 
-function VizTemperature(source,min,max,config) {
-   this.init(source,min,max,config);
+function VizTemperature(data) {
+   this.init(data);
 }
-VizTemperature.prototype = new VizTimeline;
-VizTemperature.prototype.init = function(source,min,max,config) {
-   VizTimeline.call(this, source);
-   this.min            = min;
-   this.lastvalue      = null;
-   this.max            = max;
-   this.lastupdated    = null;
-   this.vizId          = this.createNewWidget(null,config['showTimeline'], config['showTimeline']);
+VizTemperature.prototype = new Viz;
+VizTemperature.prototype.init = function(data) {
    
+   // store params
+   this.feedId          = data.feedId;
+   this.lastvalue       = data.lastvalue;
+   this.lastupdated     = data.lastupdated;
+   this.mac             = data.mac;
+   
+   // initialize parent
+   Viz.call(this,data);
+   
+   // create widget
+   data.vizHeight       = null;
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // customize widget
    $('#viz_'+this.vizId).addClass('temperature');
+   $('#mac_'+this.vizId).html(data.mac);
    
-   $('#source_'+this.vizId).html(this.source);
+   // update
+   this.update(data);
 }
-VizTemperature.prototype.update = function(lastvalue,lastupdated) {
-   if (lastupdated!=this.lastupdated) {
+VizTemperature.prototype.update = function(data) {
+   
+   // toggle color
+   if (data.lastupdated!=this.lastupdated) {
       toggleColors(this.vizId);
    }
-   this.lastvalue      = lastvalue;
-   this.lastupdated    = lastupdated;
    
-   $('#viz_'+this.vizId).html(this.lastvalue+'&deg;C');
-}
-VizTemperature.prototype.appName = function() {
-   return 'OAPTemperature';
+   // store new values
+   this.lastvalue      = data.lastvalue;
+   this.lastupdated    = data.lastupdated;
+   
+   // update widget
+   $('#viz_'+this.vizId).html(parseFloat(this.lastvalue).toFixed(2)+'&deg;C');
 }
 VizTemperature.prototype.settings = function(event) {
-
+   
    var content = $("<div></div>");
    content.append("<h3>Temperature settings</h3>");
    var form = $("<form />");
@@ -459,7 +507,7 @@ VizTemperature.prototype.settings = function(event) {
       event.preventDefault();
       jQuery.ajax({
          type:       'POST',
-         url:        "/motedata/json/send?mac="+that.getSource()+"&app=OAPTemperature/",
+         url:        "/motedata/json/send?mac="+that.mac+"&app=OAPTemperature/",
          data:       JSON.stringify({'rate': rateInput.val()})
       }).error(function(xhr, ajaxOptions, thrownError) {
          message.text(xhr.statusText + ": " + xhr.responseText);
@@ -473,24 +521,86 @@ VizTemperature.prototype.settings = function(event) {
    rateInput.focus();
 }
 
+//===== VizVoltage
+
+function VizVoltage(data) {
+   this.init(data);
+}
+VizVoltage.prototype = new Viz;
+VizVoltage.prototype.init = function(data) {
+   
+   // store params
+   this.feedId          = data.feedId;
+   this.lastvalue       = data.lastvalue;
+   this.lastupdated     = data.lastupdated;
+   
+   // initialize parent
+   Viz.call(this,data);
+   
+   // create widget
+   data.vizHeight       = null;
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // customize widget
+   $('#viz_'+this.vizId).addClass('temperature');
+   $('#mac_'+this.vizId).html(data.mac);
+   
+   // update
+   this.update(data);
+}
+VizVoltage.prototype.update = function(data) {
+   
+   // toggle color
+   if (data.lastupdated!=this.lastupdated) {
+      toggleColors(this.vizId);
+   }
+   
+   // store new values
+   this.lastvalue      = data.lastvalue;
+   this.lastupdated    = data.lastupdated;
+   
+   // update widget
+   $('#viz_'+this.vizId).html(parseFloat(this.lastvalue).toFixed(1)+'mV');
+}
+
 //===== VizAcceleration
 
-function VizAcceleration(source,config) {
-   this.init(source,config);
+function VizAcceleration(data) {
+   this.init(data);
 }
-VizAcceleration.prototype = new VizTimeline;
-VizAcceleration.prototype.init = function(source,config) {
-   VizTimeline.call(this, source);
-   this.lastvalue      = null;
-   this.lastupdated    = null;
-   this.vizId          = this.createNewWidget(null,config['showTimeline'], false);
+VizAcceleration.prototype = new Viz;
+VizAcceleration.prototype.init = function(data) {
    
+   // store params
+   
+   // initialize parent
+   Viz.call(this,data);
+   
+   // local variables
+   this.lastvalue       = null;
+   this.lastupdated     = null;
+   
+   // create widget
+   data.vizHeight       = null;
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // customize widget
    $('#viz_'+this.vizId).append('<img id="image_'+this.vizId+'"/>');
    $('#image_'+this.vizId).css('position',      'absolute');
+   $('#mac_'+this.vizId).html(data.mac);
    
-   $('#source_'+this.vizId).html(this.source);
+   // update
+   this.update(data);
 }
-VizAcceleration.prototype.update = function(lastvalue,lastupdated) {
+VizAcceleration.prototype.update = function(data) {
+   
+   lastvalue       = data.lastvalue
+   lastupdated     = data.lastupdated
+   
    if (lastupdated!=this.lastupdated) {
       toggleColors(this.vizId);
    }
@@ -503,7 +613,7 @@ VizAcceleration.prototype.update = function(lastvalue,lastupdated) {
       y = parseFloat(m[2]);
       z = parseFloat(m[3]);
    } else {
-      console.log('could not parse VizAcceleration update '+this.lastvalue);
+      console.log('ERROR: could not parse VizAcceleration update '+this.lastvalue);
    }
    
    maxVal = Math.max(Math.abs(x),Math.abs(y),Math.abs(z));
@@ -520,62 +630,74 @@ VizAcceleration.prototype.update = function(lastvalue,lastupdated) {
    $('#image_'+this.vizId).css('left',  ($('#viz_'+this.vizId).width() -120)/2);
    $('#image_'+this.vizId).css('bottom',($('#viz_'+this.vizId).height()-120)/2);
 }
-VizAcceleration.prototype.appName = function() {
-   return 'SPIAcceleration';
-}
 
 //===== VizLed
 
-function VizLed(source,config) {
-   this.init(source,config);
+function VizLed(data) {
+   this.init(data);
 }
-VizLed.prototype = new VizTimeline;
-VizLed.prototype.init = function(source,config) {
-   VizTimeline.call(this, source);
-   this.vizId          = this.createNewWidget(null, false, false);
+VizLed.prototype        = new Viz;
+VizLed.prototype.init   = function(data) {
    
-   $('#viz_'+this.vizId).append('<img name="'+this.source+'" id="image_'+this.vizId+'_nodrag"/>');
-   $('#image_'+this.vizId+'_nodrag').attr('src',"led_off.png");
-   $('#image_'+this.vizId+'_nodrag').css('position','absolute');
-   $('#image_'+this.vizId+'_nodrag').css('left',  ($('#viz_'+this.vizId).width() -128)/2);
-   $('#image_'+this.vizId+'_nodrag').css('bottom',($('#viz_'+this.vizId).height()-128)/2);
-   $('#image_'+this.vizId+'_nodrag').click(this.click);
+   // store params
+   this.feedId          = data.feedId;
+   this.mac             = data.mac;
    
-   $('#source_'+this.vizId).html(this.source);
+   // initialize parent
+   Viz.call(this,data);
+   
+   // create widget
+   data.vizHeight       = null
+   this.vizId           = this.createNewWidget(
+      data
+   );
+   
+   // add image
+   var that = this;
+   $('#viz_'+this.vizId).append('<img name="'+data.mac+'" id="image_'+this.vizId+'"/>');
+   $('#image_'+this.vizId).attr('src',"led_off.png");
+   $('#image_'+this.vizId).css('position','absolute');
+   $('#image_'+this.vizId).css('left',  ($('#viz_'+this.vizId).width() -128)/2);
+   $('#image_'+this.vizId).css('bottom',($('#viz_'+this.vizId).height()-128)/2);
+   $('#image_'+this.vizId).addClass('nodrag');
+   $('#image_'+this.vizId).click(
+      function(event){
+         that.click(event);
+         event.preventDefault();
+      }
+   );
+   
+   // add mac
+   $('#mac_'+this.vizId).html(data.mac);
+   
+   // update
+   this.update(data);
 }
-VizLed.prototype.update = function(lastvalue,lastupdated) {
-   // nothing to do
-}
-VizLed.prototype.click = function() {
-   
-   // retrieve the vizId
-   var m = new RegExp('image_([0-9]+)_nodrag').exec(this.id);
-   if (m==null) {
-      console.log('invalid id '+this.id);
-      return;
+VizLed.prototype.update = function(data) {
+   switch (data.lastvalue) {
+      case null:
+         // nothing to do
+         break;
+      case '0':
+         $('#image_'+this.vizId).attr('src','led_off.png');
+         break;
+      default:
+         $('#image_'+this.vizId).attr('src','led_on.png');
+         break;
    }
-   vizId = m[1];
-   
-   // retrieve the MAC
-   mac = $('#image_'+vizId+'_nodrag').attr('name');
+}
+VizLed.prototype.click = function(event) {
    
    // toggle the image
-   image = $('#image_'+vizId+'_nodrag')
+   image = $('#image_'+this.vizId)
    if (image.attr('src')=='led_on.png') {
-      $('#image_'+vizId+'_nodrag').attr('src','led_off.png');
+      $('#image_'+this.vizId).attr('src','led_off.png');
       ledStatus = '0';
    } else {
-      $('#image_'+vizId+'_nodrag').attr('src','led_on.png');
+      $('#image_'+this.vizId).attr('src','led_on.png');
       ledStatus = '1';
    }
    
    // post to set the mote's LED
-   jQuery.ajax({
-      type:       'POST',
-      url:        '/motedata/json/send?mac='+mac+'&app=OAPLED/',
-      data:       JSON.stringify({'status':ledStatus})
-   });
-}
-VizLed.prototype.appName = function() {
-   return 'OAPLED';
+   changeLEDstate(this.mac,ledStatus);
 }

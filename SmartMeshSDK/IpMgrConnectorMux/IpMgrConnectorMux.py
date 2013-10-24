@@ -3,12 +3,16 @@ This module was generated automatically. Do not edit directly.
 '''
 
 import collections
-import ApiException
+from   SmartMeshSDK import ApiException
 from   IpMgrConnectorMuxInternal import IpMgrConnectorMuxInternal
+
+##
+# \addtogroup IpMgrConnectorMux
+# \{
+# 
 
 class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     '''
-    \ingroup ApiConnector
     \brief Public class for IP manager connector, over SerialMux.
     '''
 
@@ -19,18 +23,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>version</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -103,18 +109,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -126,7 +134,6 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # \param type 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 0: resetSystem
-    #      - 1: resetNetwork
     #      - 2: resetMote
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -142,29 +149,32 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_subscribe = collections.namedtuple("Tuple_dn_subscribe", ['RC'])
 
     ##
-    # The subscribe command indicates that the manager should send the external application the specified notifications. The notification filter is a bitmask of flags indicating the types of notifications that the client wants to receive.
+    # The subscribe command indicates that the manager should send the external application the specified notifications. It contains two filter fields:
     # 
-    # The unackFilter allows client to select whether each notification-type should be sent acknowledged or not. If a notification is sent as 'acknowledged', the subsequent notification packets will be queued while waiting for response.
+    # -filter is a bitmask of flags indicating the types of notifications that the client wants to receive
+    # -unackFilter allows the client to select which of the notifications selected in filter should be sent acknowledged. If a notification is sent as 'acknowledged', thesubsequent notification packets will be queued while waiting for response.
     # 
     # Each subscription request overwrites the previous one. If an application is subscribed to data and then decides he also wants events he should send a subscribe command with both the data and event flags set. To clear all subscriptions, the client should send a subscribe command with the filter set to zero. When a session is initiated between the manager and a client, the subscription filter is initialized to zero.
     # 
-    # The subscribe bitmap uses the values of the notification type enumeration. Some values are unused to provide backwards compatibility with earlier APIs. 
+    # The subscribe bitmap uses the values of the notification type enumeration. Some values are unused to provide backwards compatibility with earlier APIs.
     # 
     # \param filter 4-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -182,18 +192,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>uptime</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>utcSecs</tt>: 8-byte field formatted as a int.<br/>
@@ -208,7 +220,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     Tuple_dn_getTime = collections.namedtuple("Tuple_dn_getTime", ['RC', 'uptime', 'utcSecs', 'utcUsecs', 'asn', 'asnOffset'])
 
     ##
-    # The getTime command returns the current manager UTC time and current absolute slot number (ASN). The time values returned by this command are delayed by queuing and transfer time over the serial connection. For additional precision, an external application should trigger the networkTime notification using the Time pin.
+    # The getTime command returns the current manager UTC time and current absolute slot number (ASN). The time values returned by this command are delayed by queuing and transfer time over the serial connection. For additional precision, an external application should trigger the networkTime notification using the Time Pin.
     # 
     # 
     # 
@@ -223,23 +235,28 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_setNetworkConfig = collections.namedtuple("Tuple_dn_setNetworkConfig", ['RC'])
 
     ##
-    # The setNetworkConfig command changes network configuration parameters. The response code indicates whether the changes were successfully applied. Generally, changes to network configuration will take effect when the manager reboots. Exceptions are detailed below:
+    # The setNetworkConfig command changes network configuration parameters. The response code indicates whether the changes were successfully applied.This change is persistent.
+    # 
+    # Generally, changes to network configuration will take effect when the manager reboots. Exceptions are detailed below:
+    # 
     # 
     # -Max Motes: The new maxMotes value is used as soon as new motes try to join the network, but motes are not removed from the network if the value is set to a number lower than numMotes.
     # -Base Bandwidth: Changing baseBandwidth while the network is running does not reallocate bandwidth to Operational motes.
@@ -267,12 +284,10 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #      - 3: both
     # \param channelList 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param autoStartNetwork 1-byte field formatted as a int.<br/>
+    # \param autoStartNetwork 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # \param locMode 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: off
-    #      - 1: onDemand
+    #     There is no restriction on the value of this field.
     # \param bbMode 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 0: off
@@ -298,18 +313,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_clearStatistics = collections.namedtuple("Tuple_dn_clearStatistics", ['RC'])
 
@@ -329,25 +346,27 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_exchangeMoteJoinKey = collections.namedtuple("Tuple_dn_exchangeMoteJoinKey", ['RC', 'callbackId'])
 
     ##
-    # The exchangeMoteJoinKey command triggers the manager to send a new join key to the specified mote and update the manager's ACL entry for the mote. The response contains a callbackId. A commandFinished notification with the callbackId will be sent when the operation is complete.
+    # The exchangeMoteJoinKey command triggers the manager to send a new join key to the specified mote and update the manager's ACL entry for the mote. The response contains a callbackId. A commandFinished event notification with this callbackId will be sent when the operation is complete. This change is persistent.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -365,25 +384,27 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_exchangeNetworkId = collections.namedtuple("Tuple_dn_exchangeNetworkId", ['RC', 'callbackId'])
 
     ##
-    # The exchangeNetworkId command triggers the manager to distribute a new network ID to all the motes in the network. A callbackId is returned in the response. A commandFinished notification with the callbackId will be sent when the operation is complete.
+    # The exchangeNetworkId command triggers the manager to distribute a new network ID to all the motes in the network. AcallbackId is returned in the response. A commandFinished notification with this callbackId will be sent when the operation is complete.This change is persistent.
     # 
     # \param id 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -399,35 +420,39 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_radiotestTx = collections.namedtuple("Tuple_dn_radiotestTx", ['RC'])
 
     ##
-    # The radiotestTx command allows the user to initiate a radio transmission test. It may only be executed if the manager has been booted up in radioTest mode (see setNetworkConfig command). Three types of transmission tests are supported:
+    # The radiotestTx command allows the user to initiate a radio transmission test. It may only be executed if the manager has been booted up in radiotest mode (see setNetworkConfig command). Three types of transmission tests are supported:
     # 
     # -Packet transmission
     # -Continuous modulation
     # -Continuous wave (unmodulated signal)
     # 
-    # In a packet transmission test, the device generates a repeatCnt number of packet sequences. Each sequence consists of up to 10 packets with configurable size and delays. Each packet consists of payload of up to 125 bytes, and a 2-byte 802.15.4 CRC at the end. Bytes 0 and 1 contain the packet number (in big-endian format) that increments with every packet transmitted. Bytes 2..N contain a counter (from 0..N-2) that increments with every byte inside payload. Transmissions occur on the set of channels defined by chanMask, selected in pseudo-random order.
+    # In a packet transmission test, the device generates a repeatCnt number of packet sequences. Each sequence consists of up to 10 packets with configurable size and delays.Each packet starts with a PHY preamble (5 bytes), followed by a PHY length field (1 byte), followed by data payload of up to 125 bytes, and finally a 2-byte 802.15.4 CRC at the end. Byte 0 of the payload contains stationId of the sender. Bytes 1 and 2 contain the packet number (in big-endian format) that increments with every packet transmitted. Bytes 3..N contain a counter (from 0..N-2) that increments with every byte inside payload. Transmissions occur on the set of channels defined bychanMask, selected inpseudo-randomorder.
     # 
     # In a continuous modulation test, the device generates continuous pseudo-random modulated signal, centered at the specified channel. The test is stopped by resetting the device.
     # 
     # In a continuous wave test, the device generates an unmodulated tone, centered at the specified channel. The test tone is stopped by resetting the device.
     # 
-    # Note: Channel numbering is 0-14, corresponding to IEEE 2.4 GHz channels 11-25.
+    # 
+    # 
+    # Channel numbering is 0-15, corresponding to IEEE 2.4 GHz channels 11-26.
     # 
     # \param testType 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -439,51 +464,51 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #     There is no restriction on the value of this field.
     # \param seqSize 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize1 1-byte field formatted as a int.<br/>
+    # \param pkLen_1 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap1 2-byte field formatted as a int.<br/>
+    # \param delay_1 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize2 1-byte field formatted as a int.<br/>
+    # \param pkLen_2 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap2 2-byte field formatted as a int.<br/>
+    # \param delay_2 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize3 1-byte field formatted as a int.<br/>
+    # \param pkLen_3 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap3 2-byte field formatted as a int.<br/>
+    # \param delay_3 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize4 1-byte field formatted as a int.<br/>
+    # \param pkLen_4 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap4 2-byte field formatted as a int.<br/>
+    # \param delay_4 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize5 1-byte field formatted as a int.<br/>
+    # \param pkLen_5 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap5 2-byte field formatted as a int.<br/>
+    # \param delay_5 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize6 1-byte field formatted as a int.<br/>
+    # \param pkLen_6 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap6 2-byte field formatted as a int.<br/>
+    # \param delay_6 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize7 1-byte field formatted as a int.<br/>
+    # \param pkLen_7 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap7 2-byte field formatted as a int.<br/>
+    # \param delay_7 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize8 1-byte field formatted as a int.<br/>
+    # \param pkLen_8 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap8 2-byte field formatted as a int.<br/>
+    # \param delay_8 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize9 1-byte field formatted as a int.<br/>
+    # \param pkLen_9 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap9 2-byte field formatted as a int.<br/>
+    # \param delay_9 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkSize10 1-byte field formatted as a int.<br/>
+    # \param pkLen_10 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param gap10 2-byte field formatted as a int.<br/>
+    # \param delay_10 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_radiotestTx named tuple.
     # 
-    def dn_radiotestTx(self, testType, chanMask, repeatCnt, txPower, seqSize, pkSize1, gap1, pkSize2, gap2, pkSize3, gap3, pkSize4, gap4, pkSize5, gap5, pkSize6, gap6, pkSize7, gap7, pkSize8, gap8, pkSize9, gap9, pkSize10, gap10) :
-        res = IpMgrConnectorMuxInternal.send(self, ['radiotestTx'], {"testType" : testType, "chanMask" : chanMask, "repeatCnt" : repeatCnt, "txPower" : txPower, "seqSize" : seqSize, "pkSize1" : pkSize1, "gap1" : gap1, "pkSize2" : pkSize2, "gap2" : gap2, "pkSize3" : pkSize3, "gap3" : gap3, "pkSize4" : pkSize4, "gap4" : gap4, "pkSize5" : pkSize5, "gap5" : gap5, "pkSize6" : pkSize6, "gap6" : gap6, "pkSize7" : pkSize7, "gap7" : gap7, "pkSize8" : pkSize8, "gap8" : gap8, "pkSize9" : pkSize9, "gap9" : gap9, "pkSize10" : pkSize10, "gap10" : gap10})
+    def dn_radiotestTx(self, testType, chanMask, repeatCnt, txPower, seqSize, pkLen_1, delay_1, pkLen_2, delay_2, pkLen_3, delay_3, pkLen_4, delay_4, pkLen_5, delay_5, pkLen_6, delay_6, pkLen_7, delay_7, pkLen_8, delay_8, pkLen_9, delay_9, pkLen_10, delay_10) :
+        res = IpMgrConnectorMuxInternal.send(self, ['radiotestTx'], {"testType" : testType, "chanMask" : chanMask, "repeatCnt" : repeatCnt, "txPower" : txPower, "seqSize" : seqSize, "pkLen_1" : pkLen_1, "delay_1" : delay_1, "pkLen_2" : pkLen_2, "delay_2" : delay_2, "pkLen_3" : pkLen_3, "delay_3" : delay_3, "pkLen_4" : pkLen_4, "delay_4" : delay_4, "pkLen_5" : pkLen_5, "delay_5" : delay_5, "pkLen_6" : pkLen_6, "delay_6" : delay_6, "pkLen_7" : pkLen_7, "delay_7" : delay_7, "pkLen_8" : pkLen_8, "delay_8" : delay_8, "pkLen_9" : pkLen_9, "delay_9" : delay_9, "pkLen_10" : pkLen_10, "delay_10" : delay_10})
         return IpMgrConnectorMux.Tuple_dn_radiotestTx(**res)
 
     ##
@@ -491,35 +516,41 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_radiotestRx = collections.namedtuple("Tuple_dn_radiotestRx", ['RC'])
 
     ##
-    # The radiotestRx command clears all previously collected statistics and initiates radio reception on the specified channel.  It may only be executed if the manager has been booted up in radioTest mode (see setNetworkConfig command). During the test, the device keeps statistics about the number of packets received (with and without error). The test results may be retrieved using the getRadiotestStatistics command.
+    # The radiotestRx command clears all previously collected statistics and initiates radio reception on the specified channel. It may only be executed if the manager has been booted up in radiotest mode (see setNetworkConfig command).During the test, the device keeps statistics about the number of packets received (with and without error). Note that the station id specified in this command must match the transmitter's station id. This is necessary to isolate traffic if multiple tests are running in the same radio space.The test results may be retrieved using the getRadiotestStatistics command.
     # 
-    # Note: Channel numbering is 0-14, corresponding to IEEE 2.4 GHz channels 11-25.
+    # 
+    # 
+    # Channel numbering is 0-15, corresponding to IEEE 2.4 GHz channels 11-26.
     # 
     # \param mask 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # \param duration 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
+    # \param stationId 1-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_radiotestRx named tuple.
     # 
-    def dn_radiotestRx(self, mask, duration) :
-        res = IpMgrConnectorMuxInternal.send(self, ['radiotestRx'], {"mask" : mask, "duration" : duration})
+    def dn_radiotestRx(self, mask, duration, stationId) :
+        res = IpMgrConnectorMuxInternal.send(self, ['radiotestRx'], {"mask" : mask, "duration" : duration, "stationId" : stationId})
         return IpMgrConnectorMux.Tuple_dn_radiotestRx(**res)
 
     ##
@@ -527,18 +558,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>rxOk</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>rxFail</tt>: 2-byte field formatted as a int.<br/>
@@ -547,7 +580,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     Tuple_dn_getRadiotestStatistics = collections.namedtuple("Tuple_dn_getRadiotestStatistics", ['RC', 'rxOk', 'rxFail'])
 
     ##
-    # This command retrieves statistics from a previously run radiotestRx command.  It may only be executed if the manager has been booted up in radioTest mode (see setNetworkConfig command). 
+    # This command retrieves statistics from a previously run radiotestRx command.It may only be executed if the manager has been booted up in radiotest mode (see setNetworkConfig command).
     # 
     # 
     # 
@@ -562,23 +595,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_setACLEntry = collections.namedtuple("Tuple_dn_setACLEntry", ['RC'])
 
     ##
-    # The setACLEntry command adds a new entry or updates an existing entry in the access control list (ACL).
+    # The setACLEntry command adds a new entry or updates an existing entry in the Access Control List (ACL).This change is persistent.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -596,18 +631,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>joinKey</tt>: 16-byte field formatted as a hex.<br/>
@@ -616,9 +653,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     Tuple_dn_getNextACLEntry = collections.namedtuple("Tuple_dn_getNextACLEntry", ['RC', 'macAddress', 'joinKey'])
 
     ##
-    # The getNextACLEntry command returns information about next mote entry in the access control list (ACL). To begin a search (find the first mote in ACL), a zero MAC address (0000000000000000) should be sent.
-    # 
-    # There is no mechanism for reading the ACL entry of a specific mote. This call is an iterator. If you call getNextACLEntry with mote A as the argument, your response is the ACL entry for mote B, where B is the next mote in the ACL.
+    # The getNextACLEntry command returns information about next mote entry in the access control list (ACL). To begin a search (find the first mote in ACL), a zero MAC address (0000000000000000) should be sent.There is no mechanism for reading the ACL entry of a specific mote. This call is an iterator. If you call getNextACLEntry with mote A as the argument, your response is the ACL entry for mote B, where B is the next mote in the ACL.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -634,23 +669,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_deleteACLEntry = collections.namedtuple("Tuple_dn_deleteACLEntry", ['RC'])
 
     ##
-    # The deleteACLEntry command deletes the specified mote from the access control list (ACL). If the macAddress parameter is set to all 0xFFs, the entire ACL is cleared.
+    # The deleteACLEntry command deletes the specified mote from the access control list (ACL). If the macAddress parameter is set to all 0xFFs or all 0x00s, the entire ACL is cleared. This change is persistent.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -666,25 +703,27 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_pingMote = collections.namedtuple("Tuple_dn_pingMote", ['RC', 'callbackId'])
 
     ##
-    # The pingMote command sends a ping (echo request) to the mote specified by MAC address. A unique callbackId is generated and returned with the response. When a ping response is received from the mote, the manager generates a ping notification with the measured round trip delay and several other parameters.
+    # The pingMote command sends a ping (echo request) to the mote specified by MAC address. A unique callbackId is generated and returned with the response. When the response is received from the mote, the manager generates a pingResponse notification with the measured round trip delay and several other parameters. The request is sent using unacknowledged transport, so the mote is not guaranteed to receive the request.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -700,18 +739,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_getLog = collections.namedtuple("Tuple_dn_getLog", ['RC'])
 
@@ -732,27 +773,29 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_sendData = collections.namedtuple("Tuple_dn_sendData", ['RC', 'callbackId'])
 
     ##
-    # The sendData command sends a packet to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification. It is the application layer's responsibility send a response from the mote, and to timeout if no response is received.
+    # The sendData command sends a packet to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification. It is the responsibility of the customer'sapplication layer at the mote to send a response. It is also the responsibility of thecustomer's application layer to timeout if no response is received at the manager if one is expected.
     # 
-    # The sendData command should be used by applications that communicate directly with the manager. If end-to-end (application to mote) IP connectivity is required, the application should use the sendIP command. For a more comprehensive discussion of the distinction, see the SmartMesh IP Network User Guide.
+    # The sendData command should be used by applications that communicate directly with the manager. If end-to-end (application to mote) IP connectivity is required, the application should use the sendIP command. For a more comprehensive discussion of the distinction, see the SmartMesh IPNetwork User Guide.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -781,23 +824,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_startNetwork = collections.namedtuple("Tuple_dn_startNetwork", ['RC'])
 
     ##
-    # The startNetwork command tells the manager to allow the network to start forming (begin accepting join requests from devices). The external application must issue the startNetwork command if the autoStartNetwork flag is not set (see setNetworkConfig).
+    # The startNetwork command tells the manager to allow the network to start forming (begin accepting join requests from devices). The external application must issue the startNetwork command if the autoStartNetwork flag is not set (seesetNetworkConfig).
     # 
     # 
     # 
@@ -812,18 +857,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>hwModel</tt>: 1-byte field formatted as a int.<br/>
@@ -857,23 +904,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>moteId</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>isAP</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>isAP</tt>: 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>state</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -888,9 +937,9 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     Tuple_dn_getMoteConfig = collections.namedtuple("Tuple_dn_getMoteConfig", ['RC', 'macAddress', 'moteId', 'isAP', 'state', 'reserved', 'isRouting'])
 
     ##
-    # The getMoteConfig command returns a single mote description as the response. The command takes two arguments, a MAC Address and a flag indicating whether the MAC Address refers to the requested mote or to the next mote in manager's memory. This command may be used to iterate through all motes known by the manager by starting with the macAddress parameter set to 0 and next set to true, and then using the MAC Address of that response as the input to the next call.
+    # The getMoteConfig command returns a single mote description as the response. The command takes two arguments, a MAC Address and a flag indicating whether the MAC Address refers to the requested mote or to the next mote in managers memory. This command may be used to iterate through all motes known by the manager by starting with the macAddress parameter set to 0 and next set to true, and then using the MAC Address of that response as the input to the next call.
     # 
-    # The mote MAC address is used in all query commands, but space constraints require the neighbor health reports to use the moteId for identification. Therefore, both identifiers are present in the mote structure.
+    # The mote MAC address is used in all query commands, but space constraints require the neighbor health reports to use the Mote ID for identification. Therefore, both identifiers are present in the mote structure.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -908,18 +957,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>source</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>dest</tt>: 8-byte field formatted as a hex.<br/>
@@ -960,18 +1011,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>pathId</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>source</tt>: 8-byte field formatted as a hex.<br/>
@@ -998,7 +1051,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     ##
     # The getNextPathInfo command allows iteration across paths connected to a particular mote. The pathId parameter indicates the previous value in the iteration. Setting pathId to 0 returns the first path. A pathId can not be used as a unique identifier for a path. It is only valid when associated with a particular mote.
     # 
-    # \param mac 8-byte field formatted as a hex.<br/>
+    # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # \param filter 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -1009,8 +1062,8 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_getNextPathInfo named tuple.
     # 
-    def dn_getNextPathInfo(self, mac, filter, pathId) :
-        res = IpMgrConnectorMuxInternal.send(self, ['getNextPathInfo'], {"mac" : mac, "filter" : filter, "pathId" : pathId})
+    def dn_getNextPathInfo(self, macAddress, filter, pathId) :
+        res = IpMgrConnectorMuxInternal.send(self, ['getNextPathInfo'], {"macAddress" : macAddress, "filter" : filter, "pathId" : pathId})
         return IpMgrConnectorMux.Tuple_dn_getNextPathInfo(**res)
 
     ##
@@ -1018,25 +1071,27 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_setAdvertising = collections.namedtuple("Tuple_dn_setAdvertising", ['RC', 'callbackId'])
 
     ##
-    # The setAdvertising command tells the manager to activate or deactivate advertising. The response is a callbackId. A commandFinished notification with the callbackId is generated when the command propagation is complete.
+    # The setAdvertising command tells the manager to activate or deactivate advertising. The response is acallbackId. A commandFinished notification with thecallbackId is generated when the command propagation is complete.
     # 
     # \param activate 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -1054,25 +1109,27 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_setDownstreamFrameMode = collections.namedtuple("Tuple_dn_setDownstreamFrameMode", ['RC', 'callbackId'])
 
     ##
-    # The setDownstreaFrame Mode command tells the manager to shorten or extend the downstream frame. Once this command is executed, the manager switches to manual mode and no longer changes frame size automatically. The response is a callbackId. A commandFinished notification with the callbackId is generated when the command propagation is complete.
+    # The setDownstreamFrameMode command tells the manager to shorten or extend the downstream frame. The base slotframe length will be multiplied by the downFrameMultValfor "normal" speed. For "fast" speed the downstream slotframe is the base length.Once this command is executed, the manager switches to manual mode and no longer changes slotframesize automatically. The response is acallbackId. A commandFinished notification with the callbackId is generated when the command propagation is complete.
     # 
     # \param frameMode 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -1090,18 +1147,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>serTxCnt</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>serRxCnt</tt>: 2-byte field formatted as a int.<br/>
@@ -1112,7 +1171,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #     There is no restriction on the value of this field.
     # - <tt>apiEstabConn</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>apiDropppedConn</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>apiDroppedConn</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>apiTxOk</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1125,7 +1184,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # - <tt>apiRxProtErr</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getManagerStatistics = collections.namedtuple("Tuple_dn_getManagerStatistics", ['RC', 'serTxCnt', 'serRxCnt', 'serRxCRCErr', 'serRxOverruns', 'apiEstabConn', 'apiDropppedConn', 'apiTxOk', 'apiTxErr', 'apiTxFail', 'apiRxOk', 'apiRxProtErr'])
+    Tuple_dn_getManagerStatistics = collections.namedtuple("Tuple_dn_getManagerStatistics", ['RC', 'serTxCnt', 'serRxCnt', 'serRxCRCErr', 'serRxOverruns', 'apiEstabConn', 'apiDroppedConn', 'apiTxOk', 'apiTxErr', 'apiTxFail', 'apiRxOk', 'apiRxProtErr'])
 
     ##
     # The getManagerStatistics command returns dynamic information and statistics about the manager API. The statistics counts are cleared together with all current statistics using clearStatistics.
@@ -1143,23 +1202,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_setTime = collections.namedtuple("Tuple_dn_setTime", ['RC'])
 
     ##
-    # The setTime command sets the UTC time on the manager. This command may only be executed when the network is not running. If the trigger flag is false, the manager sets the specified time as soon as it receives the setTime command. When the manager receives a Time pin trigger, it temporarily stores the current time. If a setTime request is received within a short period of time following the trigger, the manager calculates the delay since the trigger and adjust the time such that the trigger was received at the specified time value.
+    # The setTime command sets the UTC time on the manager. This command may only be executed when the network is not running. If the trigger flag is false, the manager sets the specified time as soon as it receives the setTime command. When the manager receives a Time Pin trigger, it temporarily stores the current time. If a setTime request is received within a short period of time following the trigger, the manager calculates the delay since the trigger and adjust the time such that the trigger was received at the specified time value.
     # 
     # \param trigger 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1179,18 +1240,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>license</tt>: 13-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -1212,23 +1275,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_setLicense = collections.namedtuple("Tuple_dn_setLicense", ['RC'])
 
     ##
-    # The setLicense command validates and updates the software license key stored in flash. Features enabled or disabled by the license key change will take effect after the device is restarted. If the license parameter is set to all 0x0s, the manager restores the default license.
+    # The setLicense command validates and updates the software license key stored in flash. Features enabled or disabled by the license key change will take effect after the device is restarted.If the license parameter is set to all 0x0s, the manager restores the default license. This change is persistent.
     # 
     # \param license 13-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -1240,67 +1305,74 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
         return IpMgrConnectorMux.Tuple_dn_setLicense(**res)
 
     ##
-    # The named tuple returned by the dn_setUser() function.
+    # The named tuple returned by the dn_setCLIUser() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
-    Tuple_dn_setUser = collections.namedtuple("Tuple_dn_setUser", ['RC'])
+    Tuple_dn_setCLIUser = collections.namedtuple("Tuple_dn_setCLIUser", ['RC'])
 
     ##
-    # The setUser command sets the password that must be used to log into the command line for a particular user role.
+    # The setUser command sets the password that must be used to log into the command line for a particular user role. The user roles are:
+    # 
+    # -Viewer - read-only access to non-sensitive information
+    # -User - read-write accessThis change is persistent.
     # 
     # \param role 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 0: viewer
-    #      - 1: admin
+    #      - 1: user
     # \param password 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setUser named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_setCLIUser named tuple.
     # 
-    def dn_setUser(self, role, password) :
-        res = IpMgrConnectorMuxInternal.send(self, ['setUser'], {"role" : role, "password" : password})
-        return IpMgrConnectorMux.Tuple_dn_setUser(**res)
+    def dn_setCLIUser(self, role, password) :
+        res = IpMgrConnectorMuxInternal.send(self, ['setCLIUser'], {"role" : role, "password" : password})
+        return IpMgrConnectorMux.Tuple_dn_setCLIUser(**res)
 
     ##
     # The named tuple returned by the dn_sendIP() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_sendIP = collections.namedtuple("Tuple_dn_sendIP", ['RC', 'callbackId'])
 
     ##
-    # The sendIP command sends an 6LowPAN packet to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification. It is the application layer's responsibility send a response from the mote, and to timeout if no response is received. The application is responsible for constructing a valid 6LoWPAN packet.
+    # The sendIP command sends a6LoWPANpacket to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification with the calllbackId. The application is responsible for constructing a valid 6LoWPANpacket.The packet is sent to the mote best-effort, so the application should deal with responses and timeouts, if any.
     # 
-    # The sendIP command should be used by applications that require end-to-end IP connectivity. For applications that do not require end-to-end IP connectivity, the sendData command provides a simpler interface without requiring the application to understand 6LoWPAN encapsulation. For a more comprehensive discussion of the distinction, see the SmartMesh IP Network User Guide.
+    # The sendIP command should be used by applications that require end-to-end IP connectivity. For applications that do not require end-to-end IP connectivity, the sendData command provides a simpler interface without requiring the application to understand 6LoWPAN encapsulation. For a more comprehensive discussion of the distinction, see theSmartMesh IP Network User Guide.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -1323,69 +1395,29 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
         return IpMgrConnectorMux.Tuple_dn_sendIP(**res)
 
     ##
-    # The named tuple returned by the dn_startLocation() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: RC_INVALID_COMMAND
-    #      - 2: RC_INVALID_ARGUMENT
-    #      - 3: INVALID_AUTHENTICATION
-    #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
-    #      - 12: RC_NO_RESOURCES
-    #      - 13: RC_IN_PROGRESS
-    #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
-    #      - 16: RC_VALIDATION_ERROR
-    # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_startLocation = collections.namedtuple("Tuple_dn_startLocation", ['RC', 'callbackId'])
-
-    ##
-    # The startLocation command sends a request to a set of motes to generate distance measurements to a mobile mote. The manager sends a series of commands to the specified motes active the location links for enough time to perform the requested measurements. More than one startLocation request may be queued up by the manager, but the queue size is limited. The caller must be able to handle a queue full error and retry. The startLocation request contains a variable number of fixed motes. The manager determines the number of fixedMotes provided by the caller by checking the length of the request.
-    # 
-    # The startLocation call returns a callbackId that is used to inform the caller of the progress of the distance measurement (see Event Notifications). Location events are similar to commandFinished events. The distance measurements are returned as ipData notifications from the fixed motes. The structure of distance measurements is defined in the 'Dust mote command spec'.
-    # 
-    # The startLocation command is only allowed if the license allows it.
-    # 
-    # \param numMeasurements 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # \param mobileMote 8-byte field formatted as a hex.<br/>
-    #     There is no restriction on the value of this field.
-    # \param fixedMotes None-byte field formatted as a hex.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_startLocation named tuple.
-    # 
-    def dn_startLocation(self, numMeasurements, mobileMote, fixedMotes) :
-        res = IpMgrConnectorMuxInternal.send(self, ['startLocation'], {"numMeasurements" : numMeasurements, "mobileMote" : mobileMote, "fixedMotes" : fixedMotes})
-        return IpMgrConnectorMux.Tuple_dn_startLocation(**res)
-
-    ##
     # The named tuple returned by the dn_restoreFactoryDefaults() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_restoreFactoryDefaults = collections.namedtuple("Tuple_dn_restoreFactoryDefaults", ['RC'])
 
     ##
-    # The restoreFactoryDefaults command restores the default configuration and clears the ACL. This command does not affect the license.
+    # The restoreFactoryDefaults command restores the default configuration and clears the ACL. This command does not affect the license.This change is persistent.
     # 
     # 
     # 
@@ -1400,18 +1432,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>state</tt>: 1-byte field formatted as a int.<br/>
@@ -1455,21 +1489,23 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>networkId</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>apTxPower</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>apTxPower</tt>: 1-byte field formatted as a ints.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>frameProfile</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -1482,16 +1518,18 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #     There is no restriction on the value of this field.
     # - <tt>numParents</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>enableCCA</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>channelList</tt>: 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>autoStartNetwork</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>locMode</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>ccaMode</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 0: off
-    #      - 1: onDemand
+    #      - 1: energy
+    #      - 2: carrier
+    #      - 3: both
+    # - <tt>channelList</tt>: 2-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>autoStartNetwork</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>locMode</tt>: 1-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
     # - <tt>bbMode</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 0: off
@@ -1506,10 +1544,10 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # - <tt>oneChannel</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getNetworkConfig = collections.namedtuple("Tuple_dn_getNetworkConfig", ['RC', 'networkId', 'apTxPower', 'frameProfile', 'maxMotes', 'baseBandwidth', 'downFrameMultVal', 'numParents', 'enableCCA', 'channelList', 'autoStartNetwork', 'locMode', 'bbMode', 'bbSize', 'isRadioTest', 'bwMult', 'oneChannel'])
+    Tuple_dn_getNetworkConfig = collections.namedtuple("Tuple_dn_getNetworkConfig", ['RC', 'networkId', 'apTxPower', 'frameProfile', 'maxMotes', 'baseBandwidth', 'downFrameMultVal', 'numParents', 'ccaMode', 'channelList', 'autoStartNetwork', 'locMode', 'bbMode', 'bbSize', 'isRadioTest', 'bwMult', 'oneChannel'])
 
     ##
-    # The getNetworkConfig command returns general network configuration parameters, including the network ID, bandwidth parameters and number of motes.
+    # The getNetworkConfig command returns general network configuration parameters, including the Network ID, bandwidth parameters and number of motes.
     # 
     # 
     # 
@@ -1524,18 +1562,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>numMotes</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>asnSize</tt>: 2-byte field formatted as a int.<br/>
@@ -1562,10 +1602,16 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #      - 3: errorStartup
     #      - 4: errorConfig
     #      - 5: errorLicense
-    # - <tt>ip6addr</tt>: 16-byte field formatted as a hex.<br/>
+    # - <tt>ipv6Address</tt>: 16-byte field formatted as a hex.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>numLostPackets</tt>: 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>numArrivedPackets</tt>: 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>maxNumbHops</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getNetworkInfo = collections.namedtuple("Tuple_dn_getNetworkInfo", ['RC', 'numMotes', 'asnSize', 'advertisementState', 'downFrameState', 'netReliability', 'netPathStability', 'netLatency', 'netState', 'ip6addr'])
+    Tuple_dn_getNetworkInfo = collections.namedtuple("Tuple_dn_getNetworkInfo", ['RC', 'numMotes', 'asnSize', 'advertisementState', 'downFrameState', 'netReliability', 'netPathStability', 'netLatency', 'netState', 'ipv6Address', 'numLostPackets', 'numArrivedPackets', 'maxNumbHops'])
 
     ##
     # The getNetworkInfo command returns dynamic network information and statistics.
@@ -1583,26 +1629,31 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>moteId</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>isAP</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>isAP</tt>: 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>state</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - 0: lost
+    #      - 1: negotiating
+    #      - 4: operational
     # - <tt>reserved</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>isRouting</tt>: 1-byte field formatted as a bool.<br/>
@@ -1611,7 +1662,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     Tuple_dn_getMoteConfigById = collections.namedtuple("Tuple_dn_getMoteConfigById", ['RC', 'macAddress', 'moteId', 'isAP', 'state', 'reserved', 'isRouting'])
 
     ##
-    # The getMoteConfigById command returns a single mote description as the response. The command takes one argument, the Short Address of a mote (mote ID). The command returns the same response structure as the getMoteConfig command.
+    # The getMoteConfigById command returns a single mote description as the response. The command takes one argument, the short address of a mote (Mote ID). The command returns the same response structure as the getMoteConfig command.
     # 
     # \param moteId 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1627,18 +1678,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_setCommonJoinKey = collections.namedtuple("Tuple_dn_setCommonJoinKey", ['RC'])
 
@@ -1659,18 +1712,20 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>ipv6Address</tt>: 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>mask</tt>: 16-byte field formatted as a hex.<br/>
@@ -1694,33 +1749,35 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_setIPConfig = collections.namedtuple("Tuple_dn_setIPConfig", ['RC'])
 
     ##
-    # The setIPConfig command sets the manager's IP configuration parameters, including the IPv6 address and mask.
+    # The setIPConfig command sets the IPv6 prefix of the mesh network. Only the upper 8 bytes of the IPv6 address are relevant: the lower 8 bytes of the IPv6 address are ignored, and lower 8 bytes of the mask field are reserved and should be set to 0.This change is persistent.
     # 
-    # \param ip6addr 16-byte field formatted as a hex.<br/>
+    # \param ipv6Address 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # \param mask 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setIPConfig named tuple.
     # 
-    def dn_setIPConfig(self, ip6addr, mask) :
-        res = IpMgrConnectorMuxInternal.send(self, ['setIPConfig'], {"ip6addr" : ip6addr, "mask" : mask})
+    def dn_setIPConfig(self, ipv6Address, mask) :
+        res = IpMgrConnectorMuxInternal.send(self, ['setIPConfig'], {"ipv6Address" : ipv6Address, "mask" : mask})
         return IpMgrConnectorMux.Tuple_dn_setIPConfig(**res)
 
     ##
@@ -1728,23 +1785,25 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # 
     Tuple_dn_deleteMote = collections.namedtuple("Tuple_dn_deleteMote", ['RC'])
 
     ##
-    # The deleteMote command deletes a mote from the manager's list. A mote can only be deleted if it in the Lost or Unknown states.
+    # The deleteMote command deletes a mote from the manager's list. A mote can only be deleted if it in the Lost or Unknown states. This change is persistent.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -1760,129 +1819,131 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
+    #      - 0: RC_OK
     #      - 1: RC_INVALID_COMMAND
     #      - 2: RC_INVALID_ARGUMENT
     #      - 3: INVALID_AUTHENTICATION
     #      - 4: INVALID_API_VERSION
-    #      - 5: comd_timeout
-    #      - 11: RC_END_OF_LIST
+    #      - 5: COMMAND_TIMEOUT
+    #      - 11: RC_NOT_FOUND
     #      - 12: RC_NO_RESOURCES
     #      - 13: RC_IN_PROGRESS
     #      - 14: RC_NACK
-    #      - 15: RC_WRITE_ERROR
+    #      - 15: RC_WRITE_FAIL
     #      - 16: RC_VALIDATION_ERROR
+    #      - 17: RC_INV_STATE
+    #      - 18: RC_END_OF_LIST
     # - <tt>idx</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>utilization</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>numLinks</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId1</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_1</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot1</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_1</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset1</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_1</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId1</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_1</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags1</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_1</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId2</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_2</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot2</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_2</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset2</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_2</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId2</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_2</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags2</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_2</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId3</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_3</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot3</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_3</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset3</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_3</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId3</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_3</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags3</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_3</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId4</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_4</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot4</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_4</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset4</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_4</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId4</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_4</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags4</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_4</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId5</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_5</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot5</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_5</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset5</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_5</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId5</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_5</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags5</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_5</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId6</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_6</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot6</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_6</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset6</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_6</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId6</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_6</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags6</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_6</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId7</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_7</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot7</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_7</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset7</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_7</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId7</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_7</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags7</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_7</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId8</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_8</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot8</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_8</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset8</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_8</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId8</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_8</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags8</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_8</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId9</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_9</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot9</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_9</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset9</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_9</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId9</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_9</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags9</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_9</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>frameId10</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>frameId_10</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>slot10</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>slot_10</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>channelOffset10</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>channelOffset_10</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteId10</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>moteId_10</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>flags10</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>flags_10</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getMoteLinks = collections.namedtuple("Tuple_dn_getMoteLinks", ['RC', 'idx', 'utilization', 'numLinks', 'frameId1', 'slot1', 'channelOffset1', 'moteId1', 'flags1', 'frameId2', 'slot2', 'channelOffset2', 'moteId2', 'flags2', 'frameId3', 'slot3', 'channelOffset3', 'moteId3', 'flags3', 'frameId4', 'slot4', 'channelOffset4', 'moteId4', 'flags4', 'frameId5', 'slot5', 'channelOffset5', 'moteId5', 'flags5', 'frameId6', 'slot6', 'channelOffset6', 'moteId6', 'flags6', 'frameId7', 'slot7', 'channelOffset7', 'moteId7', 'flags7', 'frameId8', 'slot8', 'channelOffset8', 'moteId8', 'flags8', 'frameId9', 'slot9', 'channelOffset9', 'moteId9', 'flags9', 'frameId10', 'slot10', 'channelOffset10', 'moteId10', 'flags10'])
+    Tuple_dn_getMoteLinks = collections.namedtuple("Tuple_dn_getMoteLinks", ['RC', 'idx', 'utilization', 'numLinks', 'frameId_1', 'slot_1', 'channelOffset_1', 'moteId_1', 'flags_1', 'frameId_2', 'slot_2', 'channelOffset_2', 'moteId_2', 'flags_2', 'frameId_3', 'slot_3', 'channelOffset_3', 'moteId_3', 'flags_3', 'frameId_4', 'slot_4', 'channelOffset_4', 'moteId_4', 'flags_4', 'frameId_5', 'slot_5', 'channelOffset_5', 'moteId_5', 'flags_5', 'frameId_6', 'slot_6', 'channelOffset_6', 'moteId_6', 'flags_6', 'frameId_7', 'slot_7', 'channelOffset_7', 'moteId_7', 'flags_7', 'frameId_8', 'slot_8', 'channelOffset_8', 'moteId_8', 'flags_8', 'frameId_9', 'slot_9', 'channelOffset_9', 'moteId_9', 'flags_9', 'frameId_10', 'slot_10', 'channelOffset_10', 'moteId_10', 'flags_10'])
 
     ##
-    # The getMoteLinks command returns information about links assigned to the mote. The response contains a list of links starting with Nth link on the mote, where N is supplied as 'idx' parameter in the request. To retrieve all links on the device the user can call this command with idx that increments by number of links returned with prior response,  until the command returns RC_END_OF_LIST response code. Note that links assigned to a mote may change between API calls.
+    # ThegetMoteLinkscommand returns information about links assigned to the mote. The response contains a list of links starting with Nth link on the mote, where N is supplied as theidxparameter in the request. To retrieve all links on the device the user can call this command withidxthat increments by number of links returned with priorresponse, until the command returns RC_END_OF_LIST response code. Note that links assigned to a mote may change between API calls.
     # 
     # \param macAddress 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -1943,11 +2004,11 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     notifTupleTable[EVENTNETWORKRESET] = Tuple_eventNetworkReset = collections.namedtuple("Tuple_eventNetworkReset", ['eventId'])
 
     ##
-    # \brief EVENTCOMMANDFINISH notification.
+    # \brief EVENTCOMMANDFINISHED notification.
     # 
     # The commandFinished notification is used when a reliable command response is received.
     #
-    # Formatted as a Tuple_eventCommandFinish named tuple. It contains the following fields:
+    # Formatted as a Tuple_eventCommandFinished named tuple. It contains the following fields:
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>callbackId</tt> 4-byte field formatted as a hex.<br/>
@@ -1958,8 +2019,8 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #      - 1: nack
     #      - 2: commandTimeout    
     # 
-    EVENTCOMMANDFINISH = "eventCommandFinish"
-    notifTupleTable[EVENTCOMMANDFINISH] = Tuple_eventCommandFinish = collections.namedtuple("Tuple_eventCommandFinish", ['eventId', 'callbackId', 'rc'])
+    EVENTCOMMANDFINISHED = "eventCommandFinished"
+    notifTupleTable[EVENTCOMMANDFINISHED] = Tuple_eventCommandFinished = collections.namedtuple("Tuple_eventCommandFinished", ['eventId', 'callbackId', 'rc'])
 
     ##
     # \brief EVENTMOTEJOIN notification.
@@ -1992,7 +2053,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     ##
     # \brief EVENTMOTELOST notification.
     # 
-    # This notification is sent when a mote's state changes to "Lost," which may occur when a mote becomes unreachable through the network.
+    # This notification is sent when a mote's state changes to Lost, which indicates that the mote is not responding to downstream messages.
     #
     # Formatted as a Tuple_eventMoteLost named tuple. It contains the following fields:
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
@@ -2004,15 +2065,17 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     notifTupleTable[EVENTMOTELOST] = Tuple_eventMoteLost = collections.namedtuple("Tuple_eventMoteLost", ['eventId', 'macAddress'])
 
     ##
-    # \brief EVENTNETTIME notification.
+    # \brief EVENTNETWORKTIME notification.
     # 
     # The time notification is triggered by the client asserting the TIME pin or by calling the getTime command. This notification contains the time when the TIME pin was asserted (or the getTime command was processed) expressed as:
     # 
-    # - ASN--The absolute slot number (the number of timeslots since 20:00:00 UTC July 2,2002 if UTC is set on manager, otherwise since Jan 1, 1970)
-    # - Uptime--The number of seconds since the device was booted
-    # -- Unix time--The number of seconds and microseconds since Jan 1, 1970 in UTC
+    # -ASNThe absolute slot number (the number of timeslots since "7/2/2002 8:00:00 PM PST"if UTC is set on manager, otherwise since Jan 1, 1970)
+    # 
+    # 
+    # -UptimeThe number of seconds since the device was booted
+    # -UnixtimeThe number of seconds and microseconds since Jan 1, 1970 in UTC
     #
-    # Formatted as a Tuple_eventNetTime named tuple. It contains the following fields:
+    # Formatted as a Tuple_eventNetworkTime named tuple. It contains the following fields:
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>uptime</tt> 4-byte field formatted as a int.<br/>
@@ -2026,8 +2089,8 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #   - <tt>asnOffset</tt> 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.    
     # 
-    EVENTNETTIME = "eventNetTime"
-    notifTupleTable[EVENTNETTIME] = Tuple_eventNetTime = collections.namedtuple("Tuple_eventNetTime", ['eventId', 'uptime', 'utcSecs', 'utcUsecs', 'asn', 'asnOffset'])
+    EVENTNETWORKTIME = "eventNetworkTime"
+    notifTupleTable[EVENTNETWORKTIME] = Tuple_eventNetworkTime = collections.namedtuple("Tuple_eventNetworkTime", ['eventId', 'uptime', 'utcSecs', 'utcUsecs', 'asn', 'asnOffset'])
 
     ##
     # \brief EVENTPINGRESPONSE notification.
@@ -2045,7 +2108,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     #     There is no restriction on the value of this field.
     #   - <tt>voltage</tt> 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    #   - <tt>temperature</tt> 1-byte field formatted as a int.<br/>
+    #   - <tt>temperature</tt> 1-byte field formatted as a ints.<br/>
     #     There is no restriction on the value of this field.    
     # 
     EVENTPINGRESPONSE = "eventPingResponse"
@@ -2146,7 +2209,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     ##
     # \brief NOTIFLOG notification.
     # 
-    # Log notification
+    # A log notifications is generated in response to the getLog command. Each log notification contains a message from the mote's log.
     #
     # Formatted as a Tuple_notifLog named tuple. It contains the following fields:
     #   - <tt>macAddress</tt> 8-byte field formatted as a hex.<br/>
@@ -2160,7 +2223,9 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     ##
     # \brief NOTIFDATA notification.
     # 
-    # Data payload notification
+    # The data notification contains a header and a variable length array of binary data. The length of the data is determined based on the length of the notification.
+    # 
+    # The manager forwards all packets received on its IP address and non-manager ports as data notifications.
     #
     # Formatted as a Tuple_notifData named tuple. It contains the following fields:
     #   - <tt>utcSecs</tt> 8-byte field formatted as a int.<br/>
@@ -2182,7 +2247,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     ##
     # \brief NOTIFIPDATA notification.
     # 
-    # 6lowpan packet notification
+    # The ipData notification contains full IP packet sent by the mote, including 6Lowpan header, UDP header, and the UDP payload. Manager generates this notification when it receives packet from a mote with destination other than manager's own IP address. The size of thedata field can be calculated by subtracting the fixed header size (up to macAddress)from the size of overall notification packet.
     #
     # Formatted as a Tuple_notifIpData named tuple. It contains the following fields:
     #   - <tt>utcSecs</tt> 8-byte field formatted as a int.<br/>
@@ -2200,7 +2265,7 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
     ##
     # \brief NOTIFHEALTHREPORT notification.
     # 
-    # Health report notification
+    # The healthReport notifications include the raw payload of health reports received from devices. The payload contains one or more specific health report messages. Each message contains an identifier, length and variable-sized data. The individual healthReport message structures are defined below.
     #
     # Formatted as a Tuple_notifHealthReport named tuple. It contains the following fields:
     #   - <tt>macAddress</tt> 8-byte field formatted as a hex.<br/>
@@ -2229,3 +2294,8 @@ class IpMgrConnectorMux(IpMgrConnectorMuxInternal):
                 return (ids[-1], None)
         except KeyError :
             raise ApiException.NotificationError(ids, param)
+
+##
+# end of IpMgrConnectorMux
+# \}
+# 

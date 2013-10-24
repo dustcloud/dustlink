@@ -1,22 +1,18 @@
-import sys
-import os
-sys.path.insert(0, os.path.join(sys.path[0], '..'))
-
 import threading
 import socket
 import select
 import struct
-import pprint
-
 
 import MuxMsg
-import ApiException
-import ApiConnector
-import ApiDefinition.IpMgrDefinition
+
+from   SmartMeshSDK import ApiException,                   \
+                           ApiConnector
+from   SmartMeshSDK.ApiDefinition import IpMgrDefinition
 
 class IpMgrConnectorMuxInternal(ApiConnector.ApiConnector ) :
     '''
     \ingroup ApiConnector
+    
     \brief Internal class for IP manager connector, through Serial Mux.
     
     Members of class
@@ -45,7 +41,7 @@ class IpMgrConnectorMuxInternal(ApiConnector.ApiConnector ) :
         self.socket = None
         self.inputThread = None
         self.muxMsg = MuxMsg.MuxMsg(self.processCmd)
-        self.apiDef = ApiDefinition.IpMgrDefinition.IpMgrDefinition()
+        self.apiDef = IpMgrDefinition.IpMgrDefinition()
         self.notifIds = self.apiDef.getIds(self.apiDef.NOTIFICATION) 
         
     def connect(self, params = {}) :
@@ -147,7 +143,17 @@ class IpMgrConnectorMuxInternal(ApiConnector.ApiConnector ) :
                 if resParams[self.apiDef.RC] == self._RC_TIMEOUT :
                     raise ApiException.CommandTimeoutError(resCmdName)
                 try:
-                    desc = self.apiDef.responseFieldValueToDesc(resCmdName,self.apiDef.RC,resParams[self.apiDef.RC])
+                    desc = '({0})\n{1}'.format(
+                        self.apiDef.responseFieldValueToDesc(
+                            resCmdName,
+                            self.apiDef.RC,
+                            resParams[self.apiDef.RC],
+                        ),
+                        self.apiDef.rcToDescription(
+                            resParams[self.apiDef.RC],
+                            resCmdName,
+                        ),
+                    )
                 except:
                     desc = None
                 raise   ApiException.APIError(

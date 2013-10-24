@@ -19,6 +19,7 @@ log.addHandler(NullHandler())
 ##
 # \ingroup ApiDefinition
 #
+
 class HartMgrDefinition(ApiDefinition.ApiDefinition):
     '''
     \brief API definition for the HART manager.
@@ -33,12 +34,14 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
     BOOL      = ApiDefinition.FieldFormats.BOOL
     INT       = ApiDefinition.FieldFormats.INT
     INTS      = ApiDefinition.FieldFormats.INTS
-    FLOAT     = 'float'
+    FLOAT     = ApiDefinition.FieldFormats.FLOAT
     HEXDATA   = ApiDefinition.FieldFormats.HEXDATA
     RC        = ApiDefinition.ApiDefinition.RC
     SUBID1    = ApiDefinition.ApiDefinition.SUBID1
+    LIST      = 'list'
 
     # Enumerations
+    # fieldOptions is a list of [ value, description, ?? ]
     fieldOptions = {
         RC : [
             [0x0,                      'OK',                    ''],
@@ -65,22 +68,22 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             ['Lost',                   'lost',                  ''],
             ['Joining',                'joining',               ''],
             ['Operational',            'operational',           ''],
+            ['Disconnecting',          'disconnecting',         ''],
         ],
         'pathDirection' : [
             ['all',                    'all',                   ''],
             ['upstream',               'upstream',              ''],
             ['downstream',             'downstream',            ''],
-            ['used',                   'used',                  ''],
             ['unused',                 'unused',                ''],
         ],
         'bandwidthProfile' : [
-            ['Manual',                 'manual',                ''],
-            ['P1',                     'p1',                    ''],
-            ['P2',                     'p2',                    ''],
+            ['Manual',                 'manual profile',        ''],
+            ['P1',                     'normal profile',        ''],
+            ['P2',                     'low-power profile',     ''],
         ], 
         'securityMode' : [
-            ['acceptACL',              'acceptacl',             ''],
-            ['acceptCommonJoinKey',    'acceptcommonjoinkey',   '']
+            ['acceptACL',              'Accept ACL',             ''],
+            ['acceptCommonJoinKey',    'Accept common join key', '']
         ],
         'userPrivilege' : [
             ['viewer',                 'viewer',                ''],
@@ -94,7 +97,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         'resetObject' : [
             ['network',                'network',               ''],
             ['system',                 'system',                ''],
-            ['stat',                   'stat',                  ''],
+            ['stat',                   'statistics',            ''],
             ['eventLog',               'eventLog',              ''],
         ],
         'resetMote' : [
@@ -105,9 +108,41 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             ['lifetime',               'lifetime',              ''],
             ['short',                  'short',                 ''],
             ['long',                   'long',                  ''],
-        ]
-        
-        # TODO: SysConnectChannel: control, notif
+        ],
+        'advertisingStatus': [
+            ['on',                     'on',                    ''],
+            ['off',                    'off',                   ''],
+            ['pending',                'pending',               ''],
+        ],
+        'pipeStatus': [
+            ['off',                    'off',                     ''],
+            ['pending',                'Pipe activation pending', ''],
+            ['on_bi',                  'Bidirection pipe on',     ''],
+            ['on_up',                  'Upstream pipe on',        ''],
+            ['on_down',                'Downstream pipe on',      ''],
+        ],
+        'locationTag': [
+            ['supported',              'supported',               ''],
+            ['not supported',          'not supported',           ''],
+        ],
+        'redundancyMode': [
+            ['standalone',             'standalone',              ''],
+            ['transToMaster',          'Transitioning to master', ''],
+            ['transToSlave',           'Transitioning to slave',  ''],
+            ['master',                 'master',                  ''],
+            ['slave',                  'slave',                   ''],
+            ['failed',                 'Manager failed',          ''],
+        ],
+        'redundancyPeerStatus': [
+            ['unknown',                'unknown',                 ''],
+            ['connected',              'connected',               ''],
+            ['synchronized',           'synchronized',            ''],
+        ],
+        'channelType': [
+            ['cli',                    'Manager CLI',             ''],
+            ['config',                 'API control',             ''],
+            ['notif',                  'API notifications',       ''],
+        ],
     }
 
 
@@ -121,7 +156,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'description': '',
             'response'   : {
                 'FIELDS':  [
-                    ['channel',             STRING,   16,  None], # TODO: enum
+                    ['channel',             STRING,   16,  'channelType'],
                     ['ipAddr',              STRING,   16,  None],
                     ['userName',            STRING,   32,  None],
                 ],
@@ -133,18 +168,12 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'description': '',
             'response'   : {
                 'FIELDS':  [
-                    ['channel',             STRING,   16,  None], # TODO: enum
+                    ['channel',             STRING,   16,  'channelType'],
                     ['ipAddr',              STRING,   16,  None],
                     ['userName',            STRING,   32,  None],
                 ],
             },
         },
-        # sysManualMoteDelete
-        # sysManualMoteDecommission
-        # sysManualNetReset
-        # sysManualDccReset
-        # sysManualStatReset
-        # sysConfigChange
         {
             'id'         : 'sysManualMoteReset',
             'name'       : 'ManualMoteReset',
@@ -157,6 +186,73 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
+        {
+            'id'         : 'sysManualMoteDelete',
+            'name'       : 'ManualMoteDelete',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['userName',            STRING,   32,  None],
+                    ['moteId',              INT,      4,   None],
+                    ['macAddr',             STRING,   32,  None],
+                ],
+            },
+        },
+        {
+            'id'         : 'sysManualMoteDecommission',
+            'name'       : 'ManualMoteDecommission',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['userName',            STRING,   32,  None],
+                    ['moteId',              INT,      4,   None],
+                    ['macAddr',             STRING,   32,  None],
+                ],
+            },
+        },
+        {
+            'id'         : 'sysManualNetReset',
+            'name'       : 'ManualNetReset',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['userName',            STRING,   32,  None],
+                ],
+            },
+        },
+        {
+            'id'         : 'sysManualDccReset',
+            'name'       : 'ManualDccReset',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['userName',            STRING,   32,  None],
+                ],
+            },
+        },
+        {
+            'id'         : 'sysManualStatReset',
+            'name'       : 'ManualStatReset',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['userName',            STRING,   32,  None],
+                ],
+            },
+        },
+        {
+            'id'         : 'sysConfigChange',
+            'name'       : 'ConfigChange',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['userName',            STRING,   32,  None],
+                    ['objectType',          STRING,   32,  None], # TODO: enum
+                    ['objectId',            STRING,   32,  None],
+                ],
+            },
+        },
+
         {
             'id'         : 'sysBootUp',
             'name'       : 'BootUp',
@@ -184,7 +280,9 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'response'   : {
                 'FIELDS':  [
                     ['callbackId',          INT,      4,   None],
-                    ['result',              INT,      1,   None],
+                    ['objectType',          STRING,   32,  None], # TODO: enum
+                    ['macAddr',             STRING,   32,  None],
+                    ['resultCode',          INT,      4,   None],
                 ],
             },
         },
@@ -195,6 +293,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'response'   : {
                 'FIELDS':  [
                     ['callbackId',          INT,      4,   None],
+                    ['macAddr',             STRING,   32,  None],
                 ],
             },
         },
@@ -223,6 +322,32 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
+        {
+            'id'         : 'netMoteQuarantine',
+            'name'       : 'MoteQuarantine',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['moteId',              INT,      4,   None],
+                    ['macAddr',             STRING,   32,  None],
+                    ['reason',              STRING,   64,  None], # TODO: length
+                ],
+            },
+        },
+        {
+            'id'         : 'netMoteJoinQuarantine',
+            'name'       : 'MoteJoinQuarantine',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['moteId',              INT,      4,   None],
+                    ['macAddr',             STRING,   32,  None],
+                    ['reason',              STRING,   64,  None], # TODO: length
+                    ['userData',            STRING,   64,  None], # TODO: length
+                ],
+            },
+        },
+
         {
             'id'         : 'netMoteUnknown',
             'name'       : 'MoteUnknown',
@@ -317,12 +442,25 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             },
         },
         {
+            'id'         : 'netPathAlert',
+            'name'       : 'PathAlert',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['pathId',              INT,      4,   None],
+                    ['moteAMac',            STRING,   32,  None],
+                    ['moteBMac',            STRING,   32,  None],
+                ],
+            },
+        },
+        {
             'id'         : 'netPipeOn',
             'name'       : 'PipeOn',
             'description': '',
             'response'   : {
                 'FIELDS':  [
                     ['macAddr',             STRING,   32,  None],
+                    ['allocatedPipePkPeriod', INT,    4,   None],
                 ],
             },
         },
@@ -336,7 +474,23 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
-        # netServiceDenied
+        {
+            'id'         : 'netServiceDenied',
+            'name'       : 'ServiceDenied',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['serviceId',          INT,      4,   None],
+                    ['requestingMacAddr',  STRING,   32,  None],
+                    ['peerMacAddr',        STRING,   32,  None],
+                    ['appDomain',          STRING,   32,  'appDomain'],
+                    ['isSource',           BOOL,     1,   None],
+                    ['isSink',             BOOL,     1,   None],
+                    ['isIntermittent',     BOOL,     1,   None],
+                    ['period',             INT,      4,   None],
+                ],
+            },
+        },
         {
             'id'         : 'netPingReply',
             'name'       : 'PingReply',
@@ -349,6 +503,19 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['temperature',         FLOAT,    8,   None],
                     ['voltage',             FLOAT,    8,   None],
                     ['hopCount',            INT,      4,   None],
+                ],
+            },
+        },
+        {
+            'id'         : 'netTransportTimeout',
+            'name'       : 'TransportTimeout',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['srcMacAddr',          STRING,   32,  None],
+                    ['destMacAddr',         STRING,   32,  None],
+                    ['timeoutType',         STRING,   32,  None], # TODO: timeout type
+                    ['callbackId',          INT,      4,   None],
                 ],
             },
         },
@@ -368,7 +535,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['asn',                 INT,      8,   None],
                     ['src',                 STRING,   32,  None],
                     ['dest',                STRING,   32,  None],
-                    ['payload',             HEXDATA,  256, None],
+                    ['payload',             HEXDATA, None, None],
                 ],
             },
         },
@@ -398,7 +565,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['moteId',              INT,      4,   None],
                     ['macAddr',             STRING,   32,  None],
                     ['time',                INT,      8,   None],
-                    ['payload',             HEXDATA,  256, None],
+                    ['payload',             HEXDATA, None, None],
                     ['payloadType',         INT,      1,   None],
                     ['isReliable',          BOOL,     1,   None],
                     ['isRequest',           BOOL,     1,   None],
@@ -441,6 +608,30 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['time',                INT,      8,   None],
                     ['severity',            STRING,   16,  None],
                     ['message',             STRING,   128, None],
+                ]
+            },
+        },
+        {
+            'id'         : 'stdMoteReport',
+            'name'       : 'stdMoteReport',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['time',     INT,      8,   None],
+                    ['macAddr',  STRING,   16,  None],
+                    ['payload',  HEXDATA, None, None],
+                ]
+            },
+        },
+        {
+            'id'         : 'vendorMoteReport',
+            'name'       : 'vendorMoteReport',
+            'description': '',
+            'response'   : {
+                'FIELDS':  [
+                    ['time',     INT,      8,   None],
+                    ['macAddr',  STRING,   16,  None],
+                    ['payload',  HEXDATA, None, None],
                 ]
             },
         },
@@ -597,11 +788,15 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
     # Command-specific serialization methods
     # (must be defined ahead of commands)
 
-    def serialize_getSystem(self, commandArray, cmd_params):
-        return ['all', '<config><System/></config>']
-
-    def serialize_getNetwork(self, commandArray, cmd_params):
-        return ['all', '<config><Network/></config>']
+    def serialize_getConfig(self, commandArray, cmd_params):
+        '''\brief Returns an array of parameters for a typical getConfig query
+        '''
+        cmd_metadata = self.getDefinition(self.COMMAND, commandArray)
+        prefix = []
+        if 'serializerParam' in cmd_metadata:
+            prefix = cmd_metadata['serializerParam']
+        config_query = xmlutils.dict_to_xml(cmd_params, prefix)
+        return ['all', config_query]
 
     def serialize_getNetworkStats(self, commandArray, cmd_params):
         stat_query = self._build_stat_set(cmd_params['period'], cmd_params['index'])
@@ -611,10 +806,6 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         config_doc = '<config><Motes><Mote><macAddr>%s</macAddr></Mote></Motes></config>' % (cmd_params['macAddr'])
         return ['all', config_doc]
 
-    def serialize_getMotes(self, commandArray, cmd_params):
-        config_doc = '<config><Motes></Motes></config>'
-        return ['all', config_doc]
-    
     def serialize_getMoteStats(self, commandArray, cmd_params):
         stat_query = self._build_stat_set(cmd_params['period'], cmd_params['index'])
         config_doc = '<config><Motes><Mote><macAddr>%s</macAddr><Statistics>%s</Statistics></Mote></Motes></config>' % (cmd_params['macAddr'], stat_query)
@@ -629,22 +820,19 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         config_doc = '<config><Paths><Path><pathId>%s</pathId><Statistics>%s</Statistics></Path></Paths></config>' % (cmd_params['pathId'], stat_query)
         return ['all', config_doc]
 
-    def serialize_getBlacklist(self, commandArray, cmd_params):
-        config_doc = '<config><Network><ChannelBlackList/></Network></config>'
-        return ['all', config_doc]      
-      
-    def serialize_getSla(self, commandArray, cmd_params):
-        config_doc = '<config><Network><Sla/></Network></config>'
-        return ['all', config_doc]      
-
-    def serialize_getUsers(self, commandArray, cmd_params):
-        config_doc = '<config><Users></Users></config>'
-        return ['all', config_doc]      
-
     def serialize_getUser(self, commandArray, cmd_params):
         config_doc = '<config><Users><User><userName>%s</userName></User></Users></config>' % (cmd_params['userName'], )
         return ['all', config_doc]
-          
+
+
+    def _configDoc_format_field(self, field_value, field_metadata):
+        if field_metadata[1] == self.HEXDATA:
+            return ''.join(['%02X' % b for b in field_value])
+        elif field_metadata[1] == self.BOOL:
+            return 'true' if field_value else 'false'
+        else:
+            return str(field_value)
+
     def serialize_setConfig(self, commandArray, fields) :
         cmd_metadata = self.getDefinition(self.COMMAND, commandArray)
         prefix = []
@@ -655,7 +843,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         for p in cmd_metadata['request']:
             param_name = p[0]
             # format the parameter by type
-            param_dict[param_name] = self._xmlrpc_format_field(fields[param_name], p)
+            param_dict[param_name] = self._configDoc_format_field(fields[param_name], p)
         config_doc = xmlutils.dict_to_xml(param_dict, prefix)
         return [config_doc]
 
@@ -691,20 +879,38 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             stat_dict = resp_dict['stat15MinSet']['stat15Min']
         elif 'stat1DaySet' in resp_dict:
             stat_dict = resp_dict['stat1DaySet']['stat1Day']
+        # if there are no statistics for the requested period, stat_dict may be a string 
+        if type(stat_dict) != dict:
+            stat_dict = {}
+        # fill in the statistics fields
         for field in fields:
             try:
                 field_str = stat_dict[field.name]
                 net_stats[field.name] = self._xml_parse_field(field_str, field)
             except KeyError:
                 # some fields are not always present (especially in Statistics)
-                net_stats[field.name] = ''
+                net_stats[field.name] = ''  # default value
         return net_stats
+
+    def deserialize_getSourceRoute(self, cmd_metadata, xmlrpc_resp):
+        net_stats = {}
+        fields = self.getResponseFields(self.COMMAND, [cmd_metadata['name']])
+        # parse the Statistics element
+        resp_dict = self._parse_xmlobj(xmlrpc_resp, 'SourceRoute', None)
+        # Ug. deserialization for this case is heavily dependant on response structure
+        for path in ['primaryPath', 'secondaryPath']:
+            if path in resp_dict and 'macAddr' in resp_dict[path]:
+                resp_dict[path] = resp_dict[path]['macAddr']
+            else:
+                resp_dict[path] = []            
+        return resp_dict
 
     # Commands
     commands = [
         # Get Config commands
+        # TODO: use serializer_getConfig instead of command-specific serializers
         {
-            'id'         : 'getConfig', # TODO: is this required to be unique ?
+            'id'         : 'getConfig',
             'name'       : 'getSystem',
             'description': 'Retrieves system-level information',
             'request'    : [
@@ -723,7 +929,8 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['controllerSwRev',     STRING,   32,  None],
                 ],
             },
-            'serializer' : 'serialize_getSystem',
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'System'],
         },
         {
             'id'         : 'getConfig',
@@ -743,16 +950,20 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['requestedBasePkPeriod', INT,    4,   None],
                     ['minServicesPkPeriod', INT,      4,   None],
                     ['minPipePkPeriod',     INT,      4,   None],
-                    ['bandwidthProfile',    STRING,   16,  None], # TODO: enum
+                    ['bandwidthProfile',    STRING,   16,  'bandwidthProfile'],
                     ['manualUSFrameSize',   INT,      4,   None],
                     ['manualDSFrameSize',   INT,      4,   None],
                     ['manualAdvFrameSize',  INT,      4,   None],
                     ['netQueueSize',        INT,      4,   None],
                     ['userQueueSize',       INT,      4,   None],
-                    ['locationMode',        STRING,   16,  None], # TODO: enum
+                    ['locationMode',        STRING,   16,  'onOff'],
+                    # backbone parameters added in 4.1.0.3
+                    ['backboneEnabled',     BOOL,     1,   None],
+                    ['backboneSize',        INT,      4,   None],
                 ],
             },
-            'serializer' : 'serialize_getNetwork',
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'Network'],
         },
         {
             'id'         : 'getConfig',
@@ -787,30 +998,30 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 'Mote':  [
                     ['moteId',              INT,      4,   None],
                     ['macAddr',             STRING,   25,  None],
-                    ['name',                STRING,   16,  None], # TODO: length
+                    ['name',                STRING,   16,  None], 
                     ['state',               STRING,   16,  'moteState'],
                     ['numJoins',            INT,      4,   None],
                     ['joinTime',            INT,      8,   None], # TODO: date time
-                    ['reason',              STRING,   16,  None], # TODO: length
+                    ['reason',              STRING,   16,  None], 
                     ['isAccessPoint',       BOOL,     1,   None],
                     ['powerSource',         STRING,   16,  None], # TODO: enum
                     ['dischargeCurrent',    INT,      4,   None],
                     ['dischargeTime',       INT,      4,   None],
                     ['recoveryTime',        INT,      4,   None],
                     ['enableRouting',       BOOL,     1,   None],
-                    ['productName',         STRING,   16,  None], # TODO: length
-                    ['hwModel',             INT,      4,   None], # TODO: type, length
-                    ['hwRev',               INT,      4,   None], # TODO: type, length
-                    ['swRev',               STRING,   16,  None], # TODO: length
+                    ['productName',         STRING,   16,  None], 
+                    ['hwModel',             INT,      1,   None],
+                    ['hwRev',               INT,      1,   None],
+                    ['swRev',               STRING,   16,  None], 
                     ['voltage',             FLOAT,    8,   None],
                     ['numNeighbors',        INT,      4,   None],
                     ['needNeighbor',        BOOL,     1,   None],
                     ['goodNeighbors',       INT,      4,   None],
                     ['allocatedPkPeriod',   INT,      4,   None],
                     ['allocatedPipePkPeriod', INT,    4,   None],
-                    ['pipeStatus',          STRING,   4,   'onOff'],
-                    ['advertisingStatus',   STRING,   4,   'onOff'],
-                    ['locationTag',         STRING,   16,  None], # TODO: enum                    
+                    ['pipeStatus',          STRING,   4,   'pipeStatus'],
+                    ['advertisingStatus',   STRING,   4,   'advertisingStatus'],
+                    ['locationTag',         STRING,   16,  'locationTag'],                   
                 ],
             },
             'serializer' : 'serialize_getMote',
@@ -831,13 +1042,36 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['avgLatency',          INT,      4,   None], # milliseconds
                     ['reliability',         FLOAT,    0,   None], # percentage
                     ['numJoins',            INT,      4,   None],
+                    ['voltage',             FLOAT,    4,   None], # volts
+                    ['chargeConsumption',   INT,      4,   None], # mC
+                    ['temperature',         FLOAT,    4,   None], # deg C
+                    # added in Manager 4.1.0.2
                     ['numLostPackets',      INT,      4,   None],
+                    # added in Manager 4.1.0.11
+                    ['latencyToMote',       INT,      4,   None],
                 ],
             },
             'serializer' : 'serialize_getMoteStats',
             'deserializer' : 'deserialize_getStats',
         },
-
+        {
+            'id'         : 'getConfig',
+            'name'       : 'getSourceRoute',
+            'description': 'Get the Source Route for a specific Mote',
+            'request'    : [
+                ['destMacAddr',             STRING,   25,  None],
+            ],
+            'response'   : {
+                'SourceRoute':  [
+                    ['destMacAddr',         STRING,   25,  None],
+                    ['primaryPath',         LIST,     16,  None], 
+                    ['secondaryPath',       LIST,     16,  None], 
+                ],
+            },
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'SourceRoutes', 'SourceRoute'],
+            'deserializer' : 'deserialize_getSourceRoute',
+        },
         # getMotes -- return LIST of motess
         {
             'id'         : 'getConfig',
@@ -849,41 +1083,44 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 'Mote':  [
                     ['moteId',              INT,      4,   None],
                     ['macAddr',             STRING,   25,  None],
-                    ['name',                STRING,   16,  None], # TODO: length
+                    ['name',                STRING,   16,  None], 
                     ['state',               STRING,   16,  'moteState'],
                     ['numJoins',            INT,      4,   None],
                     ['joinTime',            INT,      8,   None], # TODO: date time
-                    ['reason',              STRING,   16,  None], # TODO: length
+                    ['reason',              STRING,   16,  None], 
                     ['isAccessPoint',       BOOL,     1,   None],
                     ['powerSource',         STRING,   16,  None], # TODO: enum
                     ['dischargeCurrent',    INT,      4,   None],
                     ['dischargeTime',       INT,      4,   None],
                     ['recoveryTime',        INT,      4,   None],
                     ['enableRouting',       BOOL,     1,   None],
-                    ['productName',         STRING,   16,  None], # TODO: length
-                    ['hwModel',             INT,      4,   None], # TODO: type, length
-                    ['hwRev',               INT,      4,   None], # TODO: type, length
-                    ['swRev',               STRING,   16,  None], # TODO: length
+                    ['productName',         STRING,   16,  None], 
+                    ['hwModel',             INT,      1,   None],
+                    ['hwRev',               INT,      1,   None],
+                    ['swRev',               STRING,   16,  None], 
                     ['voltage',             FLOAT,    8,   None],
                     ['numNeighbors',        INT,      4,   None],
                     ['needNeighbor',        BOOL,     1,   None],
                     ['goodNeighbors',       INT,      4,   None],
                     ['allocatedPkPeriod',   INT,      4,   None],
                     ['allocatedPipePkPeriod', INT,    4,   None],
-                    ['pipeStatus',          STRING,   4,   'onOff'],
-                    ['advertisingStatus',   STRING,   4,   'onOff'],
-                    ['locationTag',         STRING,   16,  None], # TODO: enum                    
+                    ['pipeStatus',          STRING,   4,   'pipeStatus'],
+                    ['advertisingStatus',   STRING,   4,   'advertisingStatus'],
+                    ['locationTag',         STRING,   16,  'locationTag'],
                 ],
             },
-            'serializer' : 'serialize_getMotes',
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'Motes'],
             'isResponseArray': True,
         },
+
         # getPaths -- return LIST of paths
         {
             'id'         : 'getConfig',
             'name'       : 'getPaths',
             'description': '''Get the list of Paths to the mote\'s neighbors''',
             'request'    : [
+                # the request parameter moteMac matches the XML query for Paths
                 ['moteMac',                STRING,    25,  None],
             ],
             'response'   : {
@@ -914,52 +1151,120 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['startTime',           INT,      8,   None], # milliseconds
                     ['baPwr',               INT,      1,   None],
                     ['abPwr',               INT,      1,   None],
-                    ['stability',           FLOAT,    0,   None],
+                    ['stability',           FLOAT,    8,   None],
                 ],
             },
             'serializer' : 'serialize_getPathStats',
             'deserializer' : 'deserialize_getStats',
         },
         
-        # getBlacklist -- return LIST of paths
+        # security 
+        {
+            'id'         : 'getConfig',
+            'name'       : 'getSecurity',
+            'description': '''Get the Security configuration''',
+            'request'    : [
+            ],
+            'response'   : { 
+                'Security':  [
+                    ['securityMode',        STRING,   20,  'securityMode'],
+                    ['acceptHARTDevicesOnly', BOOL,   1,   None],
+                ],
+            },
+            'serializer' : 'serialize_getConfig',
+            'serializerParam' : ['config', 'Security'],
+        },
+
+        {
+            'id'         : 'getConfig',
+            'name'       : 'getAcls',
+            'description': '''Get the list of devices on the ACL''',
+            'request'    : [
+            ],
+            'response'   : { 
+                'Acl':  [
+                    ['macAddr',             STRING,   25,  None],
+                ],
+            },
+            'serializer' : 'serialize_getConfig',
+            'serializerParam' : ['config', 'Security', 'Acl'],
+            'isResponseArray': True,
+        },
+        {
+            'id'         : 'getConfig',
+            'name'       : 'getAcl',
+            'description': '''Check whether a device is part of the ACL''',
+            'request'    : [
+                ['macAddr',             STRING,   25,  None],
+            ],
+            'response'   : { 
+                'Acl':  [
+                    ['macAddr',             STRING,   25,  None],
+                ],
+            },
+            'serializer' : 'serialize_getConfig',
+            'serializerParam' : ['config', 'Security', 'Acl', 'Device'],
+        },
+
+        # getBlacklist -- return LIST of frequencies
         {
             'id'         : 'getConfig',
             'name'       : 'getBlacklist',
-            'description': '',
+            'description': 'Get the channel blacklist',
             'request'    : [
             ],
             'response'   : {
                 'ChannelBlackList':  [
-                    ['frequency',           FLOAT,    0,   None],
+                    ['frequency',           INT,    4,   None],
                 ],
             },
-            'serializer' : 'serialize_getBlacklist',
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'Network', 'ChannelBlackList'],
             'isResponseArray': True,
+        },
+        
+        # getRedundancy
+        {
+            'id'         : 'getConfig',
+            'name'       : 'getRedundancy',
+            'description': 'Get the redundancy state',
+            'request'    : [
+            ],
+            'response'   : {
+                'Redundancy':  [
+                    ['localMode',            STRING,  16,  'redundancyMode'],
+                    ['peerStatus',           STRING,  16,  'redundancyPeerStatus'],
+                    ['peerControllerSwRev',  STRING,  16,  None],
+                ],
+            },
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'Redundancy'],
         },
         
         # getSla
         {
             'id'         : 'getConfig',
             'name'       : 'getSla',
-            'description': '',
+            'description': 'Get the Service Level Agreement (SLA) configuration',
             'request'    : [
             ],
             'response'   : {
                 'Sla':  [
-                    ['minNetReliability',   FLOAT,    0,   None],
+                    ['minNetReliability',   FLOAT,    8,   None],
                     ['maxNetLatency',       INT,      4,   None],
-                    ['minNetPathStability', FLOAT,    0,   None],
-                    ['apRdntCoverageThreshold', FLOAT,0,   None],
+                    ['minNetPathStability', FLOAT,    8,   None],
+                    ['apRdntCoverageThreshold', FLOAT,8,   None],
                 ],
             },
-            'serializer' : 'serialize_getSla',
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'Network', 'Sla'],
         },
         
         # getUsers  -- return LIST of users 
         {
             'id'         : 'getConfig',
             'name'       : 'getUsers',
-            'description': '',
+            'description': 'Get the list of users',
             'request'    : [
             ],
             'response'   : {
@@ -968,7 +1273,8 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['privilege',           STRING,   16,  'userPrivilege'],
                 ],
             },
-            'serializer' : 'serialize_getUsers',
+            'serializer' : 'serialize_getConfig',
+            'serializerParam': ['config', 'Users'],
             'isResponseArray': True,
         },
                 
@@ -976,7 +1282,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'getConfig',
             'name'       : 'getUser',
-            'description': '',
+            'description': 'Get the description of a user ',
             'request'    : [
                 ['userName',                STRING,   16,  None],
             ],
@@ -993,7 +1299,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'setConfig',
             'name'       : 'setSystem',
-            'description': '',
+            'description': 'Set system-level configuration',
             'request'    : [
                 ['systemName',              STRING,   16,  None],
                 ['location',                STRING,   16,  None],
@@ -1001,6 +1307,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             ],
             'response'   : { 
                 'System':  [
+                    # TODO: return all elements?
                     ['systemName',          STRING,   50,  None],
                     ['location',            STRING,   50,  None],
                     ['cliTimeout',          INT,      4,   None],
@@ -1009,21 +1316,19 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'serializer' : 'serialize_setConfig',
             'serializerParam' : ['config', 'System'],
         },
-           
+        
         # setNetwork
         {
             'id'         : 'setConfig',
             'name'       : 'setNetwork',
-            'description': '',
+            'description': 'Set network configuration',
             'request'    : [
                 ['netName',                 STRING,   16,  None],
                 ['networkId',               INT,      4,   None],
-                ['optimizationEnable',      STRING,   6,   'bool'],
-                #['maintStartTime',          INT,      8,   None],
-                #['maintEndTime',            INT,      8,   None],
                 ['maxMotes',                INT,      4,   None],
-                ['accessPointPA',           STRING,   6,   'bool'],
-                ['ccaEnabled',              STRING,   6,   'bool'],
+                ['optimizationEnable',      BOOL,     1,   None],
+                ['accessPointPA',           BOOL,     1,   None],
+                ['ccaEnabled',              BOOL,     1,   None],
                 ['requestedBasePkPeriod',   INT,      4,   None],
                 ['minServicesPkPeriod',     INT,      4,   None],
                 ['minPipePkPeriod',         INT,      4,   None],
@@ -1032,17 +1337,20 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ['manualDSFrameSize',       INT,      4,   None],
                 ['manualAdvFrameSize',      INT,      4,   None],
                 ['locationMode',            STRING,   8,   'onOff'],
+                # backbone parameters added in 4.1.0.3
+                # TODO: UG! adding these parameters prevents backward compatibility
+                #['backboneEnabled',     BOOL,     1,   None],
+                #['backboneSize',        INT,      4,   None],
             ],
             'response'   : { 
                 'Network':  [
+                    # TODO: return all elements?
                     ['netName',             STRING,   16,  None],
                     ['networkId',           INT,      4,   None],
-                    ['optimizationEnable',  STRING,   6,   'bool'],
-                    #['maintStartTime',      INT,      8,   None],
-                    #['maintEndTime',        INT,      8,   None],
                     ['maxMotes',            INT,      4,   None],
-                    ['accessPointPA',       STRING,   6,   'bool'],
-                    ['ccaEnabled',          STRING,   6,   'bool'],
+                    ['optimizationEnable',  BOOL,     1,   None],
+                    ['accessPointPA',       BOOL,     1,   None],
+                    ['ccaEnabled',          BOOL,     1,   None],
                     ['requestedBasePkPeriod', INT,    4,   None],
                     ['minServicesPkPeriod', INT,      4,   None],
                     ['minPipePkPeriod',     INT,      4,   None],
@@ -1051,6 +1359,9 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                     ['manualDSFrameSize',   INT,      4,   None],
                     ['manualAdvFrameSize',  INT,      4,   None],
                     ['locationMode',        STRING,   8,   'onOff'],
+                    # backbone parameters added in 4.1.0.3
+                    ['backboneEnabled',     BOOL,     1,   None],
+                    ['backboneSize',        INT,      4,   None],
                 ],
             },
             'serializer' : 'serialize_setConfig',
@@ -1061,40 +1372,40 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'setConfig',
             'name'       : 'setMote',
-            'description': '',
+            'description': 'Set mote configuration',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
                 ['name',                    STRING,   16,  None],
-                ['enableRouting',           STRING,   6,   'bool'],
+                ['enableRouting',           BOOL,     1,   None],
             ],
             'response'   : { 
                 'Mote':  [
                     ['moteId',              INT,      4,   None],
                     ['macAddr',             STRING,   25,  None],
-                    ['name',                STRING,   16,  None], # TODO: length
+                    ['name',                STRING,   16,  None], 
                     ['state',               STRING,   16,  'moteState'],
                     ['numJoins',            INT,      4,   None],
                     ['joinTime',            INT,      8,   None], # TODO: date time
-                    ['reason',              STRING,   16,  None], # TODO: length
+                    ['reason',              STRING,   16,  None], 
                     ['isAccessPoint',       BOOL,     1,   None],
                     ['powerSource',         STRING,   16,  None], # TODO: enum
                     ['dischargeCurrent',    INT,      4,   None],
                     ['dischargeTime',       INT,      4,   None],
                     ['recoveryTime',        INT,      4,   None],
                     ['enableRouting',       BOOL,     1,   None],
-                    ['productName',         STRING,   16,  None], # TODO: length
-                    ['hwModel',             INT,      4,   None], # TODO: type, length
-                    ['hwRev',               INT,      4,   None], # TODO: type, length
-                    ['swRev',               STRING,   16,  None], # TODO: length
+                    ['productName',         STRING,   16,  None], 
+                    ['hwModel',             INT,      1,   None],
+                    ['hwRev',               INT,      1,   None],
+                    ['swRev',               STRING,   16,  None], 
                     ['voltage',             FLOAT,    8,   None],
                     ['numNeighbors',        INT,      4,   None],
                     ['needNeighbor',        BOOL,     1,   None],
                     ['goodNeighbors',       INT,      4,   None],
                     ['allocatedPkPeriod',   INT,      4,   None],
                     ['allocatedPipePkPeriod', INT,    4,   None],
-                    ['pipeStatus',          STRING,   4,   'onOff'],
-                    ['advertisingStatus',   STRING,   4,   'onOff'],
-                    ['locationTag',         STRING,   16,  None], # TODO: enum                    
+                    ['pipeStatus',          STRING,   4,   'pipeStatus'],
+                    ['advertisingStatus',   STRING,   4,   'advertisingStatus'],
+                    ['locationTag',         STRING,   16,  'locationTag'],
                 ],
             },
             'serializer' : 'serialize_setConfig',
@@ -1105,19 +1416,19 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'setConfig',
             'name'       : 'setSla',
-            'description': '',
+            'description': 'Set SLA configuration',
             'request'    : [
-                ['minNetReliability',       FLOAT,    0,   None],
+                ['minNetReliability',       FLOAT,    8,   None],
                 ['maxNetLatency',           INT,      4,   None],
-                ['minNetPathStability',     FLOAT,    0,   None],
-                ['apRdntCoverageThreshold', FLOAT,    0,   None],
+                ['minNetPathStability',     FLOAT,    8,   None],
+                ['apRdntCoverageThreshold', FLOAT,    8,   None],
             ],
             'response'   : { 
                 'Sla':  [
-                    ['minNetReliability',   FLOAT,    0,   None],
+                    ['minNetReliability',   FLOAT,    8,   None],
                     ['maxNetLatency',       INT,      4,   None],
-                    ['minNetPathStability', FLOAT,    0,   None],
-                    ['apRdntCoverageThreshold', FLOAT, 0,  None],
+                    ['minNetPathStability', FLOAT,    8,   None],
+                    ['apRdntCoverageThreshold', FLOAT, 8,  None],
                 ],
             },
             'serializer' : 'serialize_setConfig',
@@ -1128,17 +1439,16 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'setConfig',
             'name'       : 'setSecurity',
-            'description': '',
+            'description': 'Set security configuration',
             'request'    : [
-                ['securityMode',            STRING,   25,  'securityMode'],
-                ['commonJoinKey',           STRING,   33,  None],
-                ['acceptHARTDevicesOnly',   STRING,   6,   'bool'],
+                ['securityMode',            STRING,   20,  'securityMode'],
+                ['commonJoinKey',           HEXDATA,  16,  None],
+                ['acceptHARTDevicesOnly',   BOOL,     1,   None],
             ],
             'response'   : { 
                 'Security':  [
-                    ['securityMode',        STRING,   16,  'securityMode'],
-                    ['commonJoinKey',       STRING,   33,  None],
-                    ['acceptHARTDevicesOnly', STRING, 6,   'bool'],
+                    ['securityMode',        STRING,   20,  'securityMode'],
+                    ['acceptHARTDevicesOnly', BOOL,   1,   None],
                 ],
             },
             'serializer' : 'serialize_setConfig',
@@ -1149,7 +1459,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'setConfig',
             'name'       : 'setUser',
-            'description': '',
+            'description': 'Add or update user configuration',
             'request'    : [
                 ['userName',                STRING,   16,  None],
                 ['password',                STRING,   16,  None],
@@ -1158,7 +1468,6 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'response'   : { 
                 'User':  [
                     ['userName',            STRING,   16,  None],
-                    ['password',            STRING,   16,  None],
                     ['privilege',           STRING,   16,  'userPrivilege'],
                 ],
             },
@@ -1170,15 +1479,14 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'setConfig',
             'name'       : 'setAcl',
-            'description': '',
+            'description': 'Add or update a device in the ACL',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
-                ['joinKey',                 STRING,   33,  None],
+                ['joinKey',                 HEXDATA,  16,  None],
             ],
             'response'   : { 
                 'Device':  [
                     ['macAddr',             STRING,   25,  None],
-                    ['joinKey',             STRING,   33,  None],
                 ],
             },
             'serializer' : 'serialize_setConfig',
@@ -1188,8 +1496,8 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         # setBlackList
         {
             'id'         : 'setConfig',
-            'name'       : 'setBlackList',
-            'description': '',
+            'name'       : 'setBlacklist',
+            'description': 'Update the channel blacklist',
             'request'    : [
                 ['frequency',               INT,      4,   None],
             ],
@@ -1206,7 +1514,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'deleteConfig',
             'name'       : 'deleteAcl',
-            'description': '',
+            'description': 'Remove a device from the ACL',
             'request'    : [
                 ['macAddr', STRING, 25, None],
             ],
@@ -1222,7 +1530,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'deleteConfig',
             'name'       : 'deleteUser',
-            'description': '',
+            'description': 'Remove a user',
             'request'    : [
                 ['userName',                STRING,   16,  None],
             ],
@@ -1238,7 +1546,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'deleteConfig',
             'name'       : 'deleteMote',
-            'description': '',
+            'description': 'Remove a mote from the manager configuration',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
             ],
@@ -1249,18 +1557,18 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'serializer' : 'serialize_setConfig',
             'serializerParam' : ['config', 'Motes', 'Mote'],
         },
-                
+        
         # Send packet commands
         {
             'id'         : 'sendRequest',
             'name'       : 'sendRequest',
-            'description': '',
+            'description': 'Send downstream (request) data',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
                 ['domain',                  STRING,   16,  'appDomain'],
                 ['priority',                STRING,   16,  'packetPriority'],
                 ['reliable',                BOOL,     0,   None],
-                ['data',                    HEXDATA,  128, None],
+                ['data',                    HEXDATA,  None,None],
             ],
             'response'   : { 
                 FIELDS : [
@@ -1271,18 +1579,18 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'sendResponse',
             'name'       : 'sendResponse',
-            'description': '',
+            'description': 'Send downstream data as a response. sendResponse should only be used in special cases.',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
                 ['domain',                  STRING,   16,  'appDomain'],
                 ['priority',                STRING,   16,  'packetPriority'],
                 ['reliable',                BOOL,     0,   None],
                 ['callbackId',              INT,      4,   None],
-                ['data',                    HEXDATA,  128, None],
+                ['data',                    HEXDATA, None, None],
             ],
             'response'   : { 
                 FIELDS : [
-                    ['result',              STRING,   32,  None],
+                    ['callbackId',          INT,      4,   None],
                 ],
             },
         },
@@ -1291,7 +1599,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'exchangeNetworkKey',
             'name'       : 'exchangeNetworkKey',
-            'description': 'Exchange network key',
+            'description': 'Exchange the network key',
             'request'    : [
             ],
             'response'   : {
@@ -1306,9 +1614,9 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'exchangeJoinKey',
             'name'       : 'exchangeJoinKey',
-            'description': 'Exchange common join key',
+            'description': 'Exchange the common join key',
             'request'    : [
-                ['newKey',                  STRING,   33,  None],
+                ['newKey',                  HEXDATA,  16,  None],
             ],
             'response'   : {
                 FIELDS : [ 
@@ -1321,10 +1629,10 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'exchangeMoteJoinKey',
             'name'       : 'exchangeMoteJoinKey',
-            'description': 'Exchange mote join key',
+            'description': 'Exchange a mote\'s join key',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
-                ['newKey',                  STRING,   33,  None],
+                ['newKey',                  HEXDATA,  16,  None],
             ],
             'response'   : {
                 FIELDS : [ 
@@ -1337,7 +1645,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'exchangeNetworkId',
             'name'       : 'exchangeNetworkId',
-            'description': 'Exchange network ID',
+            'description': 'Exchange the network ID',
             'request'    : [
                 ['newId',                   INT,      4,   None],
             ],
@@ -1352,7 +1660,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'exchangeMoteNetworkId',
             'name'       : 'exchangeMoteNetworkId',
-            'description': 'Exchange network ID for mote',
+            'description': 'Exchange the network ID for a mote',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
                 ['newId',                   INT,      4,   None],
@@ -1368,7 +1676,7 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'exchangeSessionKey',
             'name'       : 'exchangeSessionKey',
-            'description': 'Exchange mote session key',
+            'description': 'Exchange a mote\'s session key',
             'request'    : [
                 ['macAddrA',                STRING,   25,  None],
                 ['macAddrB',                STRING,   25,  None],
@@ -1436,11 +1744,11 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
-
+        
         # activateAdvertising
         {
             'id'         : 'activateAdvertising',
-            'name'       : 'advertising',
+            'name'       : 'activateAdvertising',
             'description': 'Activate advertisement frame',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
@@ -1452,12 +1760,55 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
-
+        
+        # startOtap
+        {
+            'id'         : 'startOtap',
+            'name'       : 'startOtap',
+            'description': 'This command initiates the OTAP (Over-The-Air-Programming) process to upgrade software on motes and the Access Point. By default, the process will retry the OTAP file transmission 100 times.',
+            'request'    : [
+            ],
+            'response'   : { 
+                FIELDS : [ 
+                          ['result',        STRING,   32,  None],
+                ],
+            },
+        },
+        
+        # startOtapWithRetries 
+        {
+            'id'         : 'startOtapWithRetries',
+            'name'       : 'startOtapWithRetries',
+            'description': 'This command initiates the OTAP (Over-The-Air-Programming) process to upgrade software for motes and the Access Point, using the specified number of retries.',
+            'request'    : [
+                ['retries',                 INT,      1,   None]
+            ],
+            'response'   : { 
+                FIELDS : [ 
+                          ['result',        STRING,   32,  None],
+                ],
+            },
+        },
+        
+        # cancelOtap
+        {
+            'id'         : 'cancelOtap',
+            'name'       : 'cancelOtap',
+            'description': 'This command cancels the OTAP (Over-The-Air-Programming) process to upgrade software on motes and the access point.',
+            'request'    : [
+            ],
+            'response'   : { 
+                FIELDS : [ 
+                          ['result',        STRING,   32,  None],
+                ],
+            },
+        },
+        
         # decommissionDevice
         {
             'id'         : 'decommissionDevice',
-            'name'       : 'decommission',
-            'description': 'Device decommission',
+            'name'       : 'decommissionDevice',
+            'description': 'Decommission a device in the network',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
             ],
@@ -1468,9 +1819,25 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             },
         },
 
+        # promoteToOperational
+        {
+            'id'         : 'promoteToOperational',
+            'name'       : 'promoteToOperational',
+            'description': 'Promote a quarantined device to operational',
+            'request'    : [
+                ['macAddr',                 STRING,   25,  None],
+            ],
+            'response'   : {
+                FIELDS : [ 
+                          ['result',        STRING,   32,  None],
+                ],
+            },
+        },
+
+        # pingMote
         {
             'id'         : 'pingMote',
-            'name'       : 'ping',
+            'name'       : 'pingMote',
             'description': '''Ping the specified mote. A Net Ping Reply event notification will contain the mote's response.''',
             'request'    : [
                 ['macAddr',                 STRING,   25,  None],
@@ -1482,11 +1849,11 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             },
         },
 
-        # getLicense
+        # Licensing
         {
             'id'         : 'getLicense',
             'name'       : 'getLicense',
-            'description': 'Get license',
+            'description': '''Get the software license key.''',
             'request'    : [
             ],
             'response'   : {
@@ -1495,12 +1862,10 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
-
-        # setLicense
         {
             'id'         : 'setLicense',
             'name'       : 'setLicense',
-            'description': 'Set license',
+            'description': 'Set the software license key.',
             'request'    : [
                 ['license',                 STRING,   40,  None],
             ],
@@ -1510,29 +1875,12 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
-                
-        # startLocation TODO
         
-        # stopLocation
-        {
-            'id'         : 'stopLocation',
-            'name'       : 'stopLocation',
-            'description': 'Stop location',
-            'request'    : [
-                ['macAddr',                 STRING,   25,  None],
-            ],
-            'response'   : {
-                FIELDS : [ 
-                    ['callbackId',          INT,      4,   None],
-                ],
-            },
-        },
-                
         # reset
         {
             'id'         : 'reset',
             'name'       : 'reset',
-            'description': 'Reset',
+            'description': 'Reset the system or network',
             'request'    : [
                 ['object',                  STRING,   25,  'resetObject'],
             ],
@@ -1574,21 +1922,6 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
         },
-                
-        # cli
-        {
-            'id'         : 'cli',
-            'name'       : 'cli',
-            'description': 'Run CLI command',
-            'request'    : [
-                ['command',                 STRING,   128, None],
-            ],
-            'response'   : {
-                FIELDS : [ 
-                    ['result',              STRING,   32,  None],
-                ],
-            },
-        },
 
         # subscribe, unsubscribe
         {
@@ -1601,6 +1934,9 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
             'response'   : {
                 FIELDS : [ 
                     ['notif_token',         STRING,   32,  None],
+                    # note: this is intentionally different from the subscribe API command
+                    # (not returning the notification port) because the SmartMesh SDK method
+                    # also handles connecting to the notification channel.
                 ],
             },
             'command_override': 'subscribe_override',
@@ -1608,8 +1944,9 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 'unsubscribe',
             'name'       : 'unsubscribe',
-            'description': 'Unsubscribe from notifications. This function clears any existing notification subscription and stops the notification thread. ',
+            'description': 'Unsubscribe from notifications. This function clears the existing notification subscription of the client and stops the notification thread. ',
             'request'    : [
+                # note: this is intentionally different from the unsubscribe API
             ],
             'response'   : {
                 FIELDS : [ 
@@ -1617,5 +1954,21 @@ class HartMgrDefinition(ApiDefinition.ApiDefinition):
                 ],
             },
             'command_override': 'unsubscribe_override',
+        },
+
+        # cli -- the CLI command is deprecated
+        
+        {
+            'id'         : 'cli',
+            'name'       : 'cli',
+            'description': 'This command tunnels a given command through to the manager\'s Command Line Interface (CLI). The CLI command can be called by only one XML API client at a time. The response to the given CLI command is tunneled back to the client via the notifications channel. To receive the CLI notification, the client must be subscribed to CLI notifications (see Notification Channel)',
+            'request'    : [
+                ['command',                 STRING,   128, None],
+            ],
+            'response'   : {
+                FIELDS : [ 
+                    ['result',              STRING,   32,  None],
+                ],
+            },
         },
     ]

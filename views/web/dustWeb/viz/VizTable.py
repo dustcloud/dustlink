@@ -61,7 +61,7 @@ class VizTable(Viz.Viz):
                 'sAjaxSource':         '/{RESOURCE}/',
                 'aoColumns':           json.aoColumns,
                 'bFilter':             false,
-                'bPaginate':           false,
+                'bPaginate':           false
             }});
             updateStatus(statusDivId,'success','');
         }}).error(function (error) {{

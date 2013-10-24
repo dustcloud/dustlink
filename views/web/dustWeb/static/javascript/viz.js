@@ -1,5 +1,5 @@
 var STATUS = {
-      BUSY : 'busy',
+      BUSY    : 'busy',
       FAILURE : 'failure',
       SUCCESS : 'success'
 }
@@ -26,7 +26,8 @@ Viz.prototype.getReloadPeriod = function() {
 Viz.prototype.setStatus = function(status, message) {
    updateStatus('status_div_' + this.getVizID(), status, message);
 }
-// ======================== VizTopology ===================================
+
+//=========================== VizTopology =====================================
 
 function Topology(VIZID, RESOURCE, reloadPeriod) {
    Topology.prototype.init.call(this, VIZID, RESOURCE, reloadPeriod);
@@ -90,46 +91,45 @@ Topology.prototype.tryDraw = function() {
       try {
          result = dagre.dot.toObjects(this.inputGraph.value);
       } catch (e) {
-         console.log("Error parsing DOT content.");
+         console.log("ERROR: parsing DOT content.");
          console.log(e);
          console.log(this.inputGraph.value);
-//         this.chartError.innerHTML = e.toString();
-//         this.chartError.setAttribute("class", "error");
+         //this.chartError.innerHTML = e.toString();
+         //this.chartError.setAttribute("class", "error");
       }
    }
 
    if (result) {
       this.svgGroup.selectAll().remove();
-
+      
       // Get the data in the right form
       var graphNodes = result.nodes;
       var graphEdges = result.edges;
-
+      
       this.svgGroup.selectAll("g").remove();
       this.svgGroup.selectAll("path").remove();
-
+      
       // `nodes` is center positioned for easy layout later
       var nodes = this.svgGroup.selectAll("g .node").data(graphNodes).enter()
             .append("g").attr("class", "node").attr("id", function(d) {
                return "node-" + d.id;
             });
-
+      
       nodes.append("svg:title").text(function(d) {
          return d.description
       });
       
-
       var edges = this.svgGroup.selectAll("path .edge").data(graphEdges)
             .enter().append("path").attr("class", "edge").attr("id",
                   function(d) {
                      return "edge-" + d.id;
                   });
       // .attr("marker-end", "url(#arrowhead)");
-
+      
       edges.append("svg:title").text(function(d) {
          return d.description
       });
-
+      
       // Append rectangles to the nodes. We do this before laying out the
       // labels
       // because we want the text above the rectangle.
@@ -137,10 +137,10 @@ Topology.prototype.tryDraw = function() {
       rects.attr("class", function(d) {
          return ('class' in d) ? d['class'] : '';
       });
-
+      
       // Append labels
       var labels = nodes.append("g").attr("class", "label");
-
+      
       nodes.selectAll("g .label").append("a").attr(
             "xlink:href", function(d) {
                return "/motes/_" + d.macAddress;
@@ -150,7 +150,7 @@ Topology.prototype.tryDraw = function() {
       }).each(function(d) {
          d.nodePadding = 10;
       });
-
+      
       // We need width and height for layout.
       labels.each(function(d) {
          var bbox = this.getBBox();
@@ -158,7 +158,7 @@ Topology.prototype.tryDraw = function() {
          d.width = bbox.width + 2 * d.nodePadding;
          d.height = bbox.height + 2 * d.nodePadding;
       });
-
+      
       rects.attr("x", function(d) {
          return -(d.bbox.width / 2 + d.nodePadding);
       }).attr("y", function(d) {
@@ -168,19 +168,19 @@ Topology.prototype.tryDraw = function() {
       }).attr("height", function(d) {
          return d.height;
       });
-
+      
       labels.attr("transform", function(d) {
          return "translate(" + (-d.bbox.width / 2) + "," + (-d.bbox.height / 2)
                + ")";
       });
-
+      
       dagre.layout().nodeSep(50).edgeSep(10).rankSep(30).nodes(graphNodes)
             .edges(graphEdges).run();
 
       nodes.attr("transform", function(d) {
          return "translate(" + d.dagre.x + "," + d.dagre.y + ")";
       });
-
+      
       edges.attr("d", function(e) {
          var points = e.dagre.points;
          var source = dagre.util.intersectRect(e.source.dagre,
@@ -191,7 +191,7 @@ Topology.prototype.tryDraw = function() {
          points.push(target);
          return that.spline(points);
       });
-
+      
       // Resize the SVG element
       var svgBBox = this.svg.node().getBBox();
       this.svg.call(d3.behavior.zoom().on(
@@ -201,7 +201,7 @@ Topology.prototype.tryDraw = function() {
                      + d3.event.translate + ")" + " scale(" + d3.event.scale
                      + ")");
             }));
-
+      
       // Print metrics
       // d3.select("#graphTime").text("Parse time: " + (parseEnd -
       // parseStart) + "ms. Layout time: " + (layoutEnd - layoutStart) +
@@ -210,20 +210,9 @@ Topology.prototype.tryDraw = function() {
    }
 }
 
+//=========================== VizFields =======================================
 
-
-
-
-// ======================== VizFields =====================================
-
-
-
-
-// wait for the page to be loaded, then update the fields for the first time
-//$(document).ready(getData_{VIZID});
-//setInterval(getData_{VIZID},{RELOAD_PERIOD});
-
-//======================= getting data ====================================
+//===== getting data
 
 function VizFields(VIZID, RESOURCE, reloadPeriod, autoRefresh) {
    VizFields.prototype.init.call(this, VIZID, RESOURCE, reloadPeriod, autoRefresh);
@@ -247,6 +236,7 @@ VizFields.prototype.init = function(VIZID, RESOURCE, reloadPeriod, autoRefresh) 
 }
 
 VizFields.prototype.getData = function() {
+   
    var statusDivId;
    var that = this;
    // update the status message
@@ -281,53 +271,56 @@ VizFields.prototype.getData = function() {
          },
          500 : function() {
             that.setStatus(STATUS.FAILURE, 'Internal server error.');
-         },
+         }
       },
       error : function(jqXHR, textStatus, errorThrown) {
          if (textStatus == 'timeout') {
             that.setStatus(STATUS.FAILURE, 'Server unreachable.');
          }
-      },
+      }
    });
 }
 
 VizFields.prototype.updateDataTable = function(data) {
-    var i,
-        optidx,
-        elem;
+   var i,
+       optidx,
+       elem;
 
-    for (i = 0; i < data.length; i++) {
-        elem = document.getElementById('fieldTable_'+this.getVizID()+'_'+data[i].name);
-        
-        if (elem==null) {
-            throw 'unknown cell';
-        }
-        
-        if         (elem.type=='text') {
-            elem.value   = data[i].value;
-        } else if (elem.type=='checkbox') {
-            elem.checked = data[i].value;
-        } else if (elem.type=='select-one') {
-            for (optidx = 0; optidx < elem.length; optidx++) {
-                if (elem.options[optidx].value==data[i].value) {
-                    elem.selectedIndex = optidx;
-                }
+   for (i = 0; i < data.length; i++) {
+      elem = document.getElementById('fieldTable_'+this.getVizID()+'_'+data[i].name);
+      
+      if (elem==null) {
+         throw 'unknown cell';
+      }
+      
+      if        (elem.type=='text') {
+         elem.value   = data[i].value;
+      } else if (elem.type=='checkbox') {
+         elem.checked = data[i].value;
+      } else if (elem.type=='select-one') {
+         for (optidx = 0; optidx < elem.length; optidx++) {
+            if (elem.options[optidx].value==data[i].value) {
+               elem.selectedIndex = optidx;
             }
-        } else {
-            alert('WARNING update: unexpected elem.type '+elem.type);
-        }
-    }
+         }
+      } else if (elem.type=='submit') {
+         elem.innerHTML   = data[i].value;
+      } else {
+         console.log('WARNING update: unexpected elem.type '+elem.type);
+      }
+   }
 }
 
 VizFields.prototype.drawDataTable = function(data) {
    var thisCell, cells = [];
    var that = this;
+   
    // clear old contents
    document.getElementById('chart_div_' + this.getVizID()).innerHTML = '';
 
    // draw new table
    var table = $('<table/>', {
-      'class' : 'fieldDataTable_' + this.getVizID(),
+      'class' : 'fieldDataTable_' + this.getVizID()
    }).appendTo('#chart_div_' + this.getVizID());
 
    for ( var i = 0; i < data.length; i++) {
@@ -404,113 +397,127 @@ VizFields.prototype.drawDataTable = function(data) {
          }
          td.append(select);
          tr.append(td);
+      } else if (data[i].type == 'button') {
+         td = $("<td />");
+         var button = $("<button />", {
+            "id" :   fieldId,
+            "name" : data[i].name,
+            "html":  data[i].value
+         });
+         button.click(function() {
+            that.postDataChange(this);
+         });
+         td.append(button);
+         tr.append(td);
       } else {
          td = $("<td />").text('WARNING unknown type: ' + data[i].type);
          tr.append(td);
       }
       // status
       td = $('<td>'+
-                '<div id="' + fieldId + '_status">'+
-                    '<svg class="hide" width="20" height="16">'+
-                       '<circle cx="8" cy="6" r="5" stroke="black" stroke-width="1"/>'+
-                    '</svg>'+
-                    '<span class="viz-status-message"></span>'+
-                '</div>'+
-             '</td>');
+               '<div id="' + fieldId + '_status">'+
+                  '<svg class="hide" width="20" height="16">'+
+                    '<circle cx="8" cy="6" r="5" stroke="black" stroke-width="1"/>'+
+                  '</svg>'+
+                  '<span class="viz-status-message"></span>'+
+               '</div>'+
+            '</td>');
       
       tr.append(td);
       table.append(tr);
    }
 }
 
-// ======================= post changes ====================================
+//===== post changes
 
 VizFields.prototype.postDataChange = function(field) {
+   
+   var statusDivId,
+       fieldName,
+       fieldValue;
     
-    var statusDivId,
-        fieldName,
-        fieldValue;
-    
-    // update the status message
-    statusDivId = field.id+'_status';
-    updateStatus(statusDivId,'busy', '');
-    
-    // post the change
-    fieldName  = field.name;
-    if         (field.type=='text') {
-        fieldValue = field.value;
-    } else if (field.type=='checkbox') {
-        fieldValue = field.checked;
-    } else if (field.type=='select-one') {
-        fieldValue = field.options[field.selectedIndex].value;
-    } else {
-        alert('WARNING post: unexpected field.type '+field.type);
-    }
-    jQuery.ajax({
-        type:       'POST',
-        url:        '/'+this.RESOURCE+'/',
-        timeout:    5*1000,
-        data:       {
-                        fieldName:  fieldName,
-                        fieldValue: fieldValue,
-                    },
-        statusCode: {
-            200: function() {
-                updateStatus(statusDivId,'success', '');
-            },
-            400: function() {
-                updateStatus(statusDivId,'failure','Malformed.');
-            },
-            401: function() {
-                updateStatus(statusDivId,'failure','Access denied.');
-            },
-            404: function() {
-                updateStatus(statusDivId,'failure','Resource not found.');
-            },
-            500: function() {
-                updateStatus(statusDivId,'failure','Internal server error.');
-            },
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            if (textStatus=='timeout') {
-                updateStatus(statusDivId,'failure','Server unreachable.');
-            }
-        },
-    });
-    
-    // enable the update
-    if (this.autoRefresh) {
-       enableAutoRefresh(this.getVizID());
-    }
+   // update the status message
+   statusDivId = field.id+'_status';
+   updateStatus(statusDivId,'busy', '');
+   
+   // post the change
+   fieldName  = field.name;
+   if         (field.type=='text') {
+      fieldValue = field.value;
+   } else if (field.type=='checkbox') {
+      fieldValue = field.checked;
+   } else if (field.type=='select-one') {
+      fieldValue = field.options[field.selectedIndex].value;
+   } else if (field.type=='submit') {
+      fieldValue = 1;
+   } else {
+      console.log('WARNING post: unexpected field.type '+field.type);
+   }
+   jQuery.ajax({
+      type:       'POST',
+      url:        '/'+this.RESOURCE+'/',
+      timeout:    5*1000,
+      data:       {
+         fieldName:  fieldName,
+         fieldValue: fieldValue
+      },
+      statusCode: {
+         200: function() {
+            updateStatus(statusDivId,'success', '');
+         },
+         400: function() {
+            updateStatus(statusDivId,'failure','Malformed.');
+         },
+         401: function() {
+            updateStatus(statusDivId,'failure','Access denied.');
+         },
+         404: function() {
+            updateStatus(statusDivId,'failure','Resource not found.');
+         },
+         500: function() {
+            updateStatus(statusDivId,'failure','Internal server error.');
+         }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+         if (textStatus=='timeout') {
+            updateStatus(statusDivId,'failure','Server unreachable.');
+         }
+      }
+   });
+   
+   // enable the update
+   if (this.autoRefresh) {
+      enableAutoRefresh(this.getVizID());
+   }
 }
 
 //======================= helpers =========================================
 
 VizFields.prototype.drawRawData = function() {
-    
-    var cells;
-    
-    $('<table/>', {
-        'class': 'rawDataTable_'+this.getVizID(),
-    }).appendTo('#chart_div_'+this.getVizID());
-    
-    cells = [];
-    $.each(response[0], function(key, val) {
-        cells.push('<th>'+ key +'</th>');
-    });
-    $('<tr/>', {
-        html: cells.join('')
-    }).appendTo('.rawDataTable_'+this.getVizID());
-    
-    for (var i = 0; i < response.length; i++) {
-        cells = [];
-        $.each(response[i], function(key, val) {
-            cells.push('<td>'+ val + '</td>');
-        });
-        $('<tr/>', {
-            html: cells.join('')
-        }).appendTo('.rawDataTable_'+this.getVizID());
-    }
+   
+   var cells;
+   
+   $('<table/>', {
+      'class': 'rawDataTable_'+this.getVizID()
+   }).appendTo('#chart_div_'+this.getVizID());
+   
+   cells = [];
+   $.each(response[0], function(key, val) {
+      cells.push('<th>'+ key +'</th>');
+   });
+   $('<tr/>', {
+      html: cells.join('')
+   }).appendTo('.rawDataTable_'+this.getVizID());
+   
+   for (var i = 0; i < response.length; i++) {
+      cells = [];
+      $.each(response[i], function(key, val) {
+         cells.push('<td>'+ val + '</td>');
+      });
+      $('<tr/>', {
+         html: cells.join('')
+      }).appendTo('.rawDataTable_'+this.getVizID());
+   }
 }
 
 

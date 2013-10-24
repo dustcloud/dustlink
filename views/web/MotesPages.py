@@ -35,34 +35,52 @@ class MotesPages(WebPageDyn.WebPageDyn):
             username    = web.ctx.session.username
             currentPath = WebPage.WebPage.urlStringTolist(web.ctx.path)
             
+            visualizations  =   [
+                VizForm.VizForm(
+                    webServer           = webServer,
+                    username            = username,
+                    resourcePath        = currentPath,
+                    subResourcePath     = 'cleanup',
+                    title               = 'Cleanup motes',
+                ),
+            ]
+            # enable the following code to be able to add/delete motes by hand.
+            '''
+            visualizations  =   [
+                VizForm.VizForm(
+                    webServer           = webServer,
+                    username            = username,
+                    resourcePath        = currentPath,
+                    subResourcePath     = 'add',
+                    title               = 'Add a Mote',
+                ),
+                VizForm.VizForm(
+                    webServer           = webServer,
+                    username            = username,
+                    resourcePath        = currentPath,
+                    subResourcePath     = 'delete',
+                    title               = 'Delete a Mote',
+                ),
+            ],
+            '''
+            
             page = thisWebApp.createPage(
                 username        = username,
                 currentPath     = currentPath,
-                visualizations  =   [
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'add',
-                                            title               = 'Add a Mote',
-                                        ),
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'delete',
-                                            title               = 'Delete a Mote',
-                                        ),
-                                    ],
+                visualizations  = visualizations,
             )
             
             return page
+        
+        # enable the following code to be able to add/delete motes by hand.
         
         def getData(self,subResource,username):
             
             dld = DustLinkData.DustLinkData()
             
-            if subResource==['add']:
+            # enable the following code to be able to add/delete network by hand.
+            '''
+            elif subResource==['add']:
                 
                 return [
                     {
@@ -87,6 +105,16 @@ class MotesPages(WebPageDyn.WebPageDyn):
                         'editable':       True,
                     },
                 ]
+            '''
+            
+            if   subResource==['cleanup']:
+                return [
+                    {
+                        'name':           'command',
+                        'value':          '',
+                        'type':           'text',
+                    },
+                ]
                 
             else:
                 raise web.notfound()
@@ -95,6 +123,8 @@ class MotesPages(WebPageDyn.WebPageDyn):
             
             dld = DustLinkData.DustLinkData()
             
+            # enable the following code to be able to add/delete network by hand.
+            '''
             if   subResource==['add']:
                 assert isinstance(receivedData,dict)
                 assert receivedData.keys()==['mac']
@@ -111,8 +141,42 @@ class MotesPages(WebPageDyn.WebPageDyn):
                 mac = DustLinkData.DustLinkData.stringToMac(receivedData['mac'])
                 
                 dld.deleteMote(mac, username=username)
+            '''
+            
+            if   subResource==['cleanup']:
+                
+                assert isinstance(receivedData,dict)
+                assert receivedData.keys()==['command']
+                assert isinstance(receivedData['command'],str)
+                
+                # make sure this user had delete privileges on motes
+                dld.authorize(username,['motes'],DustLinkData.DustLinkData.ACTION_DELETE)
+                
+                # do everything as admin from here on
+                
+                command = receivedData['command']
+                
+                if command=='cleanup':
+                    
+                    # get all mote MAC address
+                    macs          = dld.getMoteMacs()
+                    
+                    # get all netnames
+                    netnames      = dld.getNetnames()
+                    
+                    # for each network, remove all motes from 'macs' list
+                    for netname in netnames:
+                        netmacs   = dld.getNetworkMotes(netname)
+                        for mac in netmacs:
+                            macs.remove(mac)
+                    
+                    # delete each mote remaining in 'macs' list
+                    for mac in macs:
+                        dld.deleteMote(mac)
+                
             else:
                 raise web.notfound()
+        
     
     class pageMotesSub(WebPageDyn.WebHandlerDyn):
         

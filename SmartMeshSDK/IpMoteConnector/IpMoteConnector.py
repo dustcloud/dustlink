@@ -3,12 +3,16 @@ This module was generated automatically. Do not edit directly.
 '''
 
 import collections
-import ApiException
+from   SmartMeshSDK import ApiException
 from   IpMoteConnectorInternal import IpMoteConnectorInternal
+
+##
+# \addtogroup IpMoteConnector
+# \{
+# 
 
 class IpMoteConnector(IpMoteConnectorInternal):
     '''
-    \ingroup ApiConnector
     \brief Public class for IP mote connector, over Serial.
     '''
 
@@ -19,22 +23,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_macAddress = collections.namedtuple("Tuple_dn_setParameter_macAddress", ['RC'])
 
@@ -55,27 +60,30 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_joinKey = collections.namedtuple("Tuple_dn_setParameter_joinKey", ['RC'])
 
     ##
-    # The setParameter<joinKey> command may be used to set the join key in mote's persistent storage. Join keys are used by motes to establish secure connection with the network. The join key is used at next join. Note: reading joinKey parameter is prohibited for security reasons.
+    # The setParameter<joinKey> command may be used to set the join key in mote's persistent storage. Join keys are used by motes to establish secure connection with the network. The join key is used at next join. 
+    # 
+    # Reading the joinKey parameter is prohibited for security reasons.
     # 
     # \param joinKey 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -91,27 +99,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_networkId = collections.namedtuple("Tuple_dn_setParameter_networkId", ['RC'])
 
     ##
-    # This command may be used to set network id of the mote. This setting is persistent and is used on next join attempt. 
+    # This command may be used to set the Network ID of the mote. This setting is persistent and is used on next join attempt.
     # 
     # \param networkId 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -127,32 +136,31 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_txPower = collections.namedtuple("Tuple_dn_setParameter_txPower", ['RC'])
 
     ##
-    # The setParameter<txPower> command sets the mote output power. This setting is persistent. The command may be issued at any time and takes effect on next transmission. Refer to product datasheets for supported RF output power values. For example, if the mote has a typical RF output power of +8 dBm when the power amplifier (PA) is enabled, then set the txPower parameter to 8 to enable the PA. Similarly, if the mote has a typical RF output power of -2 dBm when the PA is disabled, then set the txPower parameter to -2 to turn off the PA.
+    # The setParameter<txPower> command sets the mote output power. This setting is persistent. The command may be issued at any time and takes effect on next transmission.Refer to product datasheets for supported RF output power values.For example, if the mote has a typical RF output power of +8 dBm when the power amplifier (PA) is enabled, then set the txPower parameter to 8 to enable the PA. Similarly, if the mote has a typical RF output power of 0 dBm when the PA is disabled, then set the txPower parameter to 0 to turn off the PA.
     # 
     # \param txPower 1-byte field formatted as a ints.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: 0dBm
-    #      - 8: +8dBm
+    #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setParameter_txPower named tuple.
     # 
@@ -165,27 +173,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_joinDutyCycle = collections.namedtuple("Tuple_dn_setParameter_joinDutyCycle", ['RC'])
 
     ##
-    # The setParameter<joinDutyCycle> command allows the microprocessor to control the ratio of active listen time to doze time (a low-power radio state) during the period when the mote is searching for the network. If you desire a faster join time at the risk of higher power consumption, use the setParameter<joinDutyCycle> command to increase the join duty cycle up to 100%. This setting is persistent and takes effect immediately.
+    # The setParameter<joinDutyCycle> command allows the microprocessor to control the ratio of active listen time to doze time (a low-power radio state) during the period when the mote is searching for the network. If you desire a faster join time at the risk of higher power consumption, use the setParameter<joinDutyCycle> command to increase the join duty cycle up to 100%. This setting is persistent and requires a reset to take effect.
     # 
     # \param dutyCycle 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -201,27 +210,30 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_eventMask = collections.namedtuple("Tuple_dn_setParameter_eventMask", ['RC'])
 
     ##
-    # setParameter <eventMask> allows the microprocessor to selectively subscribe to event notifications . The default value of eventMask at mote reset is all 1s -- all events are enabled. This setting is not persistent.
+    # The setParameter<eventMask> command allows the microprocessor to selectively subscribe to event notifications. The default value of eventMask at mote reset is all 1s - all events are enabled. This setting is not persistent.
+    # 
+    # New event type may be added in future revisions of mote software. It is recommended that the client code only subscribe to known events and gracefully ignore all unknown events.
     # 
     # \param eventMask 4-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
@@ -233,28 +245,29 @@ class IpMoteConnector(IpMoteConnectorInternal):
         return IpMoteConnector.Tuple_dn_setParameter_eventMask(**res)
 
     ##
-    # The named tuple returned by the dn_setParameter_otapLockout() function.
+    # The named tuple returned by the dn_setParameter_OTAPLockout() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
-    Tuple_dn_setParameter_otapLockout = collections.namedtuple("Tuple_dn_setParameter_otapLockout", ['RC'])
+    Tuple_dn_setParameter_OTAPLockout = collections.namedtuple("Tuple_dn_setParameter_OTAPLockout", ['RC'])
 
     ##
     # This command allows the microprocessor to control whether Over-The-Air Programming (OTAP) of motes is allowed. This setting is persistent and takes effect immediately.
@@ -262,378 +275,80 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # \param mode 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_otapLockout named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_OTAPLockout named tuple.
     # 
-    def dn_setParameter_otapLockout(self, mode) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'otapLockout'], {"mode" : mode})
-        return IpMoteConnector.Tuple_dn_setParameter_otapLockout(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_macMicKey() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_macMicKey = collections.namedtuple("Tuple_dn_setParameter_macMicKey", ['RC'])
-
-    ##
-    # Set the key used for MAC authentication.
-    # 
-    # \param macMicKey 16-byte field formatted as a hex.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_macMicKey named tuple.
-    # 
-    def dn_setParameter_macMicKey(self, macMicKey) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'macMicKey'], {"macMicKey" : macMicKey})
-        return IpMoteConnector.Tuple_dn_setParameter_macMicKey(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_moteId() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_moteId = collections.namedtuple("Tuple_dn_setParameter_moteId", ['RC'])
-
-    ##
-    # Set the mote's short address.
-    # 
-    # \param moteId 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_moteId named tuple.
-    # 
-    def dn_setParameter_moteId(self, moteId) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'moteId'], {"moteId" : moteId})
-        return IpMoteConnector.Tuple_dn_setParameter_moteId(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_ipv6Address() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_ipv6Address = collections.namedtuple("Tuple_dn_setParameter_ipv6Address", ['RC'])
-
-    ##
-    # Set the mote's IPv6 address.
-    # 
-    # \param ipv6Address 16-byte field formatted as a hex.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_ipv6Address named tuple.
-    # 
-    def dn_setParameter_ipv6Address(self, ipv6Address) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'ipv6Address'], {"ipv6Address" : ipv6Address})
-        return IpMoteConnector.Tuple_dn_setParameter_ipv6Address(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_ccaMode() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_ccaMode = collections.namedtuple("Tuple_dn_setParameter_ccaMode", ['RC'])
-
-    ##
-    # 
-    # 
-    # \param ccaMode 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: off
-    #      - 1: on
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_ccaMode named tuple.
-    # 
-    def dn_setParameter_ccaMode(self, ccaMode) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'ccaMode'], {"ccaMode" : ccaMode})
-        return IpMoteConnector.Tuple_dn_setParameter_ccaMode(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_Channels() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_Channels = collections.namedtuple("Tuple_dn_setParameter_Channels", ['RC'])
-
-    ##
-    # 
-    # 
-    # \param bitmap 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_Channels named tuple.
-    # 
-    def dn_setParameter_Channels(self, bitmap) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'Channels'], {"bitmap" : bitmap})
-        return IpMoteConnector.Tuple_dn_setParameter_Channels(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_advGraph() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_advGraph = collections.namedtuple("Tuple_dn_setParameter_advGraph", ['RC'])
-
-    ##
-    # 
-    # 
-    # \param graphId 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_advGraph named tuple.
-    # 
-    def dn_setParameter_advGraph(self, graphId) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'advGraph'], {"graphId" : graphId})
-        return IpMoteConnector.Tuple_dn_setParameter_advGraph(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_hrTimer() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_hrTimer = collections.namedtuple("Tuple_dn_setParameter_hrTimer", ['RC'])
-
-    ##
-    # Set the duration (in seconds) between consecutive health reports.
-    # 
-    # \param hrTimer 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_hrTimer named tuple.
-    # 
-    def dn_setParameter_hrTimer(self, hrTimer) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'hrTimer'], {"hrTimer" : hrTimer})
-        return IpMoteConnector.Tuple_dn_setParameter_hrTimer(**res)
+    def dn_setParameter_OTAPLockout(self, mode) :
+        res = IpMoteConnectorInternal.send(self, ['setParameter', 'OTAPLockout'], {"mode" : mode})
+        return IpMoteConnector.Tuple_dn_setParameter_OTAPLockout(**res)
 
     ##
     # The named tuple returned by the dn_setParameter_routingMode() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_routingMode = collections.namedtuple("Tuple_dn_setParameter_routingMode", ['RC'])
 
     ##
     # This command allows the microprocessor to control whether the mote will become a router once joined the network. If disabled, the manager will keep the mote a leaf node.
     # 
-    # \param mote 1-byte field formatted as a bool.<br/>
+    # \param mode 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setParameter_routingMode named tuple.
     # 
-    def dn_setParameter_routingMode(self, mote) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'routingMode'], {"mote" : mote})
+    def dn_setParameter_routingMode(self, mode) :
+        res = IpMoteConnectorInternal.send(self, ['setParameter', 'routingMode'], {"mode" : mode})
         return IpMoteConnector.Tuple_dn_setParameter_routingMode(**res)
 
     ##
-    # The named tuple returned by the dn_setParameter_appInfo() function.
+    # The named tuple returned by the dn_setParameter_powerSrcInfo() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
-    Tuple_dn_setParameter_appInfo = collections.namedtuple("Tuple_dn_setParameter_appInfo", ['RC'])
-
-    ##
-    # 
-    # 
-    # \param vendorId 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # \param appId 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # \param appMajorSwRev 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # \param appMinorSwRev 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # \param appPatchNum 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # \param appBuildNum 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_appInfo named tuple.
-    # 
-    def dn_setParameter_appInfo(self, vendorId, appId, appMajorSwRev, appMinorSwRev, appPatchNum, appBuildNum) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'appInfo'], {"vendorId" : vendorId, "appId" : appId, "appMajorSwRev" : appMajorSwRev, "appMinorSwRev" : appMinorSwRev, "appPatchNum" : appPatchNum, "appBuildNum" : appBuildNum})
-        return IpMoteConnector.Tuple_dn_setParameter_appInfo(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_pwrSrcInfo() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_pwrSrcInfo = collections.namedtuple("Tuple_dn_setParameter_pwrSrcInfo", ['RC'])
+    Tuple_dn_setParameter_powerSrcInfo = collections.namedtuple("Tuple_dn_setParameter_powerSrcInfo", ['RC'])
 
     ##
     # This command allows the microprocessor to configure power source information on the device. This setting is persistent and is used at network join time.
     # 
-    # \param MaxStCurrent 2-byte field formatted as a int.<br/>
+    # \param maxStCurrent 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param MinLifetime 1-byte field formatted as a int.<br/>
+    # \param minLifetime 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # \param currentLimit_0 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -654,116 +369,43 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # \param rechargePeriod_2 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_pwrSrcInfo named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_powerSrcInfo named tuple.
     # 
-    def dn_setParameter_pwrSrcInfo(self, MaxStCurrent, MinLifetime, currentLimit_0, dischargePeriod_0, rechargePeriod_0, currentLimit_1, dischargePeriod_1, rechargePeriod_1, currentLimit_2, dischargePeriod_2, rechargePeriod_2) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'pwrSrcInfo'], {"MaxStCurrent" : MaxStCurrent, "MinLifetime" : MinLifetime, "currentLimit_0" : currentLimit_0, "dischargePeriod_0" : dischargePeriod_0, "rechargePeriod_0" : rechargePeriod_0, "currentLimit_1" : currentLimit_1, "dischargePeriod_1" : dischargePeriod_1, "rechargePeriod_1" : rechargePeriod_1, "currentLimit_2" : currentLimit_2, "dischargePeriod_2" : dischargePeriod_2, "rechargePeriod_2" : rechargePeriod_2})
-        return IpMoteConnector.Tuple_dn_setParameter_pwrSrcInfo(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_mobilityType() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_mobilityType = collections.namedtuple("Tuple_dn_setParameter_mobilityType", ['RC'])
-
-    ##
-    # 
-    # 
-    # \param mobilityType 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: UNUSED
-    #      - 1: KNOWN
-    #      - 2: UNKNOWN
-    #      - 3: MOBILE
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_mobilityType named tuple.
-    # 
-    def dn_setParameter_mobilityType(self, mobilityType) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'mobilityType'], {"mobilityType" : mobilityType})
-        return IpMoteConnector.Tuple_dn_setParameter_mobilityType(**res)
-
-    ##
-    # The named tuple returned by the dn_setParameter_advKey() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # 
-    Tuple_dn_setParameter_advKey = collections.namedtuple("Tuple_dn_setParameter_advKey", ['RC'])
-
-    ##
-    # Set the key used by the mote for advertisement packets
-    # 
-    # \param advKey 16-byte field formatted as a hex.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setParameter_advKey named tuple.
-    # 
-    def dn_setParameter_advKey(self, advKey) :
-        res = IpMoteConnectorInternal.send(self, ['setParameter', 'advKey'], {"advKey" : advKey})
-        return IpMoteConnector.Tuple_dn_setParameter_advKey(**res)
+    def dn_setParameter_powerSrcInfo(self, maxStCurrent, minLifetime, currentLimit_0, dischargePeriod_0, rechargePeriod_0, currentLimit_1, dischargePeriod_1, rechargePeriod_1, currentLimit_2, dischargePeriod_2, rechargePeriod_2) :
+        res = IpMoteConnectorInternal.send(self, ['setParameter', 'powerSrcInfo'], {"maxStCurrent" : maxStCurrent, "minLifetime" : minLifetime, "currentLimit_0" : currentLimit_0, "dischargePeriod_0" : dischargePeriod_0, "rechargePeriod_0" : rechargePeriod_0, "currentLimit_1" : currentLimit_1, "dischargePeriod_1" : dischargePeriod_1, "rechargePeriod_1" : rechargePeriod_1, "currentLimit_2" : currentLimit_2, "dischargePeriod_2" : dischargePeriod_2, "rechargePeriod_2" : rechargePeriod_2})
+        return IpMoteConnector.Tuple_dn_setParameter_powerSrcInfo(**res)
 
     ##
     # The named tuple returned by the dn_setParameter_autoJoin() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_setParameter_autoJoin = collections.namedtuple("Tuple_dn_setParameter_autoJoin", ['RC'])
 
     ##
+    # This command allows the microprocessor to change between automatic and manual joining by the mote's networking stack. In manual mode, an explicit join command from the application is required to initiate joining. This setting is persistent and takes effect after mote reset.
     # 
+    # Note that auto join mode must not be set if the application is also configured to join (e.g combining 'auto join' with 'master' mode will result in mote not joining).
     # 
-    # \param mode 1-byte field formatted as a int.<br/>
+    # \param mode 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setParameter_autoJoin named tuple.
@@ -777,22 +419,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -814,22 +457,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>networkId</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -851,26 +495,25 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>txPower</tt>: 1-byte field formatted as a ints.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: 0dBm
-    #      - 8: +8dBm
+    #     There is no restriction on the value of this field.
     # 
     Tuple_dn_getParameter_txPower = collections.namedtuple("Tuple_dn_getParameter_txPower", ['RC', 'txPower'])
 
@@ -890,22 +533,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>joinDutyCycle</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -927,23 +571,24 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>eventMask</tt>: 1-byte field formatted as a int.<br/>
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
+    # - <tt>eventMask</tt>: 4-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_getParameter_eventMask = collections.namedtuple("Tuple_dn_getParameter_eventMask", ['RC', 'eventMask'])
@@ -964,22 +609,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>apiVersion</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>serialNumber</tt>: 8-byte field formatted as a hex.<br/>
@@ -1002,7 +648,7 @@ class IpMoteConnector(IpMoteConnectorInternal):
     Tuple_dn_getParameter_moteInfo = collections.namedtuple("Tuple_dn_getParameter_moteInfo", ['RC', 'apiVersion', 'serialNumber', 'hwModel', 'hwRev', 'swVerMajor', 'swVerMinor', 'swVerPatch', 'swVerBuild', 'bootSwVer'])
 
     ##
-    # The getParameter<moteInfo> command returns static information about the mote's hardware and network stack software.
+    # The getParameter<moteInfo> command returns static information about the moteshardware and network stack software.
     # 
     # 
     # 
@@ -1017,22 +663,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>macAddress</tt>: 8-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>moteId</tt>: 2-byte field formatted as a int.<br/>
@@ -1060,22 +707,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>state</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 0: init
@@ -1093,15 +741,15 @@ class IpMoteConnector(IpMoteConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>numParents</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>moteAlarms</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>alarms</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>reserved_2</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getParameter_moteStatus = collections.namedtuple("Tuple_dn_getParameter_moteStatus", ['RC', 'state', 'reserved_0', 'reserved_1', 'numParents', 'moteAlarms', 'reserved_2'])
+    Tuple_dn_getParameter_moteStatus = collections.namedtuple("Tuple_dn_getParameter_moteStatus", ['RC', 'state', 'reserved_0', 'reserved_1', 'numParents', 'alarms', 'reserved_2'])
 
     ##
-    # The getParameter<moteStatus> command is used to retrieve current mote state and other dynamic information.
+    # The getParameter<moteStatus> command is used to retrieve current mote state andother dynamic information.
     # 
     # 
     # 
@@ -1116,22 +764,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>upTime</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>utcSecs</tt>: 8-byte field formatted as a int.<br/>
@@ -1161,22 +810,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>qTotal</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>upTime</tt>: 4-byte field formatted as a int.<br/>
@@ -1189,7 +839,7 @@ class IpMoteConnector(IpMoteConnectorInternal):
     Tuple_dn_getParameter_charge = collections.namedtuple("Tuple_dn_getParameter_charge", ['RC', 'qTotal', 'upTime', 'tempInt', 'tempFrac'])
 
     ##
-    # The getParameter<charge> command retrieves the charge consumption of the mote since the last reset.
+    # The getParameter<charge> command retrieves the charge consumption of the motesince the last reset.
     # 
     # 
     # 
@@ -1204,22 +854,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>rxOk</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>rxFailed</tt>: 2-byte field formatted as a int.<br/>
@@ -1239,70 +890,72 @@ class IpMoteConnector(IpMoteConnectorInternal):
         return IpMoteConnector.Tuple_dn_getParameter_testRadioRxStats(**res)
 
     ##
-    # The named tuple returned by the dn_getParameter_otapLockout() function.
+    # The named tuple returned by the dn_getParameter_OTAPLockout() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>mode</tt>: 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getParameter_otapLockout = collections.namedtuple("Tuple_dn_getParameter_otapLockout", ['RC', 'mode'])
+    Tuple_dn_getParameter_OTAPLockout = collections.namedtuple("Tuple_dn_getParameter_OTAPLockout", ['RC', 'mode'])
 
     ##
     # This command reads the current state of OTAP lockout, i.e. whether over-the-air upgrades of software are permitted on this mote.
     # 
     # 
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_otapLockout named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_OTAPLockout named tuple.
     # 
-    def dn_getParameter_otapLockout(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'otapLockout'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_otapLockout(**res)
+    def dn_getParameter_OTAPLockout(self, ) :
+        res = IpMoteConnectorInternal.send(self, ['getParameter', 'OTAPLockout'], {})
+        return IpMoteConnector.Tuple_dn_getParameter_OTAPLockout(**res)
 
     ##
     # The named tuple returned by the dn_getParameter_moteId() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>moteId</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_getParameter_moteId = collections.namedtuple("Tuple_dn_getParameter_moteId", ['RC', 'moteId'])
 
     ##
-    # This command retrieves the short address of the mote. If the mote is not in the network, short address of 0 is returned.
+    # This command retrieves the mote's Mote ID. If the mote is not in the network, value of 0 is returned.
     # 
     # 
     # 
@@ -1317,22 +970,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>ipv6Address</tt>: 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -1354,22 +1008,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>routingMode</tt>: 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -1387,76 +1042,30 @@ class IpMoteConnector(IpMoteConnectorInternal):
         return IpMoteConnector.Tuple_dn_getParameter_routingMode(**res)
 
     ##
-    # The named tuple returned by the dn_getParameter_appInfo() function.
+    # The named tuple returned by the dn_getParameter_powerSrcInfo() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>vendorId</tt>: 2-byte field formatted as a int.<br/>
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
+    # - <tt>maxStCurrent</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>appId</tt>: 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>appMajorSwRev</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>appMinorSwRev</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>appPatchNum</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>appBuildNum</tt>: 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_getParameter_appInfo = collections.namedtuple("Tuple_dn_getParameter_appInfo", ['RC', 'vendorId', 'appId', 'appMajorSwRev', 'appMinorSwRev', 'appPatchNum', 'appBuildNum'])
-
-    ##
-    # 
-    # 
-    # 
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_appInfo named tuple.
-    # 
-    def dn_getParameter_appInfo(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'appInfo'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_appInfo(**res)
-
-    ##
-    # The named tuple returned by the dn_getParameter_pwrSrcInfo() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>MaxStCurrent</tt>: 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>MinLifetime</tt>: 1-byte field formatted as a int.<br/>
+    # - <tt>minLifetime</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>currentLimit_0</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1464,7 +1073,7 @@ class IpMoteConnector(IpMoteConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>rechargePeriod_0</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>currrentLimit_1</tt>: 2-byte field formatted as a int.<br/>
+    # - <tt>currentLimit_1</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>dischargePeriod_1</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1477,208 +1086,41 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # - <tt>rechargePeriod_2</tt>: 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getParameter_pwrSrcInfo = collections.namedtuple("Tuple_dn_getParameter_pwrSrcInfo", ['RC', 'MaxStCurrent', 'MinLifetime', 'currentLimit_0', 'dischargePeriod_0', 'rechargePeriod_0', 'currrentLimit_1', 'dischargePeriod_1', 'rechargePeriod_1', 'currentLimit_2', 'dischargePeriod_2', 'rechargePeriod_2'])
+    Tuple_dn_getParameter_powerSrcInfo = collections.namedtuple("Tuple_dn_getParameter_powerSrcInfo", ['RC', 'maxStCurrent', 'minLifetime', 'currentLimit_0', 'dischargePeriod_0', 'rechargePeriod_0', 'currentLimit_1', 'dischargePeriod_1', 'rechargePeriod_1', 'currentLimit_2', 'dischargePeriod_2', 'rechargePeriod_2'])
 
     ##
-    # This command allows the microprocessor to read mote's power source settings.
+    # This command allows the microprocessor to read a mote's power source settings.
     # 
     # 
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_pwrSrcInfo named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_powerSrcInfo named tuple.
     # 
-    def dn_getParameter_pwrSrcInfo(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'pwrSrcInfo'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_pwrSrcInfo(**res)
-
-    ##
-    # The named tuple returned by the dn_getParameter_powerCostInfo() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>maxTxCost</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>maxRxCost</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>minTxCost</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>minRxCost</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_getParameter_powerCostInfo = collections.namedtuple("Tuple_dn_getParameter_powerCostInfo", ['RC', 'maxTxCost', 'maxRxCost', 'minTxCost', 'minRxCost'])
-
-    ##
-    # 
-    # 
-    # 
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_powerCostInfo named tuple.
-    # 
-    def dn_getParameter_powerCostInfo(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'powerCostInfo'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_powerCostInfo(**res)
-
-    ##
-    # The named tuple returned by the dn_getParameter_mobilityType() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>mobilityType</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: UNUSED
-    #      - 1: KNOWN
-    #      - 2: UNKNOWN
-    #      - 3: MOBILE
-    # 
-    Tuple_dn_getParameter_mobilityType = collections.namedtuple("Tuple_dn_getParameter_mobilityType", ['RC', 'mobilityType'])
-
-    ##
-    # 
-    # 
-    # 
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_mobilityType named tuple.
-    # 
-    def dn_getParameter_mobilityType(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'mobilityType'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_mobilityType(**res)
-
-    ##
-    # The named tuple returned by the dn_getParameter_advKey() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>advKey</tt>: 16-byte field formatted as a hex.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_getParameter_advKey = collections.namedtuple("Tuple_dn_getParameter_advKey", ['RC', 'advKey'])
-
-    ##
-    # Get the key used for advertisement packets.
-    # 
-    # 
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_advKey named tuple.
-    # 
-    def dn_getParameter_advKey(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'advKey'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_advKey(**res)
-
-    ##
-    # The named tuple returned by the dn_getParameter_sizeInfo() function.
-    # 
-    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
-    #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
-    # - <tt>maxFrames</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>maxLinks</tt>: 2-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>maxNeighbors</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>maxRoutes</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>maxGraphs</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # - <tt>maxMacQueue</tt>: 1-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_getParameter_sizeInfo = collections.namedtuple("Tuple_dn_getParameter_sizeInfo", ['RC', 'maxFrames', 'maxLinks', 'maxNeighbors', 'maxRoutes', 'maxGraphs', 'maxMacQueue'])
-
-    ##
-    # Get information about the mote's storage capacity.
-    # 
-    # 
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_getParameter_sizeInfo named tuple.
-    # 
-    def dn_getParameter_sizeInfo(self, ) :
-        res = IpMoteConnectorInternal.send(self, ['getParameter', 'sizeInfo'], {})
-        return IpMoteConnector.Tuple_dn_getParameter_sizeInfo(**res)
+    def dn_getParameter_powerSrcInfo(self, ) :
+        res = IpMoteConnectorInternal.send(self, ['getParameter', 'powerSrcInfo'], {})
+        return IpMoteConnector.Tuple_dn_getParameter_powerSrcInfo(**res)
 
     ##
     # The named tuple returned by the dn_getParameter_autoJoin() function.
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>autoJoin</tt>: 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
     # 
@@ -1700,27 +1142,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_join = collections.namedtuple("Tuple_dn_join", ['RC'])
 
     ##
-    # The join command requests that mote start searching for the network and attempt to join.The mote must be in the IDLE state for this command to be valid. Note that the join time will be affected by the maximum current setting.
+    # The join command requests that mote start searching for the network and attempt to join.The mote must be in theIdle state for this command to be valid. Note that the join time will be affected by the maximum current setting.
     # 
     # 
     # 
@@ -1735,22 +1178,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_disconnect = collections.namedtuple("Tuple_dn_disconnect", ['RC'])
 
@@ -1770,27 +1214,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_reset = collections.namedtuple("Tuple_dn_reset", ['RC'])
 
     ##
-    # The reset command initiates a soft-reset of the device. The device will initiate the reset sequence shortly after sending out the response to this command. Resetting a mote directly can adversely impact its descendants; to disconnect gracefully from the network, use the disconnect command.
+    # The reset command initiates a soft-reset of the device. The device will initiate the reset sequence shortly after sending out the response to this command. Resetting a mote directly can adversely impact its descendants; to disconnect gracefully from the network, use the disconnect command
     # 
     # 
     # 
@@ -1805,27 +1250,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_lowPowerSleep = collections.namedtuple("Tuple_dn_lowPowerSleep", ['RC'])
 
     ##
-    # The lowPowerSleep command shuts down all peripherals and places the mote into deep sleep mode. The command executes after the mote sends its response. The mote enters deep sleep within two seconds after the command executes. The command may be issued at any time and will cause the mote to interrupt all in-progress network operation. To achieve a graceful disconnect, use the disconnect command before using the lowPowerSleep command. A hardware reset is required to bring a mote out of deep sleep mode. 
+    # ThelowPowerSleep commandshuts down all peripherals and places the mote into deep sleep mode. The command executes after the mote sends its response. The mote enters deep sleep within two seconds after the command executes. The command may be issued at any time and will cause the mote to interrupt all in-progress network operation. To achieve a graceful disconnect, use the disconnect command before using the lowPowerSleep command. A hardware reset is required to bring a mote out of deep sleep mode.
     # 
     # 
     # 
@@ -1840,39 +1286,44 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_testRadioRx = collections.namedtuple("Tuple_dn_testRadioRx", ['RC'])
 
     ##
-    # The testRadioRx command clears all previously collected statistics and initiates a test of radio reception for the specified channel and duration. During the test, the mote keeps statistics about the number of packets received (with and without error). The test results may be retrieved using the getParameter<testRadioRxStats> command. The testRadioRx command may only be issued in IDLE mode. The mote must be reset (either hardware or software reset) after radio tests are complete and prior to joining.
+    # The testRadioRx command clears all previously collected statistics and initiates a test of radio reception for the specified channel and duration. During the test, the mote keeps statistics about the number of packets received (with and without error). Note that the non-zero station id specified in this command must match the transmitter's station id. This is necessary to isolate traffic if multiple tests are running in the same radio space. The test results may be retrieved using the getParameter<testRadioRxStats> command. The testRadioRx command may only be issued in Idle mode. The mote must be reset (either hardware or software reset) after radio tests are complete and prior to joining.
     # 
-    # Channel numbering is 0-14, corresponding to IEEE 2.4 GHz channels 11-25.
+    # 
+    # 
+    # Channel numbering is 0-15, corresponding to IEEE 2.4 GHz channels 11-26.
     # 
     # \param channelMask 2-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # \param time 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
+    # \param stationId 1-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_testRadioRx named tuple.
     # 
-    def dn_testRadioRx(self, channelMask, time) :
-        res = IpMoteConnectorInternal.send(self, ['testRadioRx'], {"channelMask" : channelMask, "time" : time})
+    def dn_testRadioRx(self, channelMask, time, stationId) :
+        res = IpMoteConnectorInternal.send(self, ['testRadioRx'], {"channelMask" : channelMask, "time" : time, "stationId" : stationId})
         return IpMoteConnector.Tuple_dn_testRadioRx(**res)
 
     ##
@@ -1880,27 +1331,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_clearNV = collections.namedtuple("Tuple_dn_clearNV", ['RC'])
 
     ##
-    # The clearNV command resets the mote's non-volatile memory (NV) to its factory-default state. See User Guide for detailed information about the default values. Since many parameters are read by the mote only at power-up, this command should be followed up by mote reset.
+    # The clearNV command resets the motes non-volatile memory (NV) to its factory-default state. See User Guide for detailed information about the default values. Since many parameters are read by the mote only at power-up, this command should be followed up by mote reset.
     # 
     # 
     # 
@@ -1915,27 +1367,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_requestService = collections.namedtuple("Tuple_dn_requestService", ['RC'])
 
     ##
-    # The requestService command may be used to request a new or changed service level to a destination device in the mesh. This command may only be used to update service to a device with an existing connection (session). A service is uniquely identified by <destination,type> pair.
+    # The requestService command may be used to request a new or changed service level to a destination device in the mesh. This command may only be used to update the service to a device with an existing connection (session).
     # 
     # Whenever a change in bandwidth assignment occurs, the application receives a serviceChanged event that it can use as a trigger to read the new service allocation.
     # 
@@ -1958,22 +1411,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>destAddr</tt>: 2-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>type</tt>: 1-byte field formatted as a int.<br/>
@@ -1989,7 +1443,7 @@ class IpMoteConnector(IpMoteConnectorInternal):
     Tuple_dn_getServiceInfo = collections.namedtuple("Tuple_dn_getServiceInfo", ['RC', 'destAddr', 'type', 'state', 'value'])
 
     ##
-    # The getServiceInfo command returns information about the service currently allocated to the mote.
+    # ThegetServiceInfo command returns information about the service currently allocated to the mote.
     # 
     # \param destAddr 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -2008,29 +1462,30 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # - <tt>socketId</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_openSocket = collections.namedtuple("Tuple_dn_openSocket", ['RC', 'socketId'])
 
     ##
-    # The openSocket command creates an endpoint for IP communication and returns an id for the socket.
+    # The openSocket command creates an endpoint for IP communication and returns an ID for the socket.
     # 
     # \param protocol 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -2047,22 +1502,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_closeSocket = collections.namedtuple("Tuple_dn_closeSocket", ['RC'])
 
@@ -2083,22 +1539,23 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_bindSocket = collections.namedtuple("Tuple_dn_bindSocket", ['RC'])
 
@@ -2121,27 +1578,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_sendTo = collections.namedtuple("Tuple_dn_sendTo", ['RC'])
 
     ##
-    # Send a packet into the network. If the command returns RC_OK, the mote has accepted the packet and has queued it up for transmission. A txDone notification will be issued when the packet has been sent, if and only if the packet ID passed in this command is different from 0xffff. You can set the packet ID to any value. The notification will contain the packet ID of the packet just sent, allowing association of the notification with a particular packet.  The destination port should be in the range 0xF0B8-F0BF (61624-61631) to maximize payload.
+    # Send a packet into the network. If the command returns RC_OK, the mote has accepted the packet and hasqueuedit up for transmission. A txDone notification will be issued when the packet has been sent, if and only if the packet ID passed in this command is different from 0xffff. You can set the packet ID to any value. The notification will contain the packet ID of the packet just sent, allowing association of the notification with a particular packet. The destination port should be in the range 0xF0B8-F0BF (61624-61631) to maximize payload.
     # 
     # \param socketId 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -2173,27 +1631,28 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_search = collections.namedtuple("Tuple_dn_search", ['RC'])
 
     ##
-    # The search command requests that mote start listening for advertisements and report those heard from any network without attempting to join.The mote must be in the IDLE state for this command to be valid.  The search state can be exiting by issuing the join command or the reset command.
+    # The searchcommand requests that mote start listening for advertisements and report those heard from any network withoutattempting to join.The mote must be in the Idle state for this command to be valid. The search state can be exiting by issuing the join command or the reset command.
     # 
     # 
     # 
@@ -2208,41 +1667,44 @@ class IpMoteConnector(IpMoteConnectorInternal):
     # 
     # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
-    #      - 0: OK
-    #      - 1: ERROR
-    #      - 3: BUSY
-    #      - 4: INVALID_LEN
-    #      - 5: INV_STATE
-    #      - 6: UNSUPPORTED
-    #      - 7: UNKNOWN_PARAM
-    #      - 8: UNKNOWN_CMD
-    #      - 9: WRITE_FAIL
-    #      - 10: READ_FAIL
-    #      - 11: LOW_VOLTAGE
-    #      - 12: NO_RESOURCES
-    #      - 13: INCOMPLETE_JOIN_INFO
-    #      - 14: NOT_FOUND
-    #      - 15: INVALID_VALUE
-    #      - 16: ACCESS_DENIED
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
     # 
     Tuple_dn_testRadioTxExt = collections.namedtuple("Tuple_dn_testRadioTxExt", ['RC'])
 
     ##
-    # The testRadioTxExt command allows the microprocessor to initiate a radio transmission test. This command may only be issued prior to the mote joining the network. Three types of transmission tests are supported:
+    # ThetestRadioTxExtcommand allows the microprocessor to initiate a radio transmission test. This command may only be issued prior to the mote joining the network. Three types of transmission tests are supported:
     # 
-    #  - Packet transmission
-    #  - Continuous modulation
-    #  - Continuous wave (unmodulated signal)
+    # -Packet transmission
+    # -Continuous modulation
+    # -Continuous wave (unmodulated signal)
     # 
-    # In a packet transmission test, the mote generates a repeatCnt number of packet sequences. Each sequence consists of up to 10 packets with configurable size and delays. Each packet starts with a phy preamble (5 bytes), followed by phy length field (1 byte), followed by data payload of up to 125 bytes, and finally a 2-byte 802.15.4 CRC at the end. Bytes 0 and 1 contain the packet number (in big-endian format) that increments with every packet transmitted. Bytes 2..N contain a counter (from 0..N-2) that increments with every byte inside payload. Transmissions occur on the set of channels defined by chanMask, selected in pseudo-random order.
+    # In a packet transmission test, the mote generates arepeatCntnumber of packet sequences. Each sequence consists of up to 10 packets with configurable size and delays. Each packet starts with a PHY preamble (5 bytes), followed by a PHY length field (1 byte), followed by data payload of up to 125 bytes, and finally a 2-byte 802.15.4 CRC at the end. Byte 0 of the payload contains stationId of the sender. Bytes 1 and 2 contain the packet number (in big-endian format) that increments with every packet transmitted. Bytes 3..N contain a counter (from 0..N-3) that increments with every byte inside payload. Transmissions occur on the set of channels defined by chanMask, selected inpseudo-randomorder.
     # 
     # In a continuous modulation test, the mote generates continuous pseudo-random modulated signal, centered at the specified channel. The test is stopped by resetting the mote.
     # 
     # In a continuous wave test, the mote generates an unmodulated tone, centered at the specified channel. The test tone is stopped by resetting the mote.
     # 
-    # The testRadioTxExt command may only be issued when the mote is in IDLE mode, prior to its joining the network. The mote must be reset (either hardware or software reset) after radio tests are complete and prior to joining.
+    # ThetestRadioTxExtcommand may only be issued when the mote is in Idle mode, prior to its joining the network. The mote must be reset (either hardware or software reset) after radio tests are complete and prior to joining.
     # 
-    # Note: Channel numbering is 0-14, corresponding to IEEE 2.4 GHz channels 11-25.
+    # 
+    # 
+    # Channel numbering is 0-15, corresponding to IEEE 2.4 GHz channels 11-26.
     # 
     # \param testType 1-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
@@ -2257,52 +1719,90 @@ class IpMoteConnector(IpMoteConnectorInternal):
     #     There is no restriction on the value of this field.
     # \param seqSize 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen1 1-byte field formatted as a int.<br/>
+    # \param pkLen_1 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay1 2-byte field formatted as a int.<br/>
+    # \param delay_1 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen2 1-byte field formatted as a int.<br/>
+    # \param pkLen_2 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay2 2-byte field formatted as a int.<br/>
+    # \param delay_2 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen3 1-byte field formatted as a int.<br/>
+    # \param pkLen_3 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay3 2-byte field formatted as a int.<br/>
+    # \param delay_3 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen4 1-byte field formatted as a int.<br/>
+    # \param pkLen_4 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay4 2-byte field formatted as a int.<br/>
+    # \param delay_4 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen5 1-byte field formatted as a int.<br/>
+    # \param pkLen_5 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay5 2-byte field formatted as a int.<br/>
+    # \param delay_5 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen6 1-byte field formatted as a int.<br/>
+    # \param pkLen_6 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay6 2-byte field formatted as a int.<br/>
+    # \param delay_6 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen7 1-byte field formatted as a int.<br/>
+    # \param pkLen_7 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay7 2-byte field formatted as a int.<br/>
+    # \param delay_7 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen8 1-byte field formatted as a int.<br/>
+    # \param pkLen_8 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay8 2-byte field formatted as a int.<br/>
+    # \param delay_8 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen9 1-byte field formatted as a int.<br/>
+    # \param pkLen_9 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay9 2-byte field formatted as a int.<br/>
+    # \param delay_9 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param pkLen10 1-byte field formatted as a int.<br/>
+    # \param pkLen_10 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param delay10 2-byte field formatted as a int.<br/>
+    # \param delay_10 2-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    # \param stationId 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_testRadioTxExt named tuple.
     # 
-    def dn_testRadioTxExt(self, testType, chanMask, repeatCnt, txPower, seqSize, pkLen1, delay1, pkLen2, delay2, pkLen3, delay3, pkLen4, delay4, pkLen5, delay5, pkLen6, delay6, pkLen7, delay7, pkLen8, delay8, pkLen9, delay9, pkLen10, delay10) :
-        res = IpMoteConnectorInternal.send(self, ['testRadioTxExt'], {"testType" : testType, "chanMask" : chanMask, "repeatCnt" : repeatCnt, "txPower" : txPower, "seqSize" : seqSize, "pkLen1" : pkLen1, "delay1" : delay1, "pkLen2" : pkLen2, "delay2" : delay2, "pkLen3" : pkLen3, "delay3" : delay3, "pkLen4" : pkLen4, "delay4" : delay4, "pkLen5" : pkLen5, "delay5" : delay5, "pkLen6" : pkLen6, "delay6" : delay6, "pkLen7" : pkLen7, "delay7" : delay7, "pkLen8" : pkLen8, "delay8" : delay8, "pkLen9" : pkLen9, "delay9" : delay9, "pkLen10" : pkLen10, "delay10" : delay10})
+    def dn_testRadioTxExt(self, testType, chanMask, repeatCnt, txPower, seqSize, pkLen_1, delay_1, pkLen_2, delay_2, pkLen_3, delay_3, pkLen_4, delay_4, pkLen_5, delay_5, pkLen_6, delay_6, pkLen_7, delay_7, pkLen_8, delay_8, pkLen_9, delay_9, pkLen_10, delay_10, stationId) :
+        res = IpMoteConnectorInternal.send(self, ['testRadioTxExt'], {"testType" : testType, "chanMask" : chanMask, "repeatCnt" : repeatCnt, "txPower" : txPower, "seqSize" : seqSize, "pkLen_1" : pkLen_1, "delay_1" : delay_1, "pkLen_2" : pkLen_2, "delay_2" : delay_2, "pkLen_3" : pkLen_3, "delay_3" : delay_3, "pkLen_4" : pkLen_4, "delay_4" : delay_4, "pkLen_5" : pkLen_5, "delay_5" : delay_5, "pkLen_6" : pkLen_6, "delay_6" : delay_6, "pkLen_7" : pkLen_7, "delay_7" : delay_7, "pkLen_8" : pkLen_8, "delay_8" : delay_8, "pkLen_9" : pkLen_9, "delay_9" : delay_9, "pkLen_10" : pkLen_10, "delay_10" : delay_10, "stationId" : stationId})
         return IpMoteConnector.Tuple_dn_testRadioTxExt(**res)
+
+    ##
+    # The named tuple returned by the dn_zeroize() function.
+    # 
+    # - <tt>RC</tt>: 1-byte field formatted as a int.<br/>
+    #     This field can only take one of the following values:
+    #      - 0: RC_OK
+    #      - 1: RC_ERROR
+    #      - 3: RC_BUSY
+    #      - 4: RC_INVALID_LEN
+    #      - 5: RC_INVALID_STATE
+    #      - 6: RC_UNSUPPORTED
+    #      - 7: RC_UNKNOWN_PARAM
+    #      - 8: RC_UNKNOWN_CMD
+    #      - 9: RC_WRITE_FAIL
+    #      - 10: RC_READ_FAIL
+    #      - 11: RC_LOW_VOLTAGE
+    #      - 12: RC_NO_RESOURCES
+    #      - 13: RC_INCOMPLETE_JOIN_INFO
+    #      - 14: RC_NOT_FOUND
+    #      - 15: RC_INVALID_VALUE
+    #      - 16: RC_ACCESS_DENIED
+    #      - 18: RC_ERASE_FAIL
+    # 
+    Tuple_dn_zeroize = collections.namedtuple("Tuple_dn_zeroize", ['RC'])
+
+    ##
+    # Zeroize (zeroise) command erases flash area that is used to store configuration parameters, such as join keys. This command is intended to satisfy zeroization requirement ofFIPS-140 standard. After the command executes, the mote should be reset.
+    # 
+    # 
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_zeroize named tuple.
+    # 
+    def dn_zeroize(self, ) :
+        res = IpMoteConnectorInternal.send(self, ['zeroize'], {})
+        return IpMoteConnector.Tuple_dn_zeroize(**res)
 
     #======================== notifications ===================================
     
@@ -2314,11 +1814,9 @@ class IpMoteConnector(IpMoteConnectorInternal):
     ##
     # \brief TIMEINDICATION notification.
     # 
-    # The timeIndication notification applies to mote products that support a time interrupt into the mote.  The time packet includes the network time and the current UTC time relative to the manager.
+    # ThetimeIndicationnotification applies to mote products that support a time interrupt into the mote. The time packet includes the network time and the current UTC time relative to the manager.
     # 
-    # For LTC5800-IPM based products, driving the TIMEn pin low (assert) wakes the processor. The pin must asserted for a minimum of tstrobe micro-s.  De-asserting the pin latches the time, and a timeIndication will be generated within tresponse ms. Refer to the mote datasheet for product-specific details. The LTC5800-IPM datasheet also provides information about TIME pin usage.
-    # 
-    # The processor will remain awake and drawing current while the TIMEn pin is asserted. To avoid drawing excess current, take care to minimize the duration of the TIMEn pin being asserted past tstrobe minimums.
+    # For LTC5800-IPMbased products, driving the TIMEn pin low (assert) wakes the processor. The pin must asserted for a minimum of tstrobes. De-asserting the pin latches the time, and a timeIndication will be generated within tresponsems.Refer to theLTC5800-IPM Datasheet for additional information about TIME pin usage.The processor will remain awake and drawing current while the TIMEn pin is asserted. To avoid drawing excess current, take care to minimize the duration of the TIMEn pin being asserted past tstrobe minimum.
     #
     # Formatted as a Tuple_timeIndication named tuple. It contains the following fields:
     #   - <tt>uptime</tt> 4-byte field formatted as a int.<br/>
@@ -2336,11 +1834,11 @@ class IpMoteConnector(IpMoteConnectorInternal):
     notifTupleTable[TIMEINDICATION] = Tuple_timeIndication = collections.namedtuple("Tuple_timeIndication", ['uptime', 'utcSecs', 'utcUsecs', 'asn', 'asnOffset'])
 
     ##
-    # \brief EVENTSNOTIF notification.
+    # \brief EVENTS notification.
     # 
-    # Informs the application that some new events occurred since the last event notification. If the mote cannot send a packet (due to full queue or lack of buffers), it will retry once a minute until it succeeds.
+    # The mote sends an events notification to inform the application of new events that occurred since the previous events notification. The notification also contains up-to-date information about current mote state and any pending alarms.
     #
-    # Formatted as a Tuple_eventsNotif named tuple. It contains the following fields:
+    # Formatted as a Tuple_events named tuple. It contains the following fields:
     #   - <tt>events</tt> 4-byte field formatted as a int.<br/>
     #     This field can only take one of the following values:
     #      - 1: boot
@@ -2365,15 +1863,15 @@ class IpMoteConnector(IpMoteConnectorInternal):
     #   - <tt>alarmsList</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.    
     # 
-    EVENTSNOTIF = "eventsNotif"
-    notifTupleTable[EVENTSNOTIF] = Tuple_eventsNotif = collections.namedtuple("Tuple_eventsNotif", ['events', 'state', 'alarmsList'])
+    EVENTS = "events"
+    notifTupleTable[EVENTS] = Tuple_events = collections.namedtuple("Tuple_events", ['events', 'state', 'alarmsList'])
 
     ##
-    # \brief RECEIVENOTIF notification.
+    # \brief RECEIVE notification.
     # 
     # Informs the application that a packet was received.
     #
-    # Formatted as a Tuple_receiveNotif named tuple. It contains the following fields:
+    # Formatted as a Tuple_receive named tuple. It contains the following fields:
     #   - <tt>socketId</tt> 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>srcAddr</tt> 16-byte field formatted as a hex.<br/>
@@ -2383,27 +1881,27 @@ class IpMoteConnector(IpMoteConnectorInternal):
     #   - <tt>payload</tt> None-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.    
     # 
-    RECEIVENOTIF = "receiveNotif"
-    notifTupleTable[RECEIVENOTIF] = Tuple_receiveNotif = collections.namedtuple("Tuple_receiveNotif", ['socketId', 'srcAddr', 'srcPort', 'payload'])
+    RECEIVE = "receive"
+    notifTupleTable[RECEIVE] = Tuple_receive = collections.namedtuple("Tuple_receive", ['socketId', 'srcAddr', 'srcPort', 'payload'])
 
     ##
-    # \brief MACRXNOTIF notification.
+    # \brief MACRX notification.
     # 
     # 
     #
-    # Formatted as a Tuple_macRxNotif named tuple. It contains the following fields:
+    # Formatted as a Tuple_macRx named tuple. It contains the following fields:
     #   - <tt>payload</tt> None-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.    
     # 
-    MACRXNOTIF = "macRxNotif"
-    notifTupleTable[MACRXNOTIF] = Tuple_macRxNotif = collections.namedtuple("Tuple_macRxNotif", ['payload'])
+    MACRX = "macRx"
+    notifTupleTable[MACRX] = Tuple_macRx = collections.namedtuple("Tuple_macRx", ['payload'])
 
     ##
-    # \brief TXDONENOTIF notification.
+    # \brief TXDONE notification.
     # 
-    # The txDone notification informs the application that the mote has finished sending a packet. This notification will only be generated if the user has provided a valid (0x0000-0xFFFE) packet id when calling the sendTo command.
+    # The txDone notification informs the application that the mote has finished sending a packet. This notification will only be generated if the user has provided a valid (0x0000-0xFFFE) packetID when calling the sendTo command.
     #
-    # Formatted as a Tuple_txDoneNotif named tuple. It contains the following fields:
+    # Formatted as a Tuple_txDone named tuple. It contains the following fields:
     #   - <tt>packetId</tt> 2-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>status</tt> 1-byte field formatted as a int.<br/>
@@ -2411,13 +1909,13 @@ class IpMoteConnector(IpMoteConnectorInternal):
     #      - 0: ok
     #      - 1: fail    
     # 
-    TXDONENOTIF = "txDoneNotif"
-    notifTupleTable[TXDONENOTIF] = Tuple_txDoneNotif = collections.namedtuple("Tuple_txDoneNotif", ['packetId', 'status'])
+    TXDONE = "txDone"
+    notifTupleTable[TXDONE] = Tuple_txDone = collections.namedtuple("Tuple_txDone", ['packetId', 'status'])
 
     ##
     # \brief ADVRECEIVED notification.
     # 
-    # The 'advReceived' notification is generated by the mote when it is in promiscuous listen state (see the Mote States table) and it receives an advertisement.
+    # The advReceived notification is generated by the mote when it is in Promiscuous Listen state (see the Mote States table) and it receives an advertisement.
     #
     # Formatted as a Tuple_advReceived named tuple. It contains the following fields:
     #   - <tt>netId</tt> 2-byte field formatted as a int.<br/>
@@ -2450,3 +1948,8 @@ class IpMoteConnector(IpMoteConnectorInternal):
                 return (ids[-1], None)
         except KeyError :
             raise ApiException.NotificationError(ids, param)
+
+##
+# end of IpMoteConnector
+# \}
+# 

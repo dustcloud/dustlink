@@ -11,11 +11,9 @@ log.addHandler(NullHandler())
 import copy
 import threading
 
-from DustLinkData import DustLinkData
-
-from oap           import OAPMessage
-
-from EventBus import EventBusClient
+from   DustLinkData               import DustLinkData
+from   EventBus                   import EventBusClient
+from   SmartMeshSDK.protocols.oap import OAPMessage
 
 class AppInjector(EventBusClient.EventBusClient):
 

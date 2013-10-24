@@ -109,7 +109,7 @@ class ListenerUdp(threading.Thread):
                     
                     # dispatch
                     dispatcher.send(
-                        signal        = 'rawDataToLocal',
+                        signal        = 'notifData',
                         data          = packet,
                     )
                     

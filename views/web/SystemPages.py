@@ -9,18 +9,12 @@ log.addHandler(NullHandler())
 import os
 import time
 import datetime
-import random
-from dustWeb import web, \
-                    DustWeb
 import threading
 import copy
-import re
-
 if os.name=='nt':       # Windows
    import _winreg as winreg
 elif os.name=='posix':  # Linux
    import glob
-
 try:
     import yappi
 except ImportError:
@@ -28,25 +22,25 @@ except ImportError:
 else:
     yappiLoaded = True
 
-import DustLink_version
-import sdk_version
-
 from pydispatch import dispatcher
-
-from dustWeb import WebPage
-from dustWeb import WebHandler
-from dustWeb.viz import VizFields
-from dustWeb.viz import VizHtml
-from dustWeb.viz import VizTable
-from dustWeb.viz import VizForm
-from dustWeb.viz import VizTree
-from dustWeb.thirdparty import gviz_api
-
-from DustLinkData import DustLinkData,\
-                         DataVaultException
 
 import ResetManager
 import ResetMotesNetwork
+from dustWeb                 import web, \
+                                    DustWeb, \
+                                    WebPage, \
+                                    WebHandler
+from dustWeb.viz             import VizFields, \
+                                    VizHtml, \
+                                    VizTable, \
+                                    VizForm, \
+                                    VizTree
+from dustWeb.thirdparty      import gviz_api
+
+from DustLink                import DustLink_version
+from DustLinkData            import DustLinkData,\
+                                    DataVaultException
+from SmartMeshSDK            import sdk_version
 
 #============================ object ==========================================
 
@@ -149,35 +143,35 @@ class SystemPages(WebPage.WebPage):
                 username        = username,
                 currentPath     = currentPath,
                 visualizations  =   [
-                                        VizTable.VizTable(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'connections',
-                                            title               = 'Manager Connections',
-                                        ),
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'add',
-                                            title               = 'Add',
-                                        ),
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'delete',
-                                            title               = 'Delete',
-                                        ),
-                                        VizTable.VizTable(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'serialports',
-                                            title               = 'Available Serial Ports',
-                                        ),
-                                    ],
+                    VizTable.VizTable(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'connections',
+                        title               = 'Manager Connections',
+                    ),
+                    VizForm.VizForm(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'add',
+                        title               = 'Add',
+                    ),
+                    VizForm.VizForm(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'delete',
+                        title               = 'Delete',
+                    ),
+                    VizTable.VizTable(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'serialports',
+                        title               = 'Available Serial Ports',
+                    ),
+                ],
             )
             
             return page
@@ -280,7 +274,7 @@ class SystemPages(WebPage.WebPage):
                 assert isinstance(receivedData['connection'],str)
                 
                 connection = receivedData['connection']
-                connection = SystemPages._formatConnectionParams(connection)
+                connection = SystemPages._createConnectionParams(connection)
                 
                 dld.addManagerConnection(
                     connection,
@@ -293,13 +287,220 @@ class SystemPages(WebPage.WebPage):
                 assert isinstance(receivedData['connection'],str)
                 
                 connection = receivedData['connection']
-                connection = SystemPages._formatConnectionParams(connection)
+                connection = SystemPages._createConnectionParams(connection)
                 
                 dld.deleteManagerConnection(
                     connection,
                     username=username,
                 )
             
+            else:
+                raise web.notfound()
+    
+    class pagePublishers(WebHandler.WebHandler):
+        
+        HIDDEN_FIELD_VALUE = '<hidden>'
+        
+        def getPage(self,subResource,username):
+            global webServer
+            global thisWebApp
+            
+            username    = web.ctx.session.username
+            currentPath = WebPage.WebPage.urlStringTolist(web.ctx.path)
+            
+            page = thisWebApp.createPage(
+                username        = username,
+                currentPath     = currentPath,
+                visualizations  =   [
+                    VizForm.VizForm(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'xivelyconfiguration',
+                        title               = 'Xively Configuration',
+                    ),
+                    VizFields.VizFields(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'xivelystatus',
+                        title               = 'Xively Status',
+                    ),
+                    VizForm.VizForm(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'googleconfiguration',
+                        title               = 'Google Configuration',
+                    ),
+                    VizFields.VizFields(
+                        webServer           = webServer,
+                        username            = username,
+                        resourcePath        = currentPath,
+                        subResourcePath     = 'googlestatus',
+                        title               = 'Google Status',
+                    ),
+                ],
+            )
+            
+            return page
+        
+        def getData(self,subResource,username):
+            
+            dld = DustLinkData.DustLinkData()
+            
+            if   subResource==['xivelyconfiguration']:
+                
+                xivelySettings = dld.getPublishersSettings(
+                    publisherName = dld.PUBLISHER_XIVELY,
+                    username      = username,
+                )
+                if xivelySettings['xivelyApiKey']:
+                    xivelySettings['xivelyApiKey']    = self.HIDDEN_FIELD_VALUE,
+                else:
+                    xivelySettings['xivelyApiKey']    = '',
+                
+                return [
+                    {
+                        'name':      'xivelyApiKey',
+                        'value':     xivelySettings['xivelyApiKey'],
+                        'type':      'password',
+                        'editable':  True,
+                    },
+                ]
+            
+            elif subResource==['xivelystatus']:
+                
+                xivelystatusRaw = dispatcher.send(
+                    signal        = 'xivelystatus',
+                    data          = None,
+                )
+                assert len(xivelystatusRaw)==1
+                xivelystatus = xivelystatusRaw[0][1]
+                
+                return [
+                    {
+                        'name':             k,
+                        'value':            v,
+                        'type':             'text',
+                        'editable':         False,
+                    } for (k,v) in xivelystatus.items()
+                ]
+            
+            elif   subResource==['googleconfiguration']:
+                
+                googleSettings = dld.getPublishersSettings(
+                    publisherName = dld.PUBLISHER_GOOGLE,
+                    username      = username,
+                )
+                if not googleSettings['spreadsheetKey']:
+                    googleSettings['spreadsheetKey']  = ''
+                if not googleSettings['worksheetName']:
+                    googleSettings['worksheetName']   = ''
+                if googleSettings['googleUsername']:
+                    googleSettings['googleUsername']  = self.HIDDEN_FIELD_VALUE,
+                else:
+                    googleSettings['googleUsername']  = '',
+                if googleSettings['googlePassword']:
+                    googleSettings['googlePassword']  = self.HIDDEN_FIELD_VALUE,
+                else:
+                    googleSettings['googlePassword']  = '',
+                
+                return [
+                    {
+                        'name':      'spreadsheetKey',
+                        'value':     googleSettings['spreadsheetKey'],
+                        'type':      'text',
+                        'editable':  True,
+                    },
+                    {
+                        'name':      'worksheetName',
+                        'value':     googleSettings['worksheetName'],
+                        'type':      'text',
+                        'editable':  True,
+                    },
+                    {
+                        'name':      'googleUsername',
+                        'value':     googleSettings['googleUsername'],
+                        'type':      'password',
+                        'editable':  True,
+                    },
+                    {
+                        'name':      'googlePassword',
+                        'value':     googleSettings['googlePassword'],
+                        'type':      'password',
+                        'editable':  True,
+                    },
+                ]
+            
+            elif subResource==['googlestatus']:
+                
+                googlestatusRaw = dispatcher.send(
+                    signal        = 'googlestatus',
+                    data          = None,
+                )
+                assert len(googlestatusRaw)==1
+                googlestatus = googlestatusRaw[0][1]
+                
+                return [
+                    {
+                        'name':             k,
+                        'value':            v,
+                        'type':             'text',
+                        'editable':         False,
+                    } for (k,v) in googlestatus.items()
+                ]
+            
+            else:
+                raise web.notfound()
+        
+        def postData(self,receivedData,subResource,username):
+            
+            dld = DustLinkData.DustLinkData()
+            
+            if     subResource==['xivelyconfiguration']:
+                
+                # dummy read to validate that user has read privileges on 'system'
+                dld.getEnabledPersistence(username=username)
+                
+                assert isinstance(receivedData,dict)
+                assert sorted(receivedData.keys())==sorted(dld.PUBLISHER_XIVELY_KEY_ALL)
+                
+                if receivedData['xivelyApiKey']==self.HIDDEN_FIELD_VALUE:
+                    raise ValueError('invalid xivelyApiKey')
+                
+                dld.setPublisherSettings(
+                    publisherName    = dld.PUBLISHER_XIVELY,
+                    settings         = {
+                        'xivelyApiKey':     receivedData['xivelyApiKey'],
+                    },
+                    username=username,
+                )
+            
+            elif   subResource==['googleconfiguration']:
+                
+                # dummy read to validate that user has read privileges on 'system'
+                dld.getEnabledPersistence(username=username)
+                
+                assert isinstance(receivedData,dict)
+                assert sorted(receivedData.keys())==sorted(dld.PUBLISHER_GOOGLE_KEY_ALL)
+                
+                if receivedData['googleUsername']==self.HIDDEN_FIELD_VALUE:
+                    raise ValueError('invalid googleUsername')
+                if receivedData['googlePassword']==self.HIDDEN_FIELD_VALUE:
+                    raise ValueError('invalid googlePassword')
+                
+                dld.setPublisherSettings(
+                    publisherName    = dld.PUBLISHER_GOOGLE,
+                    settings         = {
+                        'spreadsheetKey':   receivedData['spreadsheetKey'],
+                        'worksheetName':    receivedData['worksheetName'],
+                        'googleUsername':   receivedData['googleUsername'],
+                        'googlePassword':   receivedData['googlePassword'],
+                    },
+                    username=username,
+                )
+                
             else:
                 raise web.notfound()
     
@@ -510,101 +711,6 @@ class SystemPages(WebPage.WebPage):
                     dld.enablePersistence(receivedData['fieldName'],username=username)
                 else:
                     dld.disablePersistence(receivedData['fieldName'],username=username)
-            
-            else:
-                raise web.notfound()
-    
-    class pageMirror(WebHandler.WebHandler):
-        
-        def getPage(self,subResource,username):
-            global webServer
-            global thisWebApp
-            
-            username    = web.ctx.session.username
-            currentPath = WebPage.WebPage.urlStringTolist(web.ctx.path)
-            
-            page = thisWebApp.createPage(
-                username        = username,
-                currentPath     = currentPath,
-                visualizations  =   [
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'settings',
-                                            title               = 'Mirror Mode Settings',
-                                        ),
-                                    ],
-            )
-            
-            return page
-        
-        def getData(self,subResource,username):
-            
-            dld = DustLinkData.DustLinkData()
-            
-            if   subResource==['settings']:
-                
-                enabledPersistence = dld.getEnabledPersistence(username=username)
-                allPersistence     = DustLinkData.DustLinkData.PERSISTENCE_ALL[:]
-                allPersistence.remove(DustLinkData.DustLinkData.PERSISTENCE_NONE)
-                
-                settings = dld.getMirrorSettings(username=username)
-                if not settings['spreadsheetKey']:
-                    settings['spreadsheetKey']=''
-                if not settings['worksheetName']:
-                    settings['worksheetName']=''
-                
-                return [
-                    {
-                        'name':      'spreadsheetKey',
-                        'value':     settings['spreadsheetKey'],
-                        'type':      'text',
-                        'editable':  True,
-                    },
-                    {
-                        'name':      'worksheetName',
-                        'value':     settings['worksheetName'],
-                        'type':      'text',
-                        'editable':  True,
-                    },
-                    {
-                        'name':      'googleUsername',
-                        'value':     '',
-                        'type':      'password',
-                        'editable':  True,
-                    },
-                    {
-                        'name':      'googlePassword',
-                        'value':     '',
-                        'type':      'password',
-                        'editable':  True,
-                    },
-                ]
-            
-            else:
-                raise web.notfound()
-        
-        def postData(self,receivedData,subResource,username):
-            
-            dld = DustLinkData.DustLinkData()
-            
-            if   subResource==['settings']:
-                # dummy read to validate that user has read privileges on 'system'
-                dld.getEnabledPersistence(username=username)
-            
-                assert isinstance(receivedData,dict)
-                keys = receivedData.keys()
-                keys.sort()
-                assert keys==['googlePassword','googleUsername','spreadsheetKey','worksheetName']
-                
-                dld.setMirrorSettings(
-                    receivedData['spreadsheetKey'],
-                    receivedData['worksheetName'],
-                    receivedData['googleUsername'],
-                    receivedData['googlePassword'],
-                    username=username
-                )
             
             else:
                 raise web.notfound()
@@ -895,7 +1001,7 @@ class SystemPages(WebPage.WebPage):
                 # make sure this user had delete privileges on system
                 dld.authorize(username,['system'],DustLinkData.DustLinkData.ACTION_DELETE)
                 
-                connectionParams = SystemPages._formatConnectionParams(receivedData['connection'])
+                connectionParams = SystemPages._createConnectionParams(receivedData['connection'])
                 
                 resetter = ResetManager.ResetManager(connectionParams)
             
@@ -986,10 +1092,10 @@ class SystemPages(WebPage.WebPage):
                     assert isinstance(receivedData['configfile'],str)
                     
                     # parse passed file (and make sure it's correctly formatted)
-                    parsedConfig = DustLinkData.DustLinkData.parseConfigString(receivedData['configfile'])
-                    
-                    if not parsedConfig:
-                        raise web.HTTPError('400 bad request',{},'Badly formatted configuration file.')
+                    try:
+                        parsedConfig = DustLinkData.DustLinkData.parseConfigString(receivedData['configfile'])
+                    except ValueError as err:
+                        raise web.HTTPError('400 bad request',{},'Badly formatted configuration file: {0}'.format(err))
                     
                     # reset DustLink data
                     dld.factoryReset()
@@ -1052,12 +1158,22 @@ class SystemPages(WebPage.WebPage):
                             dld.addManagerConnection(
                                 line['connectionDetails'],
                             )
-                        elif line['type']=='mirror':
-                            dld.setMirrorSettings(
-                                line['spreadsheetKey'],
-                                line['worksheetName'],
-                                line['googleUsername'],
-                                line['googlePassword']
+                        elif line['type']=='publisherXively':
+                            dld.setPublisherSettings(
+                                publisherName    = dld.PUBLISHER_XIVELY,
+                                settings         = {
+                                    'xivelyApiKey':   line['xivelyApiKey'],
+                                },
+                            )
+                        elif line['type']=='publisherGoogle':
+                            dld.setPublisherSettings(
+                                publisherName    = dld.PUBLISHER_GOOGLE,
+                                settings         = {
+                                    'spreadsheetKey': line['spreadsheetKey'],
+                                    'worksheetName':  line['worksheetName'],
+                                    'googleUsername': line['googleUsername'],
+                                    'googlePassword': line['googlePassword'],
+                                },
                             )
                         elif line['type']=='adminPassword':
                             try:
@@ -1685,10 +1801,22 @@ class SystemPages(WebPage.WebPage):
                         '<a target="_new" href="/static/javascript/d3.v2.license">license</a>',
                     ],
                     [
+                        'dagre',
+                        'Chris Pettitt',
+                        '<a target="_new" href="https://github.com/cpettitt/dagre">website</a>',
+                        '<a target="_new" href="https://github.com/cpettitt/dagre/blob/master/LICENSE">license</a>',
+                    ],
+                    [
                         'dataTables',
                         'Allan Jardine',
                         '<a target="_new" href="http://datatables.net/">website</a>',
                         '<a target="_new" href="/static/javascript/jquery.dataTables.min.license">license</a>',
+                    ],
+                    [
+                        'Google Visualization Converter',
+                        '',
+                        '<a target="_new" href="http://code.google.com/p/google-visualization-python/">website</a>',
+                        '<a target="_new" href="http://www.apache.org/licenses/LICENSE-2.0">license</a>',
                     ],
                     [
                         'jQuery',
@@ -1715,16 +1843,10 @@ class SystemPages(WebPage.WebPage):
                         '<a target="_new" href="http://webpy.org/">license</a>',
                     ],
                     [
-                        'Google Visualization Converter',
+                        'Xively',
                         '',
-                        '<a target="_new" href="http://code.google.com/p/google-visualization-python/">website</a>',
-                        '<a target="_new" href="http://www.apache.org/licenses/LICENSE-2.0">license</a>',
-                    ],
-                    [
-                        'dagre',
-                        'Chris Pettitt',
-                        '<a target="_new" href="https://github.com/cpettitt/dagre">website</a>',
-                        '<a target="_new" href="https://github.com/cpettitt/dagre/blob/master/LICENSE">license</a>',
+                        '<a target="_new" href="https://xively.com/">website</a>',
+                        '<a target="_new" href="https://github.com/xively/xively-python/blob/master/LICENSE.md">license</a> (Python)<br/><a target="_new" href="https://github.com/xively/xively-js/blob/master/LICENSE.md">license</a> (Javascript)',
                     ],
                 ]
                 
@@ -1769,11 +1891,13 @@ class SystemPages(WebPage.WebPage):
             return ['Could not scan for serial port. Error={0}'.format(err)]
     
     @classmethod
-    def _formatConnectionParams(self,connection):
-        if connection.count(':'):
+    def _createConnectionParams(self,connection):
+        if   connection.count(':'):
             connection    = connection.split(':')
             connection[1] = int(connection[1])
             connection    = tuple(connection)
+        elif connection.upper().startswith('COM'):
+            connection    = connection.upper()
         return connection
     
     def __init__(self, webServer_param):
@@ -1791,7 +1915,7 @@ class SystemPages(WebPage.WebPage):
         WebPage.WebPage.__init__(self,webServer       = self.webServer,
                                       url             = 'system',
                                       title           = 'System',
-                                      webHandler      = self.pageManagers,)
+                                      webHandler      = self.pageWelcome,)
         
         # add sub-pages
         self.registerPage(WebPage.WebPage(webServer   = self.webServer,
@@ -1802,6 +1926,10 @@ class SystemPages(WebPage.WebPage):
                                           url         = 'managers',
                                           title       = 'Managers',
                                           webHandler  = self.pageManagers,))
+        self.registerPage(WebPage.WebPage(webServer   = self.webServer,
+                                          url         = 'publishers',
+                                          title       = 'Publishers',
+                                          webHandler  = self.pagePublishers,))
         self.registerPage(WebPage.WebPage(webServer   = self.webServer,
                                           url         = 'adminpassword',
                                           title       = 'Admin Password',
@@ -1814,10 +1942,6 @@ class SystemPages(WebPage.WebPage):
                                           url         = 'persistence',
                                           title       = 'Persistence',
                                           webHandler  = self.pagePersistence,))
-        self.registerPage(WebPage.WebPage(webServer   = self.webServer,
-                                          url         = 'mirror',
-                                          title       = 'Mirror Mode',
-                                          webHandler  = self.pageMirror,))
         self.registerPage(WebPage.WebPage(webServer   = self.webServer,
                                           url         = 'demomode',
                                           title       = 'Demo Mode',

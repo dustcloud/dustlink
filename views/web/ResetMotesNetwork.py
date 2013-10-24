@@ -12,10 +12,10 @@ import time
 import threading
 import traceback
 
-from pydispatch    import dispatcher
+from pydispatch                 import dispatcher
 
-from DustLinkData  import DustLinkData
-from oap           import OAPMessage
+from DustLinkData               import DustLinkData
+from SmartMeshSDK.protocols.oap import OAPMessage
 
 class ResetMotesNetwork(threading.Thread):
     
@@ -36,7 +36,7 @@ class ResetMotesNetwork(threading.Thread):
         
         dispatcher.connect(
             self._dataIndication,
-            signal = 'rawDataToLocal',
+            signal = 'notifData',
             weak   = False,
         )
         
@@ -181,7 +181,7 @@ class ResetMotesNetwork(threading.Thread):
         finally:
             dispatcher.disconnect(
                 self._dataIndication,
-                signal = 'rawDataToLocal',
+                signal = 'notifData',
                 weak   = False,
             )
     

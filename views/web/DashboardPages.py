@@ -31,13 +31,29 @@ class DashboardPages(WebPage.WebPage):
             
             # obtain a copy of the mirror data
             mirrorData = dispatcher.send(
-                    signal        = 'getMirrorData',
-                    data          = None,
-                )
-            
+                signal        = 'getMirrorData',
+                data          = None,
+            )
             assert len(mirrorData)==1
+            returnData = mirrorData[0][1]
             
-            returnVal = mirrorData[0][1]
+            # set whether configurable
+            for d in returnData:
+                if d['type']=='temperature':
+                    try:
+                        dld.authorize(
+                            username,
+                            ['motes',d['mac'],'apps','OAPTemperature'],
+                            DustLinkData.DustLinkData.ACTION_PUT
+                        )
+                    except DataVaultException.Unauthorized:
+                        d['isConfigurable'] = False
+                    else:
+                        d['isConfigurable'] = True
+            
+            # convert MAC addresses to string
+            for d in returnData:
+                d['mac']            = DustLinkData.DustLinkData.macToString(d['mac'])
             
             # specify whether user can calibrate
             try:
@@ -46,7 +62,7 @@ class DashboardPages(WebPage.WebPage):
             except DataVaultException.Unauthorized:
                 pass # username has not sufficient rights 
             else:
-                for row in returnVal:
+                for row in returnData:
                     if row['type']=='pressure':
                         row['lastvalue'] = row['lastvalue']+'_calibrate'
             
@@ -64,9 +80,9 @@ class DashboardPages(WebPage.WebPage):
                         except DataVaultException.Unauthorized:
                             pass # username has not sufficient rights
                         else:
-                            returnVal += [
+                            returnData += [
                                 {
-                                    'source':         DustLinkData.DustLinkData.macToString(mac),
+                                    'mac':            DustLinkData.DustLinkData.macToString(mac),
                                     'type':           'led',
                                     'min':            None,
                                     'lastvalue':      None,
@@ -81,14 +97,28 @@ class DashboardPages(WebPage.WebPage):
                     macsInNetwork += dld.getNetworkMotes(netname)
                 macsInNetwork = [DustLinkData.DustLinkData.macToString(m) for m in macsInNetwork]
             
+            # add link
+            for r in returnData:
+                
+                linkUrl = None
+                if   r['type']=='led':
+                   linkUrl  = '/motedata?mac={0}&app=OAPLED'.format(r['mac'])
+                elif r['type']=='temperature':
+                    linkUrl  = '/motedata?mac={0}&app=OAPTemperature'.format(r['mac'])
+                elif r['type']=='voltage':
+                    linkUrl  = '/motedata?mac={0}&app=DC2126A'.format(r['mac'])
+                elif r['type']=='acceleration':
+                    linkUrl  = '/motedata?mac={0}&app=LIS331'.format(r['mac'])
+                
+                if linkUrl:
+                    r['linkText'] = 'view locally'
+                    r['linkUrl']  = linkUrl
+            
             # filter to contains only motes currently in network
-            returnVal = [r for r in returnVal if r['source'] in macsInNetwork]
+            returnData = [r for r in returnData if r['mac'] in macsInNetwork]
             
             return {
-                'config': {
-                    'showTimeline': True,
-                },
-                'data': returnVal
+                'data': returnData
             }
         
         def postData(self,receivedData,subResource,username):

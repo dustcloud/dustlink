@@ -20,8 +20,10 @@ class VizGoogleCharts(Viz.Viz):
     @classmethod
     def getHeaderTemplate(self,PACKAGE,VISUALIZATION,EXTRAOPTIONS):
         
-        extraOptions = ['{0}: {1},\n'.format(k,v) for (k,v) in EXTRAOPTIONS.items()]
-        extraOptions = '\n'.join(extraOptions)
+        extraOptions         = ['                        {0}: {1}'.format(k,v) for (k,v) in EXTRAOPTIONS.items()]
+        extraOptions         = ',\n'.join(extraOptions)
+        if extraOptions:
+            extraOptions     = ',\n'+extraOptions
         
         return '''
             <script type='text/javascript'>
@@ -43,8 +45,7 @@ class VizGoogleCharts(Viz.Viz):
                         animation: {{
                             duration:   500,
                             easing:     'out',
-                        }},
-                        '''+extraOptions+'''
+                        }}'''+extraOptions+'''
                     }};
                     
                     drawChart_{VIZID}();
@@ -82,13 +83,13 @@ class VizGoogleCharts(Viz.Viz):
                                     }},
                                     500: function() {{
                                         updateStatus(statusDivId,'failure','Internal server error.');
-                                    }},
+                                    }}
                                 }},
                                 error: function(jqXHR, textStatus, errorThrown) {{
                                     if (textStatus=='timeout') {{
                                         updateStatus(statusDivId,'failure','Server unreachable.');
                                     }}
-                                }},
+                                }}
                             }}).responseText;
                             
                             data_{VIZID} = new google.visualization.DataTable(JSONObject_{VIZID}, 0.5);

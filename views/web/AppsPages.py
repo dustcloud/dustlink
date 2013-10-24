@@ -180,26 +180,34 @@ class AppsPages(WebPageDyn.WebPageDyn):
             if   subResource==['appfields']:
                 with dld.dataLock:
                     # description
-                    self._postDataDynDescription(appname,
-                                                 receivedData['description'],
-                                                 username)
+                    self._postDataDynDescription(
+                        appname,
+                        receivedData['description'],
+                        username,
+                    )
                     
                     # transport
-                    self._postDataDynTransport(appname,
-                                               receivedData['transport'],
-                                               username)
+                    self._postDataDynTransport(
+                        appname,
+                        receivedData['transport'],
+                        username,
+                    )
                     
                     # fromMote
-                    self._postDataDynFields(appname,
-                                            DustLinkData.DustLinkData.APP_DIRECTION_FROMMOTE,
-                                            receivedData['fromMote'],
-                                            username)
+                    self._postDataDynFields(
+                        appname,
+                        DustLinkData.DustLinkData.APP_DIRECTION_FROMMOTE,
+                        receivedData['fromMote'],
+                        username,
+                    )
                     
                     # toMote
-                    self._postDataDynFields(appname,
-                                            DustLinkData.DustLinkData.APP_DIRECTION_TOMOTE,
-                                            receivedData['toMote'],
-                                            username)
+                    self._postDataDynFields(
+                        appname,
+                        DustLinkData.DustLinkData.APP_DIRECTION_TOMOTE,
+                        receivedData['toMote'],
+                        username,
+                    )
                 
             else:
                 raise web.notfound()
@@ -350,11 +358,14 @@ class AppsPages(WebPageDyn.WebPageDyn):
             
             # endianness
             if fieldFormats:
-                if fieldFormats.startswith('<'):
+                if   fieldFormats.startswith('<'):
                     returnVal['endianness']      = 'little-endian'
                     fieldFormats                 = fieldFormats[1:]
-                else:
+                elif fieldFormats.startswith('>'):
                     returnVal['endianness']      = 'big-endian'
+                    fieldFormats                 = fieldFormats[1:]
+                else:
+                    raise SystemError("No endianness specified in format \"{0}\"".format(fieldFormats))
             else:
                 returnVal['endianness']          = None
             
@@ -404,8 +415,14 @@ class AppsPages(WebPageDyn.WebPageDyn):
             returnVal['fieldNames']   = []
             
             # endianness
-            if webFields['endianness']=='little-endian':
+            if   webFields['endianness']=='little-endian':
                 returnVal['fieldFormats'] += '<'
+            elif webFields['endianness']=='big-endian':
+                returnVal['fieldFormats'] += '>'
+            elif (not webFields['endianness']):
+                returnVal['fieldFormats'] += '>'
+            else:
+                raise SystemError("unexpected endianness {0}".format(webFields['endianness']))
             
             # fieldRows
             for f in webFields['fieldRows']:
@@ -414,7 +431,7 @@ class AppsPages(WebPageDyn.WebPageDyn):
                         returnVal['fieldFormats'] += str(s[0])
                 returnVal['fieldNames'].append(str(f['name']))
             
-            if (not returnVal['fieldFormats']) or (returnVal['fieldFormats']=='<'):
+            if (not returnVal['fieldFormats']) or (returnVal['fieldFormats']=='<') or (returnVal['fieldFormats']=='>'):
                 returnVal['fieldFormats']   = None
             if not returnVal['fieldNames']:
                 returnVal['fieldNames']     = None

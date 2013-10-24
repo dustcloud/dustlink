@@ -11,10 +11,9 @@ log.addHandler(NullHandler())
 import threading
 import traceback
 
-from DustLinkData            import DustLinkData
-
-from IpMgrConnectorSerial    import IpMgrConnectorSerial
-from IpMgrConnectorMux       import IpMgrConnectorMux
+from DustLinkData                      import DustLinkData
+from SmartMeshSDK.IpMgrConnectorSerial import IpMgrConnectorSerial
+from SmartMeshSDK.IpMgrConnectorMux    import IpMgrConnectorMux
 
 class ResetManager(threading.Thread):
     

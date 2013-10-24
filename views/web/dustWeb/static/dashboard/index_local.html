@@ -1,23 +1,30 @@
+<!--
+This dashboard is used by Dustlink. If you want to run a standalone dashboard
+(i.e. static HTML), double-click on index.html, NOT this file.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
    <meta name="apple-mobile-web-app-capable" content="yes">
    
    <title>Demo Dashboard</title>
    
    <script type="text/javascript" src="/static/javascript/jquery-1.8.0.min.js"></script>
    <script type="text/javascript" src="dragdropresize.js"></script>
-   <script type="text/javascript" src="demoselection.js"></script>
+   <script type="text/javascript" src="inputselection_local.js"></script>
    <script type="text/javascript" src="dashboard.js"></script>
+   
    
    <link type="text/css" rel="stylesheet" href="dashboard.css"/>
 </head>
 <body>
    <div id="demodashboard"></div>
    <div class="logo" id="logo">
-      <div class="logotext">[ back ]</div>
-      <img class="logoimage" src="logo.png" alt="logo" />
+      <div>[ back ]</div>
+      <img src="logo.png" alt="logo" />
    </div>
    <script type="text/javascript">
       $(document).ready(function(){
@@ -25,8 +32,11 @@
          // position the logo
          positionLogo();
          
-         // initialize the demo
-         initDemoselection();
+         // initialize the data input
+         initInputSelection({});
+         
+         // load initial content right away
+         refreshDashboard();
          
          // periodically refresh the dashboard
          setInterval(refreshDashboard,1000);

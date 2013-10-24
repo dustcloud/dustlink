@@ -76,22 +76,38 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     INTRO['motes', 'delete']   = \
     "Delete a mote from the system."
     MORE[ 'motes', 'delete']   = '''
-    Using this function also removes all the data associated with mote,
-    including the sensor data received from that mote.
+    Using this function also removes all the data associated with a mote,
+    including the sensor all data received.
     '''
     CLASS[ 'motes', 'delete'] = []
+    
+    #===== /motes/cleanup
+    
+    INTRO['motes', 'cleanup']   = \
+    "Delete all motes not currently in a network."
+    MORE[ 'motes', 'cleanup']   = '''
+    <p>All motes that have ever joined the network will be displayed in the mote list.
+    Even motes that have gone "Lost", or have been purposely removed will remain on the list.
+    This command will ONLY remove motes that have never joined a manager since it was
+    last started.</p>
+    <p>Enter the word <tt>cleanup</tt> in the form below and click on
+    the <tt>submit</tt> button.</p>
+    <p>Note that you need to be logged into DustLink as a user with delete
+    privileges on the <tt>motes.*</tt> resource.</p>
+    '''
+    CLASS[ 'motes', 'cleanup'] = []
     
     #===== /motes/*
     
     INTRO['motes', '*']   = \
-    "This page displays information about a particular mote."
+    "The following is information about this particular mote."
     MORE[ 'motes', '*']   = None
     CLASS[ 'motes', '*'] = []
     
     #===== /motes/*/info
     
     INTRO['motes', '*', 'info']   = \
-    "Information the manager knows about this mote."
+    "Detailed information about this mote, collected and stored by the manager."
     MORE[ 'motes', '*', 'info']   = '''
     The SmartMesh IP manager maintains information about each mote in the
     network. DustLink periodically retrieves that information and displays it
@@ -119,7 +135,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     '''
     
     INTRO['motes', '*', 'apps']   = \
-    "Apps declared on this mote."
+    "Applications declared on this mote."
     MORE[ 'motes', '*', 'apps']   = '''
     These applications are the ones the user has <i>declared</i> are
     running on this mote using the Attach/Detach forms below, or which DustLink
@@ -131,7 +147,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     INTRO['motes', '*', 'attach']  = \
     "Attach an application to a mote."
     MORE[ 'motes', '*', 'attach']  = WARNING_ATTACHING_APPS
-    CLASS['motes', '*', 'attach'] = []
+    CLASS[ 'motes', '*', 'attach'] = []
     
     #===== /motes/*/detach
     
@@ -171,15 +187,16 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     "Delete a network from DustLink."
     MORE[ 'networks', 'delete']   = '''
     Using this function removes all network-related data associated with
-    this network, such as topology. It does not, however, remove the motes
-    contained in that network, nor the sensor data received from those motes.
+    this network, such as topology, user privileges, and info attached to
+    each mote. It does not, however, remove the motes contained in that
+    network, nor the sensor data received from those motes.
     '''
     CLASS[ 'networks', 'delete'] = []
     
     #===== /networks/*
     
     INTRO['networks', '*']   = \
-    "This page displays information about a particular network."
+    "The following is information about this particular network."
     MORE[ 'networks', '*']   = None
     CLASS[ 'networks', '*'] = []
     
@@ -208,11 +225,11 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     </li>
     <li>
         <span style="background-color:#FFF;">white</span>: SmartMesh IP mote,
-        which is not in the "Lost" state.
+        connected to the network and in "Operational" state.
     </li>
     <li>
         <span style="background-color:#CCC;">gray</span>: SmartMesh IP mote,
-        which is in the "Lost" state.
+        disconnected from the network and in the "Lost" state.
     </li>
     </ul>
     
@@ -242,7 +259,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     INTRO[ 'networks', '*', 'motes'] = \
     "The list of motes which are part of this network."
     MORE[  'networks', '*', 'motes'] = None
-    CLASS['networks', '*', 'motes'] = [CLASS_DEMO]
+    CLASS[ 'networks', '*', 'motes'] = [CLASS_DEMO]
     
     #===== /networks/*/paths
     
@@ -264,8 +281,8 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     '''
     WARNING_DELETING_APPS = '''
     When you delete an application trough this web interface, you are
-    only asking DustLink to "forget" how to interact with a mote running this
-    application. It does <strong>not</strong> re-program the mote.
+    only asking DustLink to "forget" how to interact with this application if
+    running on a mote. It does <strong>not</strong> re-program the mote.
     '''
     
     #===== /apps
@@ -273,13 +290,14 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     INTRO[ ('apps', )] = \
     "Manage the applications known to DustLink."
     MORE[  ('apps', )] = '''
-    <p>Motes run applications which send data to the manager and react
+    <p>Motes run applications which send and receive data from a manager or
+    other applications on the Internet. to the manager and react
     to command received from the manager/Internet.<p>
     
     <p>Use this page to indicate to DustLink which applications are running
-    inside your mesh network. Using this information, DustLink is able 
-    to parse the data received from the motes and format commands to send to
-    motes.</p>
+    inside your motes in the network. Using this information, DustLink is able 
+    to parse incomming data received from those applications as well as format
+    commands to send out.</p>
     '''
     CLASS[('apps', )] = []
     
@@ -300,7 +318,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     INTRO[  'apps', 'delete'] = \
     "Remove an existing application from DustLink."
     MORE[   'apps', 'delete'] = '''
-    <p>To remove an application from DustLink, select it name from the
+    <p>To remove an application from DustLink, select its name from the
     drop-down menu and click "Submit".</p>
     
     <p class="doc-note">Deleting an application
@@ -314,7 +332,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     INTRO[  'apps', '*'] = \
     "Update the information about a particular application."
     MORE[   'apps', '*'] = '''
-    <p class="doc-warning">Updating the fields received from an app only has an
+    <p class="doc-warning">Updating the fields received from an application only has an
     effect if DustLink is not running in fast mode.</p>
     '''
     CLASS[ 'apps', '*'] = []
@@ -323,7 +341,100 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     
     INTRO[ 'apps', '*', 'appfields'] = None
     MORE[  'apps', '*', 'appfields'] = None
-    CLASS['apps', '*', 'appfields'] = []
+    CLASS[ 'apps', '*', 'appfields'] = []
+    
+    #======================== health ==========================================
+    
+    #===== /health
+    
+    INTRO[ ('health', )] = \
+    "Network health monitoring page."
+    MORE[  ('health', )] = '''
+    <p>DustLink periodically assesses the overall health of each network it is
+    connected to by running a series of tests. Each test will display a status, when it
+    was last run, and PASS/FAIL results.<p>
+    
+    <p>Click on a network in the menu on your left to display its test rusults and status.<p>
+    '''
+    CLASS[('health', )] = [CLASS_DEMO]
+    
+    #===== /health/*
+    
+    INTRO[  'health', '*'] = \
+    "Network health information for the selected network."
+    MORE[   'health', '*'] = '''
+    <p>DustLink periodically assesses the overall health of each network it is
+    connected to by running a series of tests. Each test will display a status, when it
+    was last run, and PASS/FAIL results.</p>
+    
+    <p>Assessing the health of the network consists in the following steps:</p>
+    <ul>
+        <li>Retrieving information about the motes and paths from the manager.</li>
+        <li>Running a number of tests on the collected data.</li>
+    </ul>
+    '''
+    CLASS[ 'health', '*'] = []
+    
+    #===== /health/*/testschedule
+    
+    INTRO[  'health', '*', 'testschedule'] = \
+    "Test schedule controls."
+    MORE[   'health', '*', 'testschedule'] = '''
+    <p>This form displays the following;</p>
+    <ul>
+        <li><tt>period (min)</tt>: The interval between test runs, in minutes (smallest interval is 1 minute).</li>
+        <li><tt>next test in</tt>: Counts down to the next test run (updates automatically).</li>
+        <li><tt>Run test now</tt>: Click this button to kick off an test execution cycle immediately.</li>
+    </ul>
+    '''
+    CLASS[ 'health', '*',  'testschedule'] = [CLASS_DEMO]
+    
+    #===== /health/*/testresults
+    
+    INTRO[  'health', '*', 'testresults'] = \
+    "Test results and status. Click on any item for details."
+    MORE[   'health', '*', 'testresults'] = '''
+    <p>The report is divided into 6 sections as follows;</p>
+    <ul>
+        <li><tt>S</tt>: Status, Pass/Fail status of the last time a test was run.</li>
+        <li><tt>W</tt>: Weather, displayed as a consolidation of the last 5 times the test was run.</li>
+        <li><tt>Test Name</tt>: The name of the test.</li>
+        <li><tt>Last Run</tt>: Date and time when test was last run.</li>
+        <li><tt>Last Success</tt>: Date and time when test last passed.</li>
+        <li><tt>Last Failure</tt>: Date and time when test last failed.</li>
+    </ul>
+    
+    <p>The following is the list of tests that are run to gauge your network's health.</p>
+    <ul>
+        <li><tt>oneSingleParentMote</tt>: Verifies that there is only one mote with a single parent in the network.</li>
+        <li><tt>numLinks</tt>: Verifies that the mote is assigned less links that the maximum number it can support.</li>
+        <li><tt>multipleJoins</tt>: Verifies that motes have not reset, i.e. left the network and then re-joined.</li>
+        <li><tt>stabilityVsRSSI</tt>: Verifies that path stabilities are expected, given their RSSI.</li>
+        <li><tt>networkReliability</tt>: Verifies reliability of delivering packets.</li>
+        <li><tt>numGoodNeighbors</tt>: Verifies that each mote has enough potential neighbors to guarantee a reliable mesh network.</li>
+        <li><tt>networkAvailability</tt>: Verifies that the network as a whole has enough bandwidth available for data traffic.</li>
+        <li><tt>perMoteAvailability</tt>: Verifies that the motes' own packet generation is appropriate for its connection.</li>
+    </ul>
+    '''
+    CLASS[ 'health', '*', 'testresults'] = [CLASS_DEMO]
+    
+    #===== /health/*/testreset
+    
+    INTRO[  'health', '*', 'testreset'] = \
+    "Reset all test statuses and results."
+    MORE[   'health', '*', 'testreset'] = '''
+    <p>This function resets all the test results and restarts them. You can use
+    this after a test had failed and appropriate action was taken to remedy the
+    situation.</p>
+    
+    <p>To do so, enter <tt>reset</tt> in the form below, and click
+    <tt>Submit</tt>.</p>
+    
+    <p><u>Note</u>: you need to be logged in as a user which has delete
+    privileges on this network.</p>
+    '''
+    CLASS[ 'health', '*', 'testreset'] = []
+
     
     #======================== Users ===========================================
     
@@ -371,31 +482,35 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     Deleting a user erases the user's associated information, such as
     privileges.
     '''
-    CLASS['users', 'delete'] = []
+    CLASS[ 'users', 'delete'] = []
     
     #===== /users/*
     
     INTRO[ 'users', '*'] = \
     "Update the information about a particular user."
     MORE[  'users', '*'] = None
-    CLASS['users', '*'] = []
+    CLASS[ 'users', '*'] = []
     
     #===== /users/*/authentication
     
     INTRO[ 'users', '*', 'authentication'] = \
     "Update the authentication method of this user."
-    MORE[  'users', '*', 'authentication'] = WARNING_NOTIMPLEMENTED
-    CLASS['users', '*', 'authentication'] = []
+    MORE[  'users', '*', 'authentication'] = '''
+    <p>Select the authentication method.</p>
+    
+    <p class="doc-note">The "ssl" method is not yet implemented.</p>
+    '''
+    CLASS[ 'users', '*', 'authentication'] = []
     
     #===== /users/*/password
     
     INTRO[ 'users', '*', 'password'] = \
     "Reset a user's password."
     MORE[  'users', '*', 'password'] = '''
-    You do not need to enter the old password of a regular user when
-    logged in as admin.
+    <p>Enter both the current and the new password to make the change.  If you are logged in as
+    admin making changes to this user, the currect password is not required... leave blank.</p>
     '''
-    CLASS['users', '*', 'password'] = []
+    CLASS[ 'users', '*', 'password'] = []
     
     #===== /users/*/privileges
     
@@ -421,7 +536,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     created and the table below is empty, it has no privileges on any resource.
     </p>
     '''
-    CLASS['users', '*', 'privileges'] = []
+    CLASS[ 'users', '*', 'privileges'] = []
     
     #===== /users/*/grant
     
@@ -436,7 +551,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     that this includes motes currently in the system, and motes that might be
     added in the future.</p>
     '''
-    CLASS['users', '*', 'grant'] = []
+    CLASS[ 'users', '*', 'grant'] = []
     
     #===== /users/*/deny
     
@@ -446,7 +561,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     The wildcard (<tt>*</tt>) is used to deny privileges from all
     sub-resources.
     '''
-    CLASS['users', '*', 'deny'] = []
+    CLASS[ 'users', '*', 'deny'] = []
     
     #======================== System ==========================================
     
@@ -460,7 +575,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     
     INTRO['system', 'welcome'] = None
     MORE[ 'system', 'welcome'] = None
-    CLASS['system', 'welcome'] = [CLASS_DEMO]
+    CLASS[ 'system', 'welcome'] = [CLASS_DEMO]
     
     #===== /system/welcome/welcome
     # Directly accessed via VizHtml
@@ -471,12 +586,14 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     
     <p>DustLink is a web-based SmartMesh IP management system with the
     following features:</p>
-    
+
     <ul>
         <li>Connects to an arbitrary number of SmartMesh IP managers.</li>
         <li>Gathers and displays information about motes, managers and networks.</li>
         <li>Displays the topology of the low-power wireless mesh networks.</li>
         <li>Stores and displays sensor data from arbitrary applications.</li>
+        <li>Monitors the health of all connected networks.</li>
+        <li>Bridges to the Xively cloud service as well as Google Spreadsheet to publish data.</li>
         <li>Uses advanced privileges for fine-grained user access management.</li>
     </ul> 
     
@@ -493,12 +610,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     highlighted <span style='color:green;font-weight:600'>green</span>. All
     non-highlighted items are for advanced use.</p>
     
-    <p>
-        If you can read this page, you have succefully connected your DemoBox
-        to your computer, and pointed your browser to the correct web address.
-    </p>
-    
-    <h3>Quick Start</h3>
+    <h3>DemoBox Quick Start</h3>
     <ol>
         <li>
             Connect your SmartMesh IP manager to one of the 3 USB connectors
@@ -510,8 +622,8 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         </li>
         <li>
             From the top menu (you might have to refresh your page), select the
-            network correponding to your connection. This page displays the
-            topology of your network.
+            network correponding to your connection under "NETWORKS". This page
+            displays the topology of your network.
         </li>
         <li>
             Navigate to the
@@ -519,14 +631,14 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
             the data generated by the motes:
             <ul>
                 <li>
-                    You can move the widgets around by dragging the white part.
+                    You can move the widgets around by dragging them anywhere on the page.
                 </li><li>
-                    You can change the temperature sampling period by clicking
-                    on the configure icon of each mote.
+                    You can change the temperature sampling period of any mote by
+                    clicking on the configure icon (small wrench).
                 </li><li>
                     You can toggle the LED on the motes by clicking on the
                     light bulb (note: on your motes, the LED jumper must be set
-                    for the LED to be active).
+                    for the LED to be visible).
                 </li>
             </ul>
             <p class="doc-warning">
@@ -538,9 +650,10 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
                 <a href="/system/fastmode">Fast Mode</a>.
             </p>
             <p class="doc-warning">
-                In Fast Mode, data is not logged into the system, so data
-                time-lines will not update. However, you will be able to see
-                quick updates in the <a href="/dashboard">Dashboard</a>.
+                In Fast Mode, data is not logged into the system's SD card, so data
+                time-lines will not be updated. Fast data updates in the
+                <a href="/dashboard">Dashboard</a> will continue to be displayed. This mode
+                will not affect data publishing to an external service such as Xively.
             </p>
         </li>
         
@@ -581,7 +694,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         <li>Watch your data come in.</li>
     </ol>
     '''
-    CLASS['system', 'welcome', 'welcome'] = [CLASS_DEMO]
+    CLASS[ 'system', 'welcome', 'welcome'] = [CLASS_DEMO]
     
     #===== /system/welcome/systemevents
     
@@ -645,7 +758,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     
     <p>A new event of the same kind overwrites the older one.</p>
     '''
-    CLASS['system', 'welcome', 'systemevents'] = []
+    CLASS[ 'system', 'welcome', 'systemevents'] = []
     
     #===== /system/adminpassword
     
@@ -656,11 +769,11 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     resetting the password of the admin user, the old password must be
     specified.
     '''
-    CLASS['system', 'adminpassword'] = []
+    CLASS[ 'system', 'adminpassword'] = []
     
     INTRO[ 'system', 'adminpassword', 'change'] = None
     MORE[  'system', 'adminpassword', 'change'] = None
-    CLASS['system', 'adminpassword', 'change'] = []
+    CLASS[ 'system', 'adminpassword', 'change'] = []
     
     #===== /system/managers
     
@@ -692,7 +805,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     </li>
     </ul>
     '''
-    CLASS['system', 'managers'] = [CLASS_DEMO]
+    CLASS[ 'system', 'managers'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'managers', 'connections'] = \
     "Registered manager connections."
@@ -700,7 +813,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p>Shows all connections to managers entered by the user. The Active
     columns shows whether DustLink was able to open that connection ('active')
     or not ('inactive').</p>'''+INFO_SYSTEMMANAGER_ADDDELAY
-    CLASS['system', 'managers', 'connections'] = [CLASS_DEMO]
+    CLASS[ 'system', 'managers', 'connections'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'managers', 'add'] = \
     "Add a new manager connection."
@@ -721,7 +834,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     
     <p>These settings are persistent, managers can then be unplugged and
     reconnected, they will be automatically recognized. </p>'''+INFO_SYSTEMMANAGER_ADDDELAY
-    CLASS['system', 'managers', 'add'] = [CLASS_DEMO]
+    CLASS[ 'system', 'managers', 'add'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'managers', 'delete'] = \
     "Delete a manager connection."
@@ -731,20 +844,22 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p>There is a three second delay between the moment you delete a connection
     and when it disappears from the "Manager Connections" table.</p>
     '''
-    CLASS['system', 'managers', 'delete'] = [CLASS_DEMO]
+    CLASS[ 'system', 'managers', 'delete'] = [CLASS_DEMO]
     
     INTRO['system', 'managers', 'serialports'] = \
     "Serial ports available on this system."
     MORE[ 'system', 'managers', 'serialports'] = '''
-    <p>Lists the serial ports which are found. This list is provided
-    for information only: a serial port listed does not necessarily connect to 
-    a SmartMesh IP device, and is not necessarily available.</p>
+    <p>Lists of currently connected serial ports, provided for information only.
+    Each SmartMesh IP evaluation kit manager assembly connected to the system will display
+    a set of 4 serial ports, with the 4th typically providing the API interface. Serial
+    ports listed are not necessarily connected to a SmartMesh IP device, and are
+    not necessarily available.</p>
     
-    <p>This list can help you use identify the serial port corresponding to
+    <p>This list can help you identify the serial port corresponding to
     the manager you wish to connect to. To connect to a particular serial port,
-    you need to copy-paste its name into the "Add" field above.</p>
+    you need to copy-paste its name (ex: COM5) into the "Add" field above.</p>
     '''
-    CLASS['system', 'managers', 'serialports'] = [CLASS_DEMO]
+    CLASS[ 'system', 'managers', 'serialports'] = [CLASS_DEMO]
     
     #===== /system/modules
     
@@ -755,17 +870,15 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <ul>
     <li>
         The <b>GATEWAY</b> module connects DustLink to an arbitrary number
-        of managers. You need to activate this module if you plan on connecting
-        SmartMesh IP managers to the computer running DustLink.
+        of managers. This module must be activated to connect
+        SmartMesh IP manager(s) to the computer running DustLink.
     </li>
     <li>
-        The <b>LBR</b> module handles 6LoWPAN compression and decompression.
-        You need to enable this module when connecting your SmartMesh IP
-        low-power wireless mesh network to the Internet and exchanging data 
-        between your motes and computers on the Internet</li>
+        The <b>LBR</b> module enables SmartMesh IP devices to be addressed directly from the
+        internet via their IPv6 addresses. This module is NOT implemented at this time.</li>
     <li>
         The <b>DATACONNECTOR</b> module receives data from motes and
-        stores/displays that data. You need to enable this module if motes will
+        stores/displays that data. This module must be enabled if motes will
         exchange data with DustLink.
     </li>
     </ul>
@@ -773,7 +886,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p class="doc-note">The LBR modules is not yet
     implemented. Enabling the LBR module therefore has no effect.</p>
     '''
-    CLASS['system', 'modules'] = []
+    CLASS[ 'system', 'modules'] = []
     
     INTRO[ 'system', 'modules', 'activated'] = \
     "Enable/disable modules."
@@ -784,7 +897,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p>It can take up to ten seconds for a change in the table below to be
     taken into account by DustLink.</p>
     '''
-    CLASS['system', 'modules', 'activated'] = []
+    CLASS[ 'system', 'modules', 'activated'] = []
     
     #===== /system/persistence
     
@@ -794,57 +907,156 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p>All the data managed by DustLink (user, mote data, applications) can be
     backed-up periodically to a file.</p>
     
-    <p>When starting, the DustLink application retrieve the data from this
+    <p>When starting, the DustLink application retrieves the data from this
     back-up and resumes where it left off.</p>
     
     <p>We therefore recommend to keep file persistence enabled.</p>
     '''
-    CLASS['system', 'persistence'] = []
+    CLASS[ 'system', 'persistence'] = []
     
     INTRO[ 'system', 'persistence', 'activated'] = \
     "Enable/Disable persistence methods."
     MORE[  'system', 'persistence', 'activated'] = None
-    CLASS['system', 'persistence', 'activated'] = []
+    CLASS[ 'system', 'persistence', 'activated'] = []
     
-    #===== /system/mirror
+    #===== /system/publishers
     
-    WARNING_GOOGLEACCOUNT = '''
-    <p class="doc-warning">The Google username and
-    password are stored in the clear in the database of the DustLink website.
-    Anybody with access to the computer running the DustLink application will
-    have no problem reading these credentials from the database. We therefore
-    recommend you create a Google account specifically for this application 
-    rather than using a personal account.</p>
+    WARNING_CLEARTEXTCREDENTIALS = '''
+    <p class="doc-warning">The Xively API key, as well as the Google username
+    and password, are stored in the clear in the database of the DustLink
+    website. Anybody with access to the computer running the DustLink
+    application will have no problem reading these credentials from the
+    database. We therefore recommend you create a Xively and Google accounts
+    specifically for this application rather than using personal accounts.</p>
     '''
     
-    INTRO[ 'system', 'mirror'] = \
-    "Manage mirroring data to a Google Spreadsheet."
-    MORE[  'system', 'mirror'] = '''
+    INTRO[ 'system', 'publishers'] = \
+    "Manage publication of sensor data to external services."
+    MORE[  'system', 'publishers'] = '''
     <p>Independently from storing received data in its internal data, DustLink
     keeps the latest values received from the following applications in its
     "mirror"</p>
     
     <ul>
-    <li><tt>OAPLED</tt></li>
-    <li><tt>OAPTemperature</tt></li>
-    <li><tt>GPIONet</tt></li>
-    <li><tt>SPIAcceleration</tt></li>
-    <li><tt>SPIPressure</tt></li>
+        <li><tt>OAPLED</tt></li>
+        <li><tt>OAPTemperature</tt></li>
+        <li><tt>DC2126A</tt></li>
+        <li><tt>LIS331</tt></li>
+        <li><tt>GPIONet</tt></li>
+        <li><tt>SPIPressure</tt></li>
     </ul>
     
-    <p>This is the data that can be seen through DustLink's dashboard</li>
+    <p>This is the data that can be seen through the
+    <a href="/static/dashboard/index_local.html">dashboard</a>.</p>
     
-    <p>Optionally, DustLink can also copy that data over to a Google
-    Spreadsheet. To do so, you need to tell DustLink where to send the 
-    data, and using which Google user account. DustLink will then continuously
-    synchronize the data received in its "mirror" with that Google
-    Spreadsheet.</p>
-    '''+WARNING_GOOGLEACCOUNT
-    CLASS['system', 'mirror'] = []
+    <p>Optionally, DustLink can also publish that data either to
+    <a href="https://xively.com/">Xively</a>, or a Google spreadsheet.</p>
+    <ul>
+    <li>To publish to Xively, you need to indicate a master Xively API key;
+    DustLink will use that to create the products and devices, then push the
+    data.</li>
+    <li>To publish to a Google Spreadsheet, you need to tell DustLink where
+    to which spreadsheet to send the data, and using which Google user account.
+    DustLink will then continuously synchronize the data received in its
+    "mirror" with that Google Spreadsheet.</li>
+    </ul>
+    '''+WARNING_CLEARTEXTCREDENTIALS
+    CLASS[ 'system', 'publishers'] = [CLASS_DEMO]
     
-    INTRO[ 'system', 'mirror', 'settings'] = \
+    INTRO[ 'system', 'publishers', 'xivelyconfiguration'] = \
+    "Xively service feed configuration (Requires an active Xively account)."
+    MORE[  'system', 'publishers', 'xivelyconfiguration'] = '''
+    <p>A Xively account must first be created as follows</p>
+    
+    <p>Create a new developer account with Xively at <a href="http://www.xively.com" target="_new">http://www.xively.com</a>:</p>
+    <ul>
+        <li>From the Web Tools dropdown, select "Settings".</li>
+        <li>Under the <b>Settings</b> section, select <b>Master Keys</b>.</li>
+        <li>Click on <b>Add Master Key</b>.</li>
+        <li>Enter a title for the key, and select all boxes, i.e. <tt>READ</tt>, <tt>CREATE</tt>, <tt>UPDATE</tt>, <tt>DELETE</tt>, and <tt>Access Private Fields</tt>.</li>
+    </ul>
+    
+    <p>On Dustlink:</p>
+    <ul>
+        <li>Make sure you are logged as a user with write privileges to the systems resource, for example <tt>admin</tt>.</li>
+        <li>Copy the Master Key created in the previous steps into the <tt>xivelyApiKey</tt> box below, and click "Submit".</li>
+    </ul>
+    
+    <p>Dustlink will now automatically:</p>
+    <ul>
+        <li>Connect to your Xively account using the Master key you entered.</li>
+        <li>Create the product on Xively corresponding to your SmartMesh IP kit.</li>
+        <li>Create a device for each mote in your kit (not the manager).</li>
+        <li>Create a datastream called "temperature" corresponding to the temperature sensor of your SmartMesh IP evaluation kit mote.</li>
+    </ul>
+    
+    <p><u>Note</u>: a device and datastream is only created when the corresponding mote publishes temperature readings.</p>
+    
+    <p>To view the product and device on Xively:</p>
+    <ul>
+        <li>Make sure you are logged in at <a href="http://www.xively.com" target="_new">http://www.xively.com</a>.</li>
+        <li>Select <b>Manage</b> from the Web Tools drop-down. A product called "SmartMesh IP Starter Kit" is not now available.</li>
+        <li>Click on it to view the devices corresponding to the motes in your SmartMesh IP network.</li>
+        <li>Click on a device to view the datastream and sensor readings.</li>
+    </ul>
+    
+    <p>(optional) Making the feeds public: You may want to to make the feeds "public", for easy access with smart phones during demonstrations for example.
+    To make a device public:</p>
+    
+    <ul>
+        <li>From the SmartMesh IP Starter Kit page in <a href="http://www.xively.com" target="_new">http://www.xively.com</a>, click on a device feed.</li>
+        <li>Select the little pencil (Edit) at the end of the "SmartMesh IP Starter Kit" name at the top.</li>
+        <li>Select "Public Device" under the Privacy section.</li>
+    </ul>
+    
+    <p>All the device data streams in this project will now be public.</p>
+    '''+WARNING_CLEARTEXTCREDENTIALS
+    
+    CLASS[ 'system', 'publishers', 'xivelyconfiguration'] = [CLASS_DEMO]
+    
+    INTRO[ 'system', 'publishers', 'xivelystatus'] = \
+    "Status the Xively publisher."
+    MORE[  'system', 'publishers', 'xivelystatus'] = '''
+    <p>The list below contains information about the state of the Xively
+    publisher.</p>
+    
+    <ul>
+        <li>
+            <tt>status</tt> indicates the current state of the publisher:
+            <ul>
+                <li><tt>CONNECTED</tt> indicates the publisher is currently connected to Xively, ready to send data.</li>
+                <li><tt>CONNECTION FAILED</tt> indicates there was a problem connecting. Please verify the API key you are using.</li>
+                <li><tt>DISCONNECTED</tt> indicates the publisher is currently not connected to Xively. This is the normal state when no API key has been entered.</li>
+           </ul>
+        </li>
+        <li>
+            <tt>numConnectionsFailed</tt> is the number of times the publisher tried to connect to Xively but was unsuccessful. Failure might be due to a wrong API key being used, or networking issues.
+        </li>
+        <li>
+            <tt>numPublishedOK</tt> is the number of data datapoints that were published successfully to Xively.
+        </li>
+        <li>
+            <tt>apiKeySet</tt> indicates whether an API key was entered. For security reasons, this API key is not displayed in the form above.
+        </li>
+        <li>
+            <tt>lastConnected</tt> is the timestamp of the last successful connection to Xively.
+        </li>
+        <li>
+            <tt>numConnectionsOK</tt> is the number of times the publisher successfully connected to Xively.
+        </li>
+        <li>
+            <tt>numPublishedFail</tt> is the number of data datapoints that were published unsuccessfully to Xively. Failure to publish might be due to the wrong API key being used.
+        </li>
+        <li>
+            <tt>lastDisconnected</tt> is the timestamp the last disconnection from Xively.
+        </li>
+    </ul>
+    '''
+    CLASS[ 'system', 'publishers', 'xivelystatus'] = [CLASS_DEMO]
+    
+    INTRO[ 'system', 'publishers', 'googleconfiguration'] = \
     "Information about the Google Spreadsheet to synchronize mirror data to."
-    MORE[  'system', 'mirror', 'settings'] = '''
+    MORE[  'system', 'publishers', 'googleconfiguration'] = '''
     <p>Enter the information and press "Submit" for DustLink to start
     synchronizing its mirror data to a Google Spreadsheet.</p>
     
@@ -871,17 +1083,60 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         <tt>googlePassword</tt> is the password associated with that username.
     </li>
     </ul>
-    '''+WARNING_GOOGLEACCOUNT
-    CLASS['system', 'mirror', 'settings'] = []
+    '''+WARNING_CLEARTEXTCREDENTIALS
+    CLASS[ 'system', 'publishers', 'googleconfiguration'] = []
+    
+    INTRO[ 'system', 'publishers', 'googlestatus'] = \
+    "Status the Google publisher."
+    MORE[  'system', 'publishers', 'googlestatus'] = '''
+    <p>The list below contains information about the state of the Google
+    publisher.</p>
+    
+    <ul>
+        <li>
+            <tt>status</tt> indicates the current state of the publisher:
+            <ul>
+                <li><tt>CONNECTED</tt> indicates the publisher is currently connected to Google, ready to send data.</li>
+                <li><tt>CONNECTION FAILED</tt> indicates there was a problem connecting. Please verify the API key you are using.</li>
+                <li><tt>DISCONNECTED</tt> indicates the publisher is currently not connected to Google. This is the normal state when no API key has been entered.</li>
+           </ul>
+        </li>
+        <li>
+            <tt>numConnectionsFailed</tt> is the number of times the publisher tried to connect to Google but was unsuccessful. Failure might be due to a wrong Google username/password, or networking issues.
+        </li>
+        <li>
+            <tt>numPublishedOK</tt> is the number of time the publisher successfully synchronized its data to Google. This counter does <b>not</b> represent the number of datapoints sent, as multiple datapoints can be sent to Google in one synchronization activity.
+        </li>
+        <li>
+            <tt>passwordSet</tt> indicates whether a Goggle password was entered. For security reasons, this password is not displayed in the form above.
+        </li>
+        <li>
+            <tt>lastConnected</tt> is the timestamp of the last successful connection to Google.
+        </li>
+        <li>
+            <tt>numConnectionsOK</tt> is the number of times the publisher successfully connected to Google.
+        </li>
+        <li>
+            <tt>usernameSet</tt> indicates whether a Goggle username was entered. For security reasons, this username is not displayed in the form above.
+        </li>
+        <li>
+            <tt>numPublishedFail</tt> is the number of synchronization activities to Google that failed.
+        </li>
+        <li>
+            <tt>lastDisconnected</tt> is the timestamp the last disconnection from Google.
+        </li>
+    </ul>
+    '''
+    CLASS[ 'system', 'publishers', 'googlestatus'] = []
     
     #===== /system/demomode
     
     INTRO[ 'system', 'demomode'] = \
     "Enable/Disable the demo mode."
     MORE[  'system', 'demomode'] = '''
-    <p>When the demo mode is enabled, all motes in the network are added to
-    DustLink and as they appear, and the applications shipped inside the
-    default SmartMesh IP mote firmware are automatically associated each.</p>
+    <p>When the demo mode is enabled, all motes in the network are automatically added to
+    DustLink as they appear, and the applications built into the
+    default SmartMesh IP mote firmware are automatically associated.</p>
     
     <p class="doc-warning">The demo mode is enabled when resetting the system.</p>
     
@@ -894,17 +1149,18 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         <li>The <tt>OAPTemperature</tt> application is created.</li>
         <li>The GET, PUT, DELETE privileges on all motes and all applications are granted to the anonymous user.</li>
         <li>GET privileges on all networks are granted to the anonymous user.</li>
+        <li>GET privileges on all test results are granted to the anonymous user.</li>
         <li>GET privileges on system settings are granted to the anonymous user.</li>
         <li>A manager is added on serial port <tt>/dev/ttyUSB3</tt>, which is the default serial port on the DemoBox.</li>
     </ul>
     <p class="doc-warning">Enabling the demo mode allows public access to
     all motes, applications and networks!</p>
     '''
-    CLASS['system', 'demomode'] = []
+    CLASS[ 'system', 'demomode'] = []
     
     INTRO[ 'system', 'demomode', 'enable'] = None
     MORE[  'system', 'demomode', 'enable'] = None
-    CLASS['system', 'demomode', 'enable'] = []
+    CLASS[ 'system', 'demomode', 'enable'] = []
     
     #===== /system/fastmode
     
@@ -918,7 +1174,8 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         <li>
             With fast mode activated, data received from motes is not
             stored in the DustLink database. Only the last value is kept, and
-            shown in the dashboard.
+            shown in the dashboard. This will improve performance if running on a small embedded
+            computer that uses only FLASH.
         </li>
         <li>
             With fast mode activated, the application attached to a mote is
@@ -932,13 +1189,13 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         </li>
     </ul>
     
-    <p>Use this mode when running DustLink on a very constrained computer.</p>
+    <p>Use this mode when running DustLink on a very constrained FLASH based computer.</p>
     '''
-    CLASS['system', 'fastmode'] = []
+    CLASS[ 'system', 'fastmode'] = []
     
     INTRO[ 'system', 'fastmode', 'enable'] = None
     MORE[  'system', 'fastmode', 'enable'] = None
-    CLASS['system', 'fastmode', 'enable'] = []
+    CLASS[ 'system', 'fastmode', 'enable'] = []
     
     #===== /system/factoryreset
     
@@ -949,7 +1206,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     their default settings. This is useful e.g. when repeating a demo, or when 
     receiving a set of motes and manager which are in an unknown state.
     '''
-    CLASS['system', 'factoryreset'] = [CLASS_DEMO]
+    CLASS[ 'system', 'factoryreset'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'factoryreset', 'motes'] = \
     "Reset the application layer of the motes to their default settings."
@@ -986,7 +1243,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p class="doc-note">To use this command, you need to be logged in with a
     user who has <tt>delete</tt> privileges on the <tt>system</tt>.</p>
     '''
-    CLASS['system', 'factoryreset', 'motes'] = [CLASS_DEMO]
+    CLASS[ 'system', 'factoryreset', 'motes'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'factoryreset', 'dustlink'] = \
     "Reset this DustLink website to its default settings."
@@ -1003,7 +1260,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p class="doc-note">To use this command, you need to be logged in with a
     user who has <tt>delete</tt> privileges on the <tt>system</tt>.</p>
     '''
-    CLASS['system', 'factoryreset', 'dustlink'] = [CLASS_DEMO]
+    CLASS[ 'system', 'factoryreset', 'dustlink'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'factoryreset', 'manager'] = \
     "Reset a manager to its default settings."
@@ -1035,7 +1292,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p class="doc-note">To use this command, you need to be logged in with a
     user who has <tt>delete</tt> privileges on the <tt>system</tt>.</p>
     '''
-    CLASS['system', 'factoryreset', 'manager'] = [CLASS_DEMO]
+    CLASS[ 'system', 'factoryreset', 'manager'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'factoryreset', 'progress'] = \
     "Follow the progress of a reset manager/motes command."
@@ -1043,14 +1300,18 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     <p>The contents of this table is reset each time you issue a new reset
     command.</p>
     '''
-    CLASS['system', 'factoryreset', 'progress'] = [CLASS_DEMO]
+    CLASS[ 'system', 'factoryreset', 'progress'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'factoryreset', 'serialports'] = \
     "List of serial ports know to the system."
     MORE[  'system', 'factoryreset', 'serialports'] = '''
-    <p>This list is provided for your information.</p> 
+    <p>Lists of currently connected serial ports, provided for information only.
+    Each SmartMesh IP evaluation kit manager assembly connected to the system will display
+    a set of 4 serial ports, with the 4th typically providing the API interface. Serial
+    ports listed are not necessarily connected to a SmartMesh IP device, and are
+    not necessarily available.</p> 
     '''
-    CLASS['system', 'factoryreset', 'serialports'] = [CLASS_DEMO]
+    CLASS[ 'system', 'factoryreset', 'serialports'] = [CLASS_DEMO]
     
     #===== /system/loadconfig
     
@@ -1099,8 +1360,8 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
             <pre>type="demoMode" value="true"</pre>
         </li>
         <li>
-            To enter mirror mode settings:<br/>
-            <pre>type="mirror" spreadsheetKey="someKey" worksheetName="someName" googleUsername="someUser" googlePassword="somePassword"</pre>
+            To enter publisher settings:<br/>
+            <pre>type="publisher" spreadsheetKey="someKey" worksheetName="someName" googleUsername="someUser" googlePassword="somePassword"</pre>
         </li>
         <li>
             To add a mote:<br/>
@@ -1124,7 +1385,7 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
         </li>
     </ul>
     '''+WARNING_LOADCONFIG
-    CLASS['system', 'loadconfig'] = []
+    CLASS[ 'system', 'loadconfig'] = []
     
     INTRO[ 'system', 'loadconfig', 'load'] = \
     "Upload a config file."
@@ -1133,48 +1394,48 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     then click the "Submit" button to upload and apply that configuration
     file.</p>
     '''+WARNING_LOADCONFIG
-    CLASS['system', 'loadconfig', 'load'] = []
+    CLASS[ 'system', 'loadconfig', 'load'] = []
     
     #===== /system/restarts
     
     INTRO[ 'system', 'restarts'] = \
     "Display information about the restarts of the system."
     MORE[  'system', 'restarts'] = None
-    CLASS['system', 'restarts'] = []
+    CLASS[ 'system', 'restarts'] = []
     
     INTRO[ 'system', 'restarts', 'upTimeRestarts'] = \
-    "Display information about the total number of restart."
+    "Display information about the number of Dustlink restarts."
     MORE[  'system', 'restarts', 'upTimeRestarts'] = '''
-    <p>The <tt>UpTime</tt> is the amount of time DustLink has been running
+    <p><tt>UpTime</tt> is the amount of time DustLink has been running
     since it was last restarted.</p>
-    <p>The <tt>number of restarts</tt> is how many times it was started.</p>
+    <p><tt>number of restarts</tt> is how many times DustLink was started.</p>
     '''
-    CLASS['system', 'restarts', 'upTimeRestarts'] = []
+    CLASS[ 'system', 'restarts', 'upTimeRestarts'] = []
     
     INTRO[ 'system', 'restarts', 'lastRestarts'] = \
     "Only the last ten restarts are displayed."
     MORE[  'system', 'restarts', 'lastRestarts'] = None
-    CLASS['system', 'restarts', 'lastRestarts'] = []
+    CLASS[ 'system', 'restarts', 'lastRestarts'] = []
     
     #===== /system/sessions
     
     INTRO[ 'system', 'sessions'] = None
     MORE[  'system', 'sessions'] = None
-    CLASS['system', 'sessions'] = []
+    CLASS[ 'system', 'sessions'] = []
     
     INTRO[ 'system', 'sessions', 'active'] = \
     " "
     MORE[  'system', 'sessions', 'active'] = '''
     DustLink maintains a session for every user accessing the system.
     '''
-    CLASS['system', 'sessions', 'active'] = []
+    CLASS[ 'system', 'sessions', 'active'] = []
     
     #===== /system/profiling
     
     INTRO[ 'system', 'profiling'] = \
     "This page is used for internal debugging purposes only."
     MORE[  'system', 'profiling'] = None
-    CLASS['system', 'profiling'] = []
+    CLASS[ 'system', 'profiling'] = []
     
     INTRO[ 'system', 'profiling', 'yappi'] = \
     "Enabling/Disabling the profiler."
@@ -1182,59 +1443,59 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     Yappi is a Python profiler which indicates how many resources each thread
     and function is using.
     '''
-    CLASS['system', 'profiling', 'yappi'] = []
+    CLASS[ 'system', 'profiling', 'yappi'] = []
     
     INTRO[ 'system', 'profiling', 'threads'] = None
     MORE[  'system', 'profiling', 'threads'] = None
-    CLASS['system', 'profiling', 'threads'] = []
+    CLASS[ 'system', 'profiling', 'threads'] = []
     
     INTRO[ 'system', 'profiling', 'functions'] = None
     MORE[  'system', 'profiling', 'functions'] = None
-    CLASS['system', 'profiling', 'functions'] = []
+    CLASS[ 'system', 'profiling', 'functions'] = []
     
     #===== /system/eventbus
     
     INTRO[ 'system', 'eventbus'] = \
     "This page is used for internal debugging purposes only."
     MORE[  'system', 'eventbus'] = None
-    CLASS['system', 'eventbus'] = []
+    CLASS[ 'system', 'eventbus'] = []
     
     INTRO[ 'system', 'eventbus', 'stats'] = None
     MORE[  'system', 'eventbus', 'stats'] = None
-    CLASS['system', 'eventbus', 'stats'] = []
+    CLASS[ 'system', 'eventbus', 'stats'] = []
     
     INTRO[ 'system', 'eventbus', 'connections'] = None
     MORE[  'system', 'eventbus', 'connections'] = None
-    CLASS['system', 'eventbus', 'connections'] = []
+    CLASS[ 'system', 'eventbus', 'connections'] = []
     
     #===== /system/rawdata
     
     INTRO[ 'system', 'rawdata'] = \
     "This page is used for internal debugging purposes only."
     MORE[  'system', 'rawdata'] = None
-    CLASS['system', 'rawdata'] = []
+    CLASS[ 'system', 'rawdata'] = []
     
     INTRO[ 'system', 'rawdata', 'rawdata'] = None
     MORE[  'system', 'rawdata', 'rawdata'] = None
-    CLASS['system', 'rawdata', 'rawdata'] = []
+    CLASS[ 'system', 'rawdata', 'rawdata'] = []
     
     #===== /system/about
     
     INTRO[ 'system', 'about'] = None
     MORE[  'system', 'about'] = None
-    CLASS['system', 'about'] = [CLASS_DEMO]
+    CLASS[ 'system', 'about'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'about', 'version'] = None
     MORE[  'system', 'about', 'version'] = None
-    CLASS['system', 'about', 'version'] = [CLASS_DEMO]
+    CLASS[ 'system', 'about', 'version'] = [CLASS_DEMO]
     
     INTRO[ 'system', 'about', 'license'] = None
     MORE[  'system', 'about', 'license'] = None
-    CLASS['system', 'about', 'license'] = []
+    CLASS[ 'system', 'about', 'license'] = []
     
     INTRO[ 'system', 'about', 'thirdparty'] = None
     MORE[  'system', 'about', 'thirdparty'] = None
-    CLASS['system', 'about', 'thirdparty'] = []
+    CLASS[ 'system', 'about', 'thirdparty'] = []
     
     #======================== motedata ========================================
     
@@ -1248,8 +1509,22 @@ class DustLinkWebDoc(DustWebDoc.DustWebDoc):
     #===== /motedata/received
     
     INTRO[ ('motedata', 'received')] = \
-    "Displays the last received data."
+    "Displays <b>raw un-interpreted</b> received field values."
     MORE[  ('motedata', 'received')] = '''
+    <p>The graph below shows a timeline of the raw field values received from 
+    a particular application running on a particular mote.</p>
+    
+    <p>These values are <b>un-interpreted</b>, and presented as the values
+    read from a data packet's fields. For some application, some interpretation
+    is done before displaying the data in the dashboard.</p>
+    
+    <p>For example, temperature is reported by the <tt>OAPTemperature</tt>
+    application is 1/100th degrees C. Before being published on the dashboard,
+    DustLink modifies the unit to degrees C.</p>
+    
+    <p>In this case, it is <b>normal</b> that the value in the dashboard is not
+    the same as the value displayed in the timeline below.</p>
+    
     <p class="doc-warning">Data only shows up below if DustLink is not
     running in fast mode.</p>
     '''

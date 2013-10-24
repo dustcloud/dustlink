@@ -10,9 +10,11 @@ import time
 
 import Hdlc
 
-from  ApiException import ConnectionError, APIError, CommandError
-from  ApiConnector import ApiConnector
-from ApiDefinition import ApiDefinition
+from   SmartMeshSDK.ApiException  import ConnectionError, \
+                                         APIError,        \
+                                         CommandError
+from   SmartMeshSDK.ApiConnector  import ApiConnector
+from   SmartMeshSDK.ApiDefinition import ApiDefinition
 
 import logging
 class NullHandler(logging.Handler):
@@ -28,6 +30,7 @@ RX_TIMEOUT    = 0.500 # in seconds
 class SerialConnector(ApiConnector):
     '''
     \ingroup ApiConnector
+    
     \brief The generic serial connector.
     This class is meant to be inherited by connector using a serial link.
     '''
@@ -69,7 +72,10 @@ class SerialConnector(ApiConnector):
             self.hdlc            = Hdlc.Hdlc(self._hdlcRxCb,
                                              self._hdlcConnectCb)
             # connect HDLC module to serial Port
-            self.hdlc.connect(connectParams['port'])
+            if 'baudrate' in connectParams:
+                self.hdlc.connect(connectParams['port'],baudrate=connectParams['baudrate'])
+            else:
+                self.hdlc.connect(connectParams['port'])
             # connect the parent class
             ApiConnector.connect(self)
     
@@ -177,7 +183,7 @@ class SerialConnector(ApiConnector):
                 retry = retry + 1
                     
             if isinstance(self.responseBuf,Exception):
-                log.error("reponseBuf contains exception {0}".format(self.responseBuf))
+                log.error("responseBuf contains exception {0}".format(self.responseBuf))
                 raise self.responseBuf
             
             if  (
@@ -192,15 +198,20 @@ class SerialConnector(ApiConnector):
                                     cmdId
                                 )
                 temp_rc   = self.responseBuf[ApiDefinition.ApiDefinition.RC]
-                temp_desc = self.api_def.fieldValueToDesc(
-                                    ApiDefinition.ApiDefinition.COMMAND,
-                                    [temp_name],
-                                    ApiDefinition.ApiDefinition.RC,
-                                    temp_rc
-                
-                    )
-                if temp_desc not in ['RC_END_OF_LIST']:
-                    log.warning("received RC={0} for command {1} ({2})".format(temp_rc,
+                temp_desc = '({0})\n{1}'.format(
+                    self.api_def.fieldValueToDesc(
+                        ApiDefinition.ApiDefinition.COMMAND,
+                        [temp_name],
+                        ApiDefinition.ApiDefinition.RC,
+                        temp_rc
+                    ),
+                    self.api_def.rcToDescription(
+                        temp_rc,
+                        [temp_name],
+                    ),
+                )
+                if temp_rc not in [11,18]: # rc==11:RC_NOT_FOUND, rc==18:RC_END_OF_LIST
+                    log.warning("received RC={0} for command {1}:\n{2}".format(temp_rc,
                                                                                temp_name,
                                                                                temp_desc))
                 raise APIError(temp_name,temp_rc,temp_desc)
@@ -269,11 +280,11 @@ class SerialConnector(ApiConnector):
                 self.tsDataReceived = time.time()
         
         # check packetId
-        (wasValidPacketId, isRepeatId) = self.isValidPacketId(cmdId,isResponse,packetId)
+        (wasValidPacketId, isRepeatId, updateRxPacketId) = self.isValidPacketId(cmdId,isResponse,packetId)
             
         # update RxPacketId
         self.paramLock.acquire()
-        if isResponse==False and not isRepeatId:
+        if isResponse==False and (not isRepeatId) and updateRxPacketId:
             self.RxPacketId = packetId
         self.paramLock.release()
         

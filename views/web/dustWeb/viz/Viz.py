@@ -24,7 +24,7 @@ class Viz(object):
                 <circle cx="8" cy="6" r="5" stroke="black" stroke-width="1"/>
             </svg>
             <span class="viz-status-message"></span>
-            <label class="viz-autorefresh">Auto-refresh<input type="checkbox" {CHECKED} {DISABLED} id="autorefreshlink_{VIZID}" onchange="toggleAutoRefresh('{VIZID}')"/></label>
+            <label class="viz-autorefresh">Auto-refresh<input type="checkbox" {CHECKED} {DISABLED} id="autorefreshlink_{VIZID}" onchange="updateAutoRefresh('{VIZID}')"/></label>
         </div>
     </div>
     <div class="container-indent">
@@ -57,7 +57,7 @@ class Viz(object):
                            ]
     
     ## number of ms between data reloads
-    RELOAD_PERIOD       = 5000
+    RELOAD_PERIOD       = 10000
     
     def __init__(self,webServer,username,resourcePath,subResourcePath=None,title='',width=700,height=700,autorefresh=True, forbidAutorefresh=False):
         

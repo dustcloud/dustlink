@@ -11,15 +11,12 @@ log.addHandler(NullHandler())
 import time
 import struct
 
-from DustLinkData  import DustLinkData
-
-from EventBus      import EventBusClient
-
-from oap           import OAPDispatcher
-from oap           import OAPNotif
-
-from IpMgrConnectorMux import IpMgrConnectorMux
-from SmartMeshSDK.IpMgrConnectorMux import IpMgrSubscribe
+from   DustLinkData                    import DustLinkData
+from   EventBus                        import EventBusClient
+from   SmartMeshSDK.protocols.oap      import OAPDispatcher, \
+                                              OAPNotif
+from   SmartMeshSDK.IpMgrConnectorMux  import IpMgrConnectorMux, \
+                                              IpMgrSubscribe
 
 class AppIdentifier(EventBusClient.EventBusClient):
     
@@ -31,7 +28,7 @@ class AppIdentifier(EventBusClient.EventBusClient):
         
         # initialize parent class
         EventBusClient.EventBusClient.__init__(self,
-            'rawDataToLocal',
+            'notifData',
             self._identifyApp,
             queuesize=self.QUEUESIZE,
         )
@@ -53,10 +50,11 @@ class AppIdentifier(EventBusClient.EventBusClient):
         alreadyDispatchedOap = False
         
         dld = DustLinkData.DustLinkData()
+        
         with dld.dataLock:
             # log
             if log.isEnabledFor(logging.DEBUG):
-                log.debug('identifying data={0}'.format(data))
+                log.debug('identifying app for data={0}'.format(data))
             
             # get the transports of the apps
             if dld.getFastMode():
@@ -122,8 +120,9 @@ class AppIdentifier(EventBusClient.EventBusClient):
                 raise NotImplementedError()
                 
             else:
-                
-                raise SystemError('unexpected transport={0}'.format(transport))
+                # not transport specified yet. Can happen if  addApp() is
+                # called, but not setAppTransport() yet.
+                pass
     
     def _handle_oap_notif(self,mac,notif):
         
@@ -149,7 +148,7 @@ class AppIdentifier(EventBusClient.EventBusClient):
                 #'timestamp' : time.mktime(notif.received_timestamp.timetuple()),
                 'timestamp' : time.time(),
                 'mac'       : mac,
-                'payload'   : [ord(b) for b in struct.pack('h',notif.samples[0])],
+                'payload'   : [ord(b) for b in struct.pack('>h',notif.samples[0])],
             }
             
             # log

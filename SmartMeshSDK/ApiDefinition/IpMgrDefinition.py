@@ -6,6 +6,7 @@ import ByteArraySerializer
 class IpMgrDefinition(ApiDefinition.ApiDefinition):
     '''
     \ingroup ApiDefinition
+    
     \brief API definition for the IP manager.
    
     \note This class inherits from ApiDefinition. It redefines the attributes of
@@ -54,7 +55,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         #     [ 1,   'event',                 'Event notification'],
         #     [ 2,   'log',                   'Log notification'],
         #     [ 4,   'data',                  'Data payload notification'],
-        #     [ 5,   'ipData',                '6lowpan packet notification'],
+        #     [ 5,   'ipData',                '6LoWPAN packet notification'],
         #     [ 6,   'healthReport',          'Health report notification'],
         # ],
         # 'eventTypes' : [
@@ -73,18 +74,20 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         #     [14,   'moteDelete',            'A mote was deleted'],
         # ],
         RC : [
-            [ 0,   'OK',                    'The application layer has processed the command correctly'],
+            [ 0,   'RC_OK',                 'The application layer has processed the command correctly'],
             [ 1,   'RC_INVALID_COMMAND',    'Invalid command'],
             [ 2,   'RC_INVALID_ARGUMENT',   'Invalid argument'],
             [ 3,   'INVALID_AUTHENTICATION','Invalid Authentication (MUX)'],
             [ 4,   'INVALID_API_VERSION',   'Invalid API version (MUX)'],
-            [ 5,   'comd_timeout',          'command timeout (MUX)'],
-            [11,   'RC_END_OF_LIST',        'End of list is returned when an iteration reaches the end of the list of objects'],
+            [ 5,   'COMMAND_TIMEOUT',       'Command timeout (MUX)'],
+            [11,   'RC_NOT_FOUND',          'Object is not found'],
             [12,   'RC_NO_RESOURCES',       'Reached maximum number of items'],
             [13,   'RC_IN_PROGRESS',        'Operation is in progress'],
             [14,   'RC_NACK',               'Negative acknowledgment'],
-            [15,   'RC_WRITE_ERROR',        'Flash write failed'],
+            [15,   'RC_WRITE_FAIL',         'Flash write failed'],
             [16,   'RC_VALIDATION_ERROR',   'Parameter validation error'],
+            [17,   'RC_INV_STATE',          'Object has inappropriate state'],
+            [18,   'RC_END_OF_LIST',        'End of list is returned when an iteration reaches the end of the list of objects'],
         ],
         'frameProfile' : [
             [ 1,   'Profile_01',            'Fast network build, medium speed network operation'],
@@ -96,10 +99,6 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         'downstreamFrameMode' : [
             [ 0,   'normal',                'Normal downstream bandwidth'],
             [ 1,   'fast',                  'Fast downstream bandwidth'],
-        ],
-        'locationMode' : [
-            [ 0,   'off',                   'No Location capability'],
-            [ 1,   'onDemand',              'On Demand Location Awareness'],
         ],
         'networkState' : [
             [ 0,   'operational',           'Network is operating normally'],
@@ -116,7 +115,6 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         ],
         'resetType' : [
             [ 0,   'resetSystem',           'Reset the system'],
-            [ 1,   'resetNetwork',          'Reset the network'],
             [ 2,   'resetMote',             'Reset the mote'],
         ],
         'backboneFrameMode' : [
@@ -150,6 +148,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
             [2,    'carrier',               'Carrier detect'],
             [3,    'both',                  'Energy detect and Carrier detect'],
         ],
+        
         #==================== misc ============================================
         'successCode' : [
             [ 0,   'success',               ''],
@@ -160,8 +159,8 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
             [ 0,   'legacy',                ''],
         ],
         'userRole' : [
-            [ 0,   'viewer',                ''],
-            [ 1,   'admin',                 ''],
+            [ 0,   'viewer',                'Viewer-role user has read-only access to non-sensitive network information'],
+            [ 1,   'user',                  'User-role user has read-write privileges'],
         ],
     }
     
@@ -224,11 +223,18 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['macAddress',          HEXDATA,  8,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Mote with specified MAC address is not found',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+               'RC_NACK'               : 'User commands queue is full (applies to mote reset)',
+               'RC_INVALID_ARGUMENT'   : 'Invalid reset type value',
+            },
         },
         {
             'id'         : 22,
             'name'       : 'subscribe',
-            'description': 'The subscribe command indicates that the manager should send the external application the specified notifications. The notification filter is a bitmask of flags indicating the types of notifications that the client wants to receive.\n\nThe unackFilter allows client to select whether each notification-type should be sent acknowledged or not. If a notification is sent as \'acknowledged\', the subsequent notification packets will be queued while waiting for response.\n\nEach subscription request overwrites the previous one. If an application is subscribed to data and then decides he also wants events he should send a subscribe command with both the data and event flags set. To clear all subscriptions, the client should send a subscribe command with the filter set to zero. When a session is initiated between the manager and a client, the subscription filter is initialized to zero.\n\nThe subscribe bitmap uses the values of the notification type enumeration. Some values are unused to provide backwards compatibility with earlier APIs. ',
+            'description': 'The subscribe command indicates that the manager should send the external application the specified notifications. It contains two filter fields:\n\n-filter is a bitmask of flags indicating the types of notifications that the client wants to receive\n-unackFilter allows the client to select which of the notifications selected in filter should be sent acknowledged. If a notification is sent as \'acknowledged\', thesubsequent notification packets will be queued while waiting for response.\n\nEach subscription request overwrites the previous one. If an application is subscribed to data and then decides he also wants events he should send a subscribe command with both the data and event flags set. To clear all subscriptions, the client should send a subscribe command with the filter set to zero. When a session is initiated between the manager and a client, the subscription filter is initialized to zero.\n\nThe subscribe bitmap uses the values of the notification type enumeration. Some values are unused to provide backwards compatibility with earlier APIs.',
             'request' : [
                 ['filter',                  HEXDATA,  4,   None],
                 ['unackFilter',             HEXDATA,  4,   None],
@@ -238,11 +244,15 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_INVALID_ARGUMENT'   : 'Invalid subscription filter value',
+            },
         },
         {
             'id'         : 23,
             'name'       : 'getTime',
-            'description': 'The getTime command returns the current manager UTC time and current absolute slot number (ASN). The time values returned by this command are delayed by queuing and transfer time over the serial connection. For additional precision, an external application should trigger the networkTime notification using the Time pin.',
+            'description': 'The getTime command returns the current manager UTC time and current absolute slot number (ASN). The time values returned by this command are delayed by queuing and transfer time over the serial connection. For additional precision, an external application should trigger the networkTime notification using the Time Pin.',
             'request'    : [
             ],
             'response'   : {
@@ -255,11 +265,14 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['asnOffset',           INT,      2,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+            },
         },
         {
             'id'         : 26,
             'name'       : 'setNetworkConfig',
-            'description': 'The setNetworkConfig command changes network configuration parameters. The response code indicates whether the changes were successfully applied. Generally, changes to network configuration will take effect when the manager reboots. Exceptions are detailed below:\n\n-Max Motes: The new maxMotes value is used as soon as new motes try to join the network, but motes are not removed from the network if the value is set to a number lower than numMotes.\n-Base Bandwidth: Changing baseBandwidth while the network is running does not reallocate bandwidth to Operational motes.',
+            'description': 'The setNetworkConfig command changes network configuration parameters. The response code indicates whether the changes were successfully applied.This change is persistent.\n\nGenerally, changes to network configuration will take effect when the manager reboots. Exceptions are detailed below:\n\n\n-Max Motes: The new maxMotes value is used as soon as new motes try to join the network, but motes are not removed from the network if the value is set to a number lower than numMotes.\n-Base Bandwidth: Changing baseBandwidth while the network is running does not reallocate bandwidth to Operational motes.',
             'request'    :  [
                 ['networkId',               INT,      2,   None],
                 ['apTxPower',               INTS,     1,   None],
@@ -270,8 +283,8 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                 ['numParents',              INT,      1,   None],
                 ['ccaMode',                 INT,      1,   True],
                 ['channelList',             INT,      2,   None],
-                ['autoStartNetwork',        INT,      1,   None],
-                ['locMode',                 INT,      1,   'locationMode'],
+                ['autoStartNetwork',        BOOL,     1,   None],
+                ['locMode',                 INT,      1,   None],
                 ['bbMode',                  INT,      1,   'backboneFrameMode'],
                 ['bbSize',                  INT,      1,   None],
                 ['isRadioTest',             INT,      1,   None],
@@ -282,6 +295,11 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_INVALID_ARGUMENT'   : 'Validation of the network parameters failed',
+               'RC_WRITE_FAIL'         : 'Flash write error, cannot save new settings',
             },
         },
         {
@@ -295,11 +313,14 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+            },
         },
         {
             'id'         : 33,
             'name'       : 'exchangeMoteJoinKey',
-            'description': 'The exchangeMoteJoinKey command triggers the manager to send a new join key to the specified mote and update the manager\'s ACL entry for the mote. The response contains a callbackId. A commandFinished notification with the callbackId will be sent when the operation is complete.',
+            'description': 'The exchangeMoteJoinKey command triggers the manager to send a new join key to the specified mote and update the manager\'s ACL entry for the mote. The response contains a callbackId. A commandFinished event notification with this callbackId will be sent when the operation is complete. This change is persistent.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
                 ['key',                     HEXDATA,  16,  None],
@@ -310,11 +331,18 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['callbackId',          INT,      4,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Mote with specified MAC address is not found',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+               'RC_NACK'               : 'User commands queue is full',
+               'RC_WRITE_FAIL'         : 'Flash write error, can\'t save new settings',
+            },
         },
         {
             'id'         : 34,
             'name'       : 'exchangeNetworkId',
-            'description': 'The exchangeNetworkId command triggers the manager to distribute a new network ID to all the motes in the network. A callbackId is returned in the response. A commandFinished notification with the callbackId will be sent when the operation is complete.',
+            'description': 'The exchangeNetworkId command triggers the manager to distribute a new network ID to all the motes in the network. AcallbackId is returned in the response. A commandFinished notification with this callbackId will be sent when the operation is complete.This change is persistent.',
             'request'    : [
                 ['id',                      INT,      2,   None],
             ],
@@ -324,62 +352,79 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['callbackId',          INT,      4,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command received',
+               'RC_NACK'               : 'User commands queue is full',
+               'RC_IN_PROGRESS'        : 'Previous exchangeNetworkId command is still pending',
+               'RC_WRITE_FAIL'         : 'Flash write error; cannot save new settings',
+            },
         },
         {
             'id'         : 35,
             'name'       : 'radiotestTx',
-            'description': 'The radiotestTx command allows the user to initiate a radio transmission test. It may only be executed if the manager has been booted up in radioTest mode (see setNetworkConfig command). Three types of transmission tests are supported:\n\n-Packet transmission\n-Continuous modulation\n-Continuous wave (unmodulated signal)\n\nIn a packet transmission test, the device generates a repeatCnt number of packet sequences. Each sequence consists of up to 10 packets with configurable size and delays. Each packet consists of payload of up to 125 bytes, and a 2-byte 802.15.4 CRC at the end. Bytes 0 and 1 contain the packet number (in big-endian format) that increments with every packet transmitted. Bytes 2..N contain a counter (from 0..N-2) that increments with every byte inside payload. Transmissions occur on the set of channels defined by chanMask, selected in pseudo-random order.\n\nIn a continuous modulation test, the device generates continuous pseudo-random modulated signal, centered at the specified channel. The test is stopped by resetting the device.\n\nIn a continuous wave test, the device generates an unmodulated tone, centered at the specified channel. The test tone is stopped by resetting the device.\n\nNote: Channel numbering is 0-14, corresponding to IEEE 2.4 GHz channels 11-25.',
+            'description': 'The radiotestTx command allows the user to initiate a radio transmission test. It may only be executed if the manager has been booted up in radiotest mode (see setNetworkConfig command). Three types of transmission tests are supported:\n\n-Packet transmission\n-Continuous modulation\n-Continuous wave (unmodulated signal)\n\nIn a packet transmission test, the device generates a repeatCnt number of packet sequences. Each sequence consists of up to 10 packets with configurable size and delays.Each packet starts with a PHY preamble (5 bytes), followed by a PHY length field (1 byte), followed by data payload of up to 125 bytes, and finally a 2-byte 802.15.4 CRC at the end. Byte 0 of the payload contains stationId of the sender. Bytes 1 and 2 contain the packet number (in big-endian format) that increments with every packet transmitted. Bytes 3..N contain a counter (from 0..N-2) that increments with every byte inside payload. Transmissions occur on the set of channels defined bychanMask, selected inpseudo-randomorder.\n\nIn a continuous modulation test, the device generates continuous pseudo-random modulated signal, centered at the specified channel. The test is stopped by resetting the device.\n\nIn a continuous wave test, the device generates an unmodulated tone, centered at the specified channel. The test tone is stopped by resetting the device.\n\n\n\nChannel numbering is 0-15, corresponding to IEEE 2.4 GHz channels 11-26.',
             'request'    : [
                 ['testType',                INT,      1,   None],
                 ['chanMask',                INT,      2,   None],
                 ['repeatCnt',               INT,      2,   None],
                 ['txPower',                 INTS,     1,   None],
                 ['seqSize',                 INT,      1,   None],
-                ['pkSize1',                 INT,      1,   None],
-                ['gap1',                    INT,      2,   None],
-                ['pkSize2',                 INT,      1,   None],
-                ['gap2',                    INT,      2,   None],
-                ['pkSize3',                 INT,      1,   None],
-                ['gap3',                    INT,      2,   None],
-                ['pkSize4',                 INT,      1,   None],
-                ['gap4',                    INT,      2,   None],
-                ['pkSize5',                 INT,      1,   None],
-                ['gap5',                    INT,      2,   None],
-                ['pkSize6',                 INT,      1,   None],
-                ['gap6',                    INT,      2,   None],
-                ['pkSize7',                 INT,      1,   None],
-                ['gap7',                    INT,      2,   None],
-                ['pkSize8',                 INT,      1,   None],
-                ['gap8',                    INT,      2,   None],
-                ['pkSize9',                 INT,      1,   None],
-                ['gap9',                    INT,      2,   None],
-                ['pkSize10',                INT,      1,   None],
-                ['gap10',                   INT,      2,   None],
+                ['pkLen_1',                 INT,      1,   None],
+                ['delay_1',                 INT,      2,   None],
+                ['pkLen_2',                 INT,      1,   None],
+                ['delay_2',                 INT,      2,   None],
+                ['pkLen_3',                 INT,      1,   None],
+                ['delay_3',                 INT,      2,   None],
+                ['pkLen_4',                 INT,      1,   None],
+                ['delay_4',                 INT,      2,   None],
+                ['pkLen_5',                 INT,      1,   None],
+                ['delay_5',                 INT,      2,   None],
+                ['pkLen_6',                 INT,      1,   None],
+                ['delay_6',                 INT,      2,   None],
+                ['pkLen_7',                 INT,      1,   None],
+                ['delay_7',                 INT,      2,   None],
+                ['pkLen_8',                 INT,      1,   None],
+                ['delay_8',                 INT,      2,   None],
+                ['pkLen_9',                 INT,      1,   None],
+                ['delay_9',                 INT,      2,   None],
+                ['pkLen_10',                INT,      1,   None],
+                ['delay_10',                INT,      2,   None],
             ],
             'response'   : {
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_IN_PROGRESS'        : 'Radiotest is in progress',
+               'RC_INVALID_ARGUMENT'   : 'Invalid "channel" or "txPower" value',
             },
         },
         {
             'id'         : 37,
             'name'       : 'radiotestRx',
-            'description': 'The radiotestRx command clears all previously collected statistics and initiates radio reception on the specified channel.  It may only be executed if the manager has been booted up in radioTest mode (see setNetworkConfig command). During the test, the device keeps statistics about the number of packets received (with and without error). The test results may be retrieved using the getRadiotestStatistics command.\n\nNote: Channel numbering is 0-14, corresponding to IEEE 2.4 GHz channels 11-25.',
+            'description': 'The radiotestRx command clears all previously collected statistics and initiates radio reception on the specified channel. It may only be executed if the manager has been booted up in radiotest mode (see setNetworkConfig command).During the test, the device keeps statistics about the number of packets received (with and without error). Note that the station id specified in this command must match the transmitter\'s station id. This is necessary to isolate traffic if multiple tests are running in the same radio space.The test results may be retrieved using the getRadiotestStatistics command.\n\n\n\nChannel numbering is 0-15, corresponding to IEEE 2.4 GHz channels 11-26.',
             'request'    : [
                 ['mask',                    INT,      2,   None],
                 ['duration',                INT,      2,   None],
+                ['stationId',               INT,      1,   None],
             ],
             'response'   : {
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_IN_PROGRESS'        : 'Radiotest is in progress',
+               'RC_INVALID_ARGUMENT'   : 'Invalid mask value',
+            },
         },
         {
             'id'         : 38,
             'name'       : 'getRadiotestStatistics',
-            'description': 'This command retrieves statistics from a previously run radiotestRx command.  It may only be executed if the manager has been booted up in radioTest mode (see setNetworkConfig command). ',
+            'description': 'This command retrieves statistics from a previously run radiotestRx command.It may only be executed if the manager has been booted up in radiotest mode (see setNetworkConfig command).',
             'request'    : [
             ],
             'response'   : {
@@ -389,11 +434,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['rxFail',              INT,      2,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_IN_PROGRESS'        : 'Radiotest is in progress',
+               'RC_INVALID_COMMAND'    : 'No radiotest was started',
+            },
         },
         {
             'id'         : 39,
             'name'       : 'setACLEntry',
-            'description': 'The setACLEntry command adds a new entry or updates an existing entry in the access control list (ACL).',
+            'description': 'The setACLEntry command adds a new entry or updates an existing entry in the Access Control List (ACL).This change is persistent.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
                 ['joinKey',                 HEXDATA,  16,  None],
@@ -403,11 +453,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NO_RESOURCES'       : 'ACL is full (when adding a new entry)',
+               'RC_WRITE_FAIL'         : 'Flash write error, can\'t save new settings',
+            },
         },
         {
             'id'         : 40,
             'name'       : 'getNextACLEntry',
-            'description': 'The getNextACLEntry command returns information about next mote entry in the access control list (ACL). To begin a search (find the first mote in ACL), a zero MAC address (0000000000000000) should be sent.\n\nThere is no mechanism for reading the ACL entry of a specific mote. This call is an iterator. If you call getNextACLEntry with mote A as the argument, your response is the ACL entry for mote B, where B is the next mote in the ACL.',
+            'description': 'The getNextACLEntry command returns information about next mote entry in the access control list (ACL). To begin a search (find the first mote in ACL), a zero MAC address (0000000000000000) should be sent.There is no mechanism for reading the ACL entry of a specific mote. This call is an iterator. If you call getNextACLEntry with mote A as the argument, your response is the ACL entry for mote B, where B is the next mote in the ACL.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
             ],
@@ -418,11 +473,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['joinKey',             HEXDATA,  16,  None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_END_OF_LIST'        : 'End of ACL is reached',
+               'RC_NOT_FOUND'          : 'No such mote in the ACL',
+            },
         },
         {
             'id'         : 41,
             'name'       : 'deleteACLEntry',
-            'description': 'The deleteACLEntry command deletes the specified mote from the access control list (ACL). If the macAddress parameter is set to all 0xFFs, the entire ACL is cleared.',
+            'description': 'The deleteACLEntry command deletes the specified mote from the access control list (ACL). If the macAddress parameter is set to all 0xFFs or all 0x00s, the entire ACL is cleared. This change is persistent.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
             ],
@@ -431,11 +491,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Specified mote is not found in ACL',
+               'RC_WRITE_FAIL'         : 'Flash write error, can\'t save new settings',
+            },
         },
         {
             'id'         : 42,
             'name'       : 'pingMote',
-            'description': 'The pingMote command sends a ping (echo request) to the mote specified by MAC address. A unique callbackId is generated and returned with the response. When a ping response is received from the mote, the manager generates a ping notification with the measured round trip delay and several other parameters.',
+            'description': 'The pingMote command sends a ping (echo request) to the mote specified by MAC address. A unique callbackId is generated and returned with the response. When the response is received from the mote, the manager generates a pingResponse notification with the measured round trip delay and several other parameters. The request is sent using unacknowledged transport, so the mote is not guaranteed to receive the request.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
             ],
@@ -444,6 +509,13 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                     ['callbackId',          INT,      4,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Specified mote not found',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+               'RC_NO_RESOURCES'       : 'User commands queue is full',
+               'RC_IN_PROGRESS'        : 'Previous echo request command is still pending for specified mote',
             },
         },
         {
@@ -458,11 +530,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Specified mote not found',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+            },
         },
         {
             'id'         : 44,
             'name'       : 'sendData',
-            'description': 'The sendData command sends a packet to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification. It is the application layer\'s responsibility send a response from the mote, and to timeout if no response is received.\n\nThe sendData command should be used by applications that communicate directly with the manager. If end-to-end (application to mote) IP connectivity is required, the application should use the sendIP command. For a more comprehensive discussion of the distinction, see the SmartMesh IP Network User Guide.',
+            'description': "The sendData command sends a packet to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification. It is the responsibility of the customer'sapplication layer at the mote to send a response. It is also the responsibility of thecustomer's application layer to timeout if no response is received at the manager if one is expected.\n\nThe sendData command should be used by applications that communicate directly with the manager. If end-to-end (application to mote) IP connectivity is required, the application should use the sendIP command. For a more comprehensive discussion of the distinction, see the SmartMesh IPNetwork User Guide.",
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
                 ['priority',                INT,      1,   'packetPriority'],
@@ -477,17 +554,28 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['callbackId',          INT,      4,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Specified mote is not found',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+               'RC_NACK'               : 'User commands queue is full or couldn\'t allocate memory buffer for payload',
+               'RC_INVALID_ARGUMENT'   : 'Payload size exceeds maximum allowed value',
+            },
         },
         {
             'id'         : 45,
             'name'       : 'startNetwork',
-            'description': 'The startNetwork command tells the manager to allow the network to start forming (begin accepting join requests from devices). The external application must issue the startNetwork command if the autoStartNetwork flag is not set (see setNetworkConfig).',
+            'description': 'The startNetwork command tells the manager to allow the network to start forming (begin accepting join requests from devices). The external application must issue the startNetwork command if the autoStartNetwork flag is not set (seesetNetworkConfig).',
             'request'    : [
             ],
             'response'   : {
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_IN_PROGRESS'        : 'The network is already started',
             },
         },
         {
@@ -508,11 +596,14 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['swBuild',             INT,      2,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+            },
         },
         {
             'id'         : 47,
             'name'       : 'getMoteConfig',
-            'description': 'The getMoteConfig command returns a single mote description as the response. The command takes two arguments, a MAC Address and a flag indicating whether the MAC Address refers to the requested mote or to the next mote in manager\'s memory. This command may be used to iterate through all motes known by the manager by starting with the macAddress parameter set to 0 and next set to true, and then using the MAC Address of that response as the input to the next call.\n\nThe mote MAC address is used in all query commands, but space constraints require the neighbor health reports to use the moteId for identification. Therefore, both identifiers are present in the mote structure.',
+            'description': 'The getMoteConfig command returns a single mote description as the response. The command takes two arguments, a MAC Address and a flag indicating whether the MAC Address refers to the requested mote or to the next mote in managers memory. This command may be used to iterate through all motes known by the manager by starting with the macAddress parameter set to 0 and next set to true, and then using the MAC Address of that response as the input to the next call.\n\nThe mote MAC address is used in all query commands, but space constraints require the neighbor health reports to use the Mote ID for identification. Therefore, both identifiers are present in the mote structure.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
                 ['next',                    BOOL,     1,   None],
@@ -522,11 +613,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                     ['macAddress',          HEXDATA,  8,   None],
                     ['moteId',              INT,      2,   None],
-                    ['isAP',                INT,      1,   None],
+                    ['isAP',                BOOL,     1,   None],
                     ['state',               INT,      1,   'moteState'],
                     ['reserved',            INT,      1,   None],
                     ['isRouting',           BOOL,     1,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'The specified mote doesn\'t exist',
+               'RC_END_OF_LIST'        : 'Last mote in the list has been reached (next = true)',
             },
         },
         {
@@ -549,13 +645,17 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['rssiDestSrc',         INTS,     1,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'A path between the specified motes doesn\'t exist',
+            },
         },
         {
             'id'         : 49,
             'name'       : 'getNextPathInfo',
             'description': 'The getNextPathInfo command allows iteration across paths connected to a particular mote. The pathId parameter indicates the previous value in the iteration. Setting pathId to 0 returns the first path. A pathId can not be used as a unique identifier for a path. It is only valid when associated with a particular mote.',
             'request'    : [
-                ['mac',                     HEXDATA,  8,   None],
+                ['macAddress',              HEXDATA,  8,   None],
                 ['filter',                  INT,      1,   'pathFilter'],
                 ['pathId',                  INT,      2,   None],
             ],
@@ -572,11 +672,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['rssiDestSrc',         INTS,     1,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'The specified path ID does not exist',
+               'RC_END_OF_LIST'        : 'The specified pathId in the request is the end of the list',
+            },
         },
         {
             'id'         : 50,
             'name'       : 'setAdvertising',
-            'description': 'The setAdvertising command tells the manager to activate or deactivate advertising. The response is a callbackId. A commandFinished notification with the callbackId is generated when the command propagation is complete.',
+            'description': 'The setAdvertising command tells the manager to activate or deactivate advertising. The response is acallbackId. A commandFinished notification with thecallbackId is generated when the command propagation is complete.',
             'request'    : [
                 ['activate',                INT,      1,   'advertisementState'],
             ],
@@ -586,11 +691,15 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['callbackId',          INT,      4,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_IN_PROGRESS'        : 'There is a activate advertising command (or other reliable command) in progress already',
+            },
         },
         {
             'id'         : 51,
             'name'       : 'setDownstreamFrameMode',
-            'description': 'The setDownstreaFrame Mode command tells the manager to shorten or extend the downstream frame. Once this command is executed, the manager switches to manual mode and no longer changes frame size automatically. The response is a callbackId. A commandFinished notification with the callbackId is generated when the command propagation is complete.',
+            'description': 'The setDownstreamFrameMode command tells the manager to shorten or extend the downstream frame. The base slotframe length will be multiplied by the downFrameMultValfor "normal" speed. For "fast" speed the downstream slotframe is the base length.Once this command is executed, the manager switches to manual mode and no longer changes slotframesize automatically. The response is acallbackId. A commandFinished notification with the callbackId is generated when the command propagation is complete.',
             'request'    : [
                 ['frameMode',               INT,      1,   'downstreamFrameMode'],
             ],
@@ -599,6 +708,10 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                     ['callbackId',          INT,      4,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_IN_PROGRESS'        : 'There is already a set frame duty cycle command (or other reliable command) in progress',
             },
         },
         {
@@ -615,7 +728,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['serRxCRCErr',         INT,      2,   None],
                     ['serRxOverruns',       INT,      2,   None],
                     ['apiEstabConn',        INT,      2,   None],
-                    ['apiDropppedConn',     INT,      2,   None],
+                    ['apiDroppedConn',      INT,      2,   None],
                     ['apiTxOk',             INT,      2,   None],
                     ['apiTxErr',            INT,      2,   None],
                     ['apiTxFail',           INT,      2,   None],
@@ -623,11 +736,14 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['apiRxProtErr',        INT,      2,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+            },
         },
         {
             'id'         : 54,
             'name'       : 'setTime',
-            'description': 'The setTime command sets the UTC time on the manager. This command may only be executed when the network is not running. If the trigger flag is false, the manager sets the specified time as soon as it receives the setTime command. When the manager receives a Time pin trigger, it temporarily stores the current time. If a setTime request is received within a short period of time following the trigger, the manager calculates the delay since the trigger and adjust the time such that the trigger was received at the specified time value.',
+            'description': 'The setTime command sets the UTC time on the manager. This command may only be executed when the network is not running. If the trigger flag is false, the manager sets the specified time as soon as it receives the setTime command. When the manager receives a Time Pin trigger, it temporarily stores the current time. If a setTime request is received within a short period of time following the trigger, the manager calculates the delay since the trigger and adjust the time such that the trigger was received at the specified time value.',
             'request'    : [
                 ['trigger',                 INT,      1,   None],
                 ['utcSecs',                 INT,      8,   None],
@@ -637,6 +753,11 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed. The manager is ready to set the time.',
+               'RC_INVALID_ARGUMENT'   : 'One of the parameters was invalid',
+               'RC_VALIDATION_ERROR'   : 'Network is running, setTime command is disabled.',
             },
         },
         {
@@ -651,11 +772,14 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['license',             HEXDATA,  13,  None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+            },
         },
         {
             'id'         : 56,
             'name'       : 'setLicense',
-            'description': 'The setLicense command validates and updates the software license key stored in flash. Features enabled or disabled by the license key change will take effect after the device is restarted. If the license parameter is set to all 0x0s, the manager restores the default license.',
+            'description': 'The setLicense command validates and updates the software license key stored in flash. Features enabled or disabled by the license key change will take effect after the device is restarted.If the license parameter is set to all 0x0s, the manager restores the default license. This change is persistent.',
             'request'    : [
                 ['license',                 HEXDATA,  13,  None],
             ],
@@ -664,11 +788,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_INVALID_ARGUMENT'   : 'The license key is not valid',
+               'RC_WRITE_FAIL'         : 'Flash write error, cannot save new settings',
+            },
         },
         {
             'id'         : 58,
-            'name'       : 'setUser',
-            'description': 'The setUser command sets the password that must be used to log into the command line for a particular user role.',
+            'name'       : 'setCLIUser',
+            'description': 'The setUser command sets the password that must be used to log into the command line for a particular user role. The user roles are:\n\n-Viewer - read-only access to non-sensitive information\n-User - read-write accessThis change is persistent.',
             'request'    : [
                 ['role',                    INT,      1,   'userRole'],
                 ['password',                HEXDATA,  16,  None],
@@ -678,11 +807,15 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_WRITE_FAIL'         : 'Flash write error, can\'t save new settings',
+            },
         },
         {
             'id'         : 59,
             'name'       : 'sendIP',
-            'description': 'The sendIP command sends an 6LowPAN packet to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification. It is the application layer\'s responsibility send a response from the mote, and to timeout if no response is received. The application is responsible for constructing a valid 6LoWPAN packet.\n\nThe sendIP command should be used by applications that require end-to-end IP connectivity. For applications that do not require end-to-end IP connectivity, the sendData command provides a simpler interface without requiring the application to understand 6LoWPAN encapsulation. For a more comprehensive discussion of the distinction, see the SmartMesh IP Network User Guide.',
+            'description': 'The sendIP command sends a6LoWPANpacket to a mote in the network. The response contains a callbackId. When the manager injects the packet into the network, it will generate a packetSent notification with the calllbackId. The application is responsible for constructing a valid 6LoWPANpacket.The packet is sent to the mote best-effort, so the application should deal with responses and timeouts, if any.\n\nThe sendIP command should be used by applications that require end-to-end IP connectivity. For applications that do not require end-to-end IP connectivity, the sendData command provides a simpler interface without requiring the application to understand 6LoWPAN encapsulation. For a more comprehensive discussion of the distinction, see theSmartMesh IP Network User Guide.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
                 ['priority',                INT,      1,   'packetPriority'],
@@ -696,33 +829,28 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['callbackId',          INT,      4,   None],
                 ],
             },
-        },
-        {
-            'id'         : 60,
-            'name'       : 'startLocation',
-            'description': 'The startLocation command sends a request to a set of motes to generate distance measurements to a mobile mote. The manager sends a series of commands to the specified motes active the location links for enough time to perform the requested measurements. More than one startLocation request may be queued up by the manager, but the queue size is limited. The caller must be able to handle a queue full error and retry. The startLocation request contains a variable number of fixed motes. The manager determines the number of fixedMotes provided by the caller by checking the length of the request.\n\nThe startLocation call returns a callbackId that is used to inform the caller of the progress of the distance measurement (see Event Notifications). Location events are similar to commandFinished events. The distance measurements are returned as ipData notifications from the fixed motes. The structure of distance measurements is defined in the \'Dust mote command spec\'.\n\nThe startLocation command is only allowed if the license allows it.',
-            'request'    : [
-                ['numMeasurements',         INT,      1,   None],
-                ['mobileMote',              HEXDATA,  8,   None],
-                ['fixedMotes',              HEXDATA,  None,None],
-            ],
-            'response'   : {
-                'FIELDS':  [
-                    [RC,                    INT,      1,   True],
-                    ['callbackId',          INT,      4,   None],
-                ],
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Specified mote is not found',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+               'RC_NACK'               : 'User commands queue is full or could not allocate memory buffer for payload',
+               'RC_INVALID_ARGUMENT'   : 'Payload size exceeds maximum allowed value or the 6LoWPAN packet is invalid',
             },
         },
         {
             'id'         : 61,
             'name'       : 'restoreFactoryDefaults',
-            'description': 'The restoreFactoryDefaults command restores the default configuration and clears the ACL. This command does not affect the license.',
+            'description': 'The restoreFactoryDefaults command restores the default configuration and clears the ACL. This command does not affect the license.This change is persistent.',
             'request'    : [
             ],
             'response'   : {
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_WRITE_FAIL'         : 'Flash write error; cannot save new settings',
             },
         },
         {
@@ -747,33 +875,40 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['avgLatency',          INT,      4,   None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'No such mote',
+            },
         },
         {
             'id'         : 63,
             'name'       : 'getNetworkConfig',
-            'description': 'The getNetworkConfig command returns general network configuration parameters, including the network ID, bandwidth parameters and number of motes.',
+            'description': 'The getNetworkConfig command returns general network configuration parameters, including the Network ID, bandwidth parameters and number of motes.',
             'request'    : [
             ],
             'response'   : {
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                     ['networkId',           INT,      2,   None],
-                    ['apTxPower',           INT,      1,   None],
+                    ['apTxPower',           INTS,     1,   None],
                     ['frameProfile',        INT,      1,   True],
                     ['maxMotes',            INT,      2,   None],
                     ['baseBandwidth',       INT,      2,   None],
                     ['downFrameMultVal',    INT,      1,   None],
                     ['numParents',          INT,      1,   None],
-                    ['enableCCA',           INT,      1,   None],
+                    ['ccaMode',             INT,      1,   True],
                     ['channelList',         INT,      2,   None],
-                    ['autoStartNetwork',    INT,      1,   None],
-                    ['locMode',             INT,      1,   'locationMode'],
+                    ['autoStartNetwork',    BOOL,     1,   None],
+                    ['locMode',             INT,      1,   None],
                     ['bbMode',              INT,      1,   'backboneFrameMode'],
                     ['bbSize',              INT,      1,   None],
                     ['isRadioTest',         INT,      1,   None],
                     ['bwMult',              INT,      2,   None],
                     ['oneChannel',          INT,      1,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
             },
         },
         {
@@ -793,14 +928,20 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['netPathStability',    INT,      1,   None],
                     ['netLatency',          INT,      4,   None],
                     ['netState',            INT,      1,   'networkState'],
-                    ['ip6addr',             HEXDATA,  16,  None],
+                    ['ipv6Address',         HEXDATA,  16,  None],
+                    ['numLostPackets',      INT,      4,   None],
+                    ['numArrivedPackets',   INT,      8,   None],
+                    ['maxNumbHops',         INT,      1,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
             },
         },
         {
             'id'         : 65,
             'name'       : 'getMoteConfigById',
-            'description': 'The getMoteConfigById command returns a single mote description as the response. The command takes one argument, the Short Address of a mote (mote ID). The command returns the same response structure as the getMoteConfig command.',
+            'description': 'The getMoteConfigById command returns a single mote description as the response. The command takes one argument, the short address of a mote (Mote ID). The command returns the same response structure as the getMoteConfig command.',
             'request'    : [
                     ['moteId',              INT,      2,   None],
             ],
@@ -809,11 +950,15 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                     ['macAddress',          HEXDATA,  8,   None],
                     ['moteId',              INT,      2,   None],
-                    ['isAP',                INT,      1,   None],
-                    ['state',               INT,      1,   None],
+                    ['isAP',                BOOL,     1,   None],
+                    ['state',               INT,      1,   'moteState'],
                     ['reserved',            INT,      1,   None],
                     ['isRouting',           BOOL,     1,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'No such mote',
             },
         },
         {
@@ -827,6 +972,9 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                 'FIELDS':  [
                     [RC,                    INT,      1,   True],
                 ],
+            },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
             },
         },
         {
@@ -842,13 +990,16 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['mask',                HEXDATA,  16,  None],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+            },
         },
         {
             'id'         : 68,
             'name'       : 'setIPConfig',
-            'description': 'The setIPConfig command sets the manager\'s IP configuration parameters, including the IPv6 address and mask.',
+            'description': 'The setIPConfig command sets the IPv6 prefix of the mesh network. Only the upper 8 bytes of the IPv6 address are relevant: the lower 8 bytes of the IPv6 address are ignored, and lower 8 bytes of the mask field are reserved and should be set to 0.This change is persistent.',
             'request'    : [
-                ['ip6addr',                 HEXDATA,  16,  None],
+                ['ipv6Address',             HEXDATA,  16,  None],
                 ['mask',                    HEXDATA,  16,  None],
             ],
             'response'   : {
@@ -856,11 +1007,15 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_WRITE_FAIL'         : 'Flash write error, can\'t save new settings',
+            },
         },
         {
             'id'         : 69,
             'name'       : 'deleteMote',
-            'description': 'The deleteMote command deletes a mote from the manager\'s list. A mote can only be deleted if it in the Lost or Unknown states.',
+            'description': 'The deleteMote command deletes a mote from the manager\'s list. A mote can only be deleted if it in the Lost or Unknown states. This change is persistent.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
             ],
@@ -869,11 +1024,17 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     [RC,                    INT,      1,   True],
                 ],
             },
+            'responseCodes': {
+               'RC_OK'                 : 'Command successfully completed',
+               'RC_NOT_FOUND'          : 'Specified mote is not found',
+               'RC_INV_STATE'          : 'Mote state is not Lost or mote is access point',
+               'RC_WRITE_FAIL'         : 'Flash write error, can\'t save new settings',
+            },
         },
         {
             'id'         : 70,
             'name'       : 'getMoteLinks',
-            'description': 'The getMoteLinks command returns information about links assigned to the mote. The response contains a list of links starting with Nth link on the mote, where N is supplied as \'idx\' parameter in the request. To retrieve all links on the device the user can call this command with idx that increments by number of links returned with prior response,  until the command returns RC_END_OF_LIST response code. Note that links assigned to a mote may change between API calls.',
+            'description': 'ThegetMoteLinkscommand returns information about links assigned to the mote. The response contains a list of links starting with Nth link on the mote, where N is supplied as theidxparameter in the request. To retrieve all links on the device the user can call this command withidxthat increments by number of links returned with priorresponse, until the command returns RC_END_OF_LIST response code. Note that links assigned to a mote may change between API calls.',
             'request'    : [
                 ['macAddress',              HEXDATA,  8,   None],
                 ['idx',                     INT,      2,   None],
@@ -884,57 +1045,62 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['idx',                 INT,      2,   None],
                     ['utilization',         INT,      1,   None],
                     ['numLinks',            INT,      1,   None],
-                    ['frameId1',            INT,      1,   None],  # 1
-                    ['slot1',               INT,      4,   None],
-                    ['channelOffset1',      INT,      1,   None],
-                    ['moteId1',             INT,      2,   None],
-                    ['flags1',              INT,      1,   None],
-                    ['frameId2',            INT,      1,   None],  # 2
-                    ['slot2',               INT,      4,   None],
-                    ['channelOffset2',      INT,      1,   None],
-                    ['moteId2',             INT,      2,   None],
-                    ['flags2',              INT,      1,   None],
-                    ['frameId3',            INT,      1,   None],  # 3
-                    ['slot3',               INT,      4,   None],
-                    ['channelOffset3',      INT,      1,   None],
-                    ['moteId3',             INT,      2,   None],
-                    ['flags3',              INT,      1,   None],
-                    ['frameId4',            INT,      1,   None],  # 4
-                    ['slot4',               INT,      4,   None],
-                    ['channelOffset4',      INT,      1,   None],
-                    ['moteId4',             INT,      2,   None],
-                    ['flags4',              INT,      1,   None],
-                    ['frameId5',            INT,      1,   None],  # 5
-                    ['slot5',               INT,      4,   None],
-                    ['channelOffset5',      INT,      1,   None],
-                    ['moteId5',             INT,      2,   None],
-                    ['flags5',              INT,      1,   None],
-                    ['frameId6',            INT,      1,   None],  # 6
-                    ['slot6',               INT,      4,   None],
-                    ['channelOffset6',      INT,      1,   None],
-                    ['moteId6',             INT,      2,   None],
-                    ['flags6',              INT,      1,   None],
-                    ['frameId7',            INT,      1,   None],  # 7
-                    ['slot7',               INT,      4,   None],
-                    ['channelOffset7',      INT,      1,   None],
-                    ['moteId7',             INT,      2,   None],
-                    ['flags7',              INT,      1,   None],
-                    ['frameId8',            INT,      1,   None],  # 8
-                    ['slot8',               INT,      4,   None],
-                    ['channelOffset8',      INT,      1,   None],
-                    ['moteId8',             INT,      2,   None],
-                    ['flags8',              INT,      1,   None],
-                    ['frameId9',            INT,      1,   None],  # 9
-                    ['slot9',               INT,      4,   None],
-                    ['channelOffset9',      INT,      1,   None],
-                    ['moteId9',             INT,      2,   None],
-                    ['flags9',              INT,      1,   None],
-                    ['frameId10',           INT,      1,   None],  # 10
-                    ['slot10',              INT,      4,   None],
-                    ['channelOffset10',     INT,      1,   None],
-                    ['moteId10',            INT,      2,   None],
-                    ['flags10',             INT,      1,   None],
+                    ['frameId_1',           INT,      1,   None],  # 1
+                    ['slot_1',              INT,      4,   None],
+                    ['channelOffset_1',     INT,      1,   None],
+                    ['moteId_1',            INT,      2,   None],
+                    ['flags_1',             INT,      1,   None],
+                    ['frameId_2',           INT,      1,   None],  # 2
+                    ['slot_2',              INT,      4,   None],
+                    ['channelOffset_2',     INT,      1,   None],
+                    ['moteId_2',            INT,      2,   None],
+                    ['flags_2',             INT,      1,   None],
+                    ['frameId_3',           INT,      1,   None],  # 3
+                    ['slot_3',              INT,      4,   None],
+                    ['channelOffset_3',     INT,      1,   None],
+                    ['moteId_3',            INT,      2,   None],
+                    ['flags_3',             INT,      1,   None],
+                    ['frameId_4',           INT,      1,   None],  # 4
+                    ['slot_4',              INT,      4,   None],
+                    ['channelOffset_4',     INT,      1,   None],
+                    ['moteId_4',            INT,      2,   None],
+                    ['flags_4',             INT,      1,   None],
+                    ['frameId_5',           INT,      1,   None],  # 5
+                    ['slot_5',              INT,      4,   None],
+                    ['channelOffset_5',     INT,      1,   None],
+                    ['moteId_5',            INT,      2,   None],
+                    ['flags_5',             INT,      1,   None],
+                    ['frameId_6',           INT,      1,   None],  # 6
+                    ['slot_6',              INT,      4,   None],
+                    ['channelOffset_6',     INT,      1,   None],
+                    ['moteId_6',            INT,      2,   None],
+                    ['flags_6',             INT,      1,   None],
+                    ['frameId_7',           INT,      1,   None],  # 7
+                    ['slot_7',              INT,      4,   None],
+                    ['channelOffset_7',     INT,      1,   None],
+                    ['moteId_7',            INT,      2,   None],
+                    ['flags_7',             INT,      1,   None],
+                    ['frameId_8',           INT,      1,   None],  # 8
+                    ['slot_8',              INT,      4,   None],
+                    ['channelOffset_8',     INT,      1,   None],
+                    ['moteId_8',            INT,      2,   None],
+                    ['flags_8',             INT,      1,   None],
+                    ['frameId_9',           INT,      1,   None],  # 9
+                    ['slot_9',              INT,      4,   None],
+                    ['channelOffset_9',     INT,      1,   None],
+                    ['moteId_9',            INT,      2,   None],
+                    ['flags_9',             INT,      1,   None],
+                    ['frameId_10',          INT,      1,   None],  # 10
+                    ['slot_10',             INT,      4,   None],
+                    ['channelOffset_10',    INT,      1,   None],
+                    ['moteId_10',           INT,      2,   None],
+                    ['flags_10',            INT,      1,   None],
                 ],
+            },
+            'responseCodes': {
+               'RC_NOT_FOUND'          : 'No such mote.',
+               'RC_INV_STATE'          : 'Mote is not in operational state',
+               'RC_END_OF_LIST'        : 'The index requested is greater than number of links.',
             },
         },
     ]
@@ -961,7 +1127,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         },
         {
             'id'         : 2,
-            'name'       : 'eventCommandFinish',
+            'name'       : 'eventCommandFinished',
             'description': 'The commandFinished notification is used when a reliable command response is received.',
             'response'   : {
                 'FIELDS':  [
@@ -993,7 +1159,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 5,
             'name'       : 'eventMoteLost',
-            'description': 'This notification is sent when a mote\'s state changes to "Lost," which may occur when a mote becomes unreachable through the network.',
+            'description': 'This notification is sent when a mote\'s state changes to Lost, which indicates that the mote is not responding to downstream messages.',
             'response'   : {
                 'FIELDS':  [
                     ['macAddress',         HEXDATA,  8,   None],
@@ -1002,8 +1168,8 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         },
         {
             'id'         : 6,
-            'name'       : 'eventNetTime',
-            'description': 'The time notification is triggered by the client asserting the TIME pin or by calling the getTime command. This notification contains the time when the TIME pin was asserted (or the getTime command was processed) expressed as:\n\n- ASN--The absolute slot number (the number of timeslots since 20:00:00 UTC July 2,2002 if UTC is set on manager, otherwise since Jan 1, 1970)\n- Uptime--The number of seconds since the device was booted\n-- Unix time--The number of seconds and microseconds since Jan 1, 1970 in UTC',
+            'name'       : 'eventNetworkTime',
+            'description': 'The time notification is triggered by the client asserting the TIME pin or by calling the getTime command. This notification contains the time when the TIME pin was asserted (or the getTime command was processed) expressed as:\n\n-ASNThe absolute slot number (the number of timeslots since "7/2/2002 8:00:00 PM PST"if UTC is set on manager, otherwise since Jan 1, 1970)\n\n\n-UptimeThe number of seconds since the device was booted\n-UnixtimeThe number of seconds and microseconds since Jan 1, 1970 in UTC',
             'response'   : {
                 'FIELDS':  [
                     ['uptime',             INT,      4,   None],
@@ -1024,7 +1190,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
                     ['macAddress',         HEXDATA,  8,   None],
                     ['delay',              INT,      4,   None],
                     ['voltage',            INT,      2,   None],
-                    ['temperature',        INT,      1,   None],
+                    ['temperature',        INTS,     1,   None],
                 ],
             },
         },
@@ -1103,7 +1269,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 2,
             'name'       : 'notifLog',
-            'description': 'Log notification',
+            'description': 'A log notifications is generated in response to the getLog command. Each log notification contains a message from the mote\'s log.',
             'response'   : {
                 'FIELDS':  [
                     ['macAddress',         HEXDATA,  8,   None],
@@ -1114,7 +1280,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 4,
             'name'       : 'notifData',
-            'description': 'Data payload notification',
+            'description': 'The data notification contains a header and a variable length array of binary data. The length of the data is determined based on the length of the notification.\n\nThe manager forwards all packets received on its IP address and non-manager ports as data notifications.',
             'response'   : {
                 'FIELDS':  [
                     ['utcSecs',            INT,      8,   None],
@@ -1129,7 +1295,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 5,
             'name'       : 'notifIpData',
-            'description': '6lowpan packet notification',
+            'description': 'The ipData notification contains full IP packet sent by the mote, including 6Lowpan header, UDP header, and the UDP payload. Manager generates this notification when it receives packet from a mote with destination other than manager\'s own IP address. The size of thedata field can be calculated by subtracting the fixed header size (up to macAddress)from the size of overall notification packet.',
             'response'   : {
                 'System':  [
                     ['utcSecs',            INT,      8,   None],
@@ -1142,7 +1308,7 @@ class IpMgrDefinition(ApiDefinition.ApiDefinition):
         {
             'id'         : 6,
             'name'       : 'notifHealthReport',
-            'description': 'Health report notification',
+            'description': 'The healthReport notifications include the raw payload of health reports received from devices. The payload contains one or more specific health report messages. Each message contains an identifier, length and variable-sized data. The individual healthReport message structures are defined below.',
             'response'   : {
                 'System':  [
                     ['macAddress',         HEXDATA,  8,   None],

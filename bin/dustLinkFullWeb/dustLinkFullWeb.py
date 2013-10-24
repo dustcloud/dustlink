@@ -1,70 +1,26 @@
 #!/usr/bin/python
 
-import os
+#============================ adjust path =====================================
+
 import sys
-temp_path = sys.path[0]
-sys.path.insert(0, os.path.join(temp_path, '..', '..'))
-sys.path.insert(0, os.path.join(temp_path, '..', '..', 'DustLink'))
-sys.path.insert(0, os.path.join(temp_path, '..', '..', 'protocols'))
-sys.path.insert(0, os.path.join(temp_path, '..', '..', 'SmartMeshSDK'))
-sys.path.insert(0, os.path.join(temp_path, '..', '..', 'views', 'web'))
-sys.path.insert(0, os.path.join(temp_path, '..', '..', 'views', 'cli'))
+import os
+if __name__ == "__main__":
+    here = sys.path[0]
+    sys.path.insert(0, os.path.join(here, '..', '..'))
 
-import logging
-import logging.handlers
+#============================ imports =========================================
 
-import DustLink
+import logging.config
+
+from   DustLink     import DustLink
 from   DustLinkData import DustLinkData
-import DustLinkCli
-import DustLinkWeb
+from   views.cli    import DustLinkCli
+from   views.web    import DustLinkWeb
 
 #============================ defines =========================================
 
-LOG_FORMAT         = "%(asctime)s [%(name)s:%(levelname)s] %(message)s"
 DEFAULT_KEY_FILE   = os.path.join('keys','serverkey.pem')
 DEFAULT_CERT_FILE  = os.path.join('keys','servercert.pem')
-
-#============================ logging =========================================
-
-logFileName    = os.path.join('..','..','views','web','dustWeb','logs','system.log')
-logHandler = logging.handlers.RotatingFileHandler(logFileName,
-                                                  maxBytes=2000000,
-                                                  backupCount=5,)
-logHandler.setFormatter(logging.Formatter(LOG_FORMAT))
-for loggerName in [# admin
-                   'EventBusClient',
-                   # core
-                   'DustLink',
-                   'DustLinkData',
-                   'PersistenceEngine',
-                   'PersistenceEngineFile',
-                   'PersistenceEngineNone',
-                   # GATEWAY
-                   'Gateway',
-                   'GatewayListener',
-                   'NetworkStateAnalyzer',
-                   'SerialConnector',
-                   'Hdlc',
-                   # LBR
-                   # DATACONNECTOR
-                   'DataConnector',
-                   'ListenerUdp',
-                   'AppIdentifier',
-                   'AppPayloadParser',
-                   'AppDataPublisher',
-                   'MirrorEngine',
-                   'GoogleSyncEngine',
-                   # interfaces
-                   'DustLinkCli',
-                   'DustLinkWeb',
-                   'WebHandler',
-                   # resetters
-                   'ResetManager',
-                   'ResetMotesNetwork',
-                   ]:
-    temp = logging.getLogger(loggerName)
-    temp.setLevel(logging.INFO)
-    temp.addHandler(logHandler)
 
 #============================ main ============================================
 
@@ -85,7 +41,10 @@ def main():
     global dustLinkWeb
     global dustLinkCli
     
-    # change to the dustWeb/ directory
+    #----- logging
+    logging.config.fileConfig('logging.conf')
+    
+    #----- change working dir to the dustWeb/
     os.chdir(os.path.join('..','..','views','web','dustWeb'))
     
     #----- dustLinkData

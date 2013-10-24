@@ -3,12 +3,16 @@ This module was generated automatically. Do not edit directly.
 '''
 
 import collections
-import ApiException
+from   SmartMeshSDK import ApiException
 from   HartMgrConnectorInternal import HartMgrConnectorInternal
+
+##
+# \addtogroup HartMgrConnector
+# \{
+# 
 
 class HartMgrConnector(HartMgrConnectorInternal):
     '''
-    \ingroup ApiConnector
     \brief Public class for the HART Manager connector using the XML API.
     '''
 
@@ -75,7 +79,10 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # - <tt>minPipePkPeriod</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>bandwidthProfile</tt>: 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - Manual: manual profile
+    #      - P1: normal profile
+    #      - P2: low-power profile
     # - <tt>manualUSFrameSize</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>manualDSFrameSize</tt>: 4-byte field formatted as a int.<br/>
@@ -87,9 +94,15 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # - <tt>userQueueSize</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>locationMode</tt>: 16-byte field formatted as a string.<br/>
+    #     This field can only take one of the following values:
+    #      - on: on
+    #      - off: off
+    # - <tt>backboneEnabled</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>backboneSize</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getNetwork = collections.namedtuple("Tuple_dn_getNetwork", ['netName', 'networkId', 'maxMotes', 'numMotes', 'optimizationEnable', 'accessPointPA', 'ccaEnabled', 'requestedBasePkPeriod', 'minServicesPkPeriod', 'minPipePkPeriod', 'bandwidthProfile', 'manualUSFrameSize', 'manualDSFrameSize', 'manualAdvFrameSize', 'netQueueSize', 'userQueueSize', 'locationMode'])
+    Tuple_dn_getNetwork = collections.namedtuple("Tuple_dn_getNetwork", ['netName', 'networkId', 'maxMotes', 'numMotes', 'optimizationEnable', 'accessPointPA', 'ccaEnabled', 'requestedBasePkPeriod', 'minServicesPkPeriod', 'minPipePkPeriod', 'bandwidthProfile', 'manualUSFrameSize', 'manualDSFrameSize', 'manualAdvFrameSize', 'netQueueSize', 'userQueueSize', 'locationMode', 'backboneEnabled', 'backboneSize'])
 
     ##
     # Retrieves network configuration parameters
@@ -153,6 +166,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #      - Lost: lost
     #      - Joining: joining
     #      - Operational: operational
+    #      - Disconnecting: disconnecting
     # - <tt>numJoins</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>joinTime</tt>: 8-byte field formatted as a int.<br/>
@@ -173,9 +187,9 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>productName</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>hwModel</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>hwModel</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>hwRev</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>hwRev</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>swRev</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -193,14 +207,20 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>pipeStatus</tt>: 4-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - on: on
     #      - off: off
+    #      - pending: Pipe activation pending
+    #      - on_bi: Bidirection pipe on
+    #      - on_up: Upstream pipe on
+    #      - on_down: Downstream pipe on
     # - <tt>advertisingStatus</tt>: 4-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
     #      - on: on
     #      - off: off
+    #      - pending: pending
     # - <tt>locationTag</tt>: 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - supported: supported
+    #      - not supported: not supported
     # 
     Tuple_dn_getMote = collections.namedtuple("Tuple_dn_getMote", ['moteId', 'macAddr', 'name', 'state', 'numJoins', 'joinTime', 'reason', 'isAccessPoint', 'powerSource', 'dischargeCurrent', 'dischargeTime', 'recoveryTime', 'enableRouting', 'productName', 'hwModel', 'hwRev', 'swRev', 'voltage', 'numNeighbors', 'needNeighbor', 'goodNeighbors', 'allocatedPkPeriod', 'allocatedPipePkPeriod', 'pipeStatus', 'advertisingStatus', 'locationTag'])
 
@@ -229,10 +249,18 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>numJoins</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
+    # - <tt>voltage</tt>: 4-byte field formatted as a float.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>chargeConsumption</tt>: 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>temperature</tt>: 4-byte field formatted as a float.<br/>
+    #     There is no restriction on the value of this field.
     # - <tt>numLostPackets</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
+    # - <tt>latencyToMote</tt>: 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_getMoteStatistics = collections.namedtuple("Tuple_dn_getMoteStatistics", ['index', 'startTime', 'avgLatency', 'reliability', 'numJoins', 'numLostPackets'])
+    Tuple_dn_getMoteStatistics = collections.namedtuple("Tuple_dn_getMoteStatistics", ['index', 'startTime', 'avgLatency', 'reliability', 'numJoins', 'voltage', 'chargeConsumption', 'temperature', 'numLostPackets', 'latencyToMote'])
 
     ##
     # Get the Mote Statistics
@@ -255,6 +283,30 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return HartMgrConnector.Tuple_dn_getMoteStatistics(**res)
 
     ##
+    # The named tuple returned by the dn_getSourceRoute() function.
+    # 
+    # - <tt>destMacAddr</tt>: 25-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>primaryPath</tt>: 16-byte field formatted as a list.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>secondaryPath</tt>: 16-byte field formatted as a list.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_getSourceRoute = collections.namedtuple("Tuple_dn_getSourceRoute", ['destMacAddr', 'primaryPath', 'secondaryPath'])
+
+    ##
+    # Get the Source Route for a specific Mote
+    # 
+    # \param destMacAddr 25-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_getSourceRoute named tuple.
+    # 
+    def dn_getSourceRoute(self, destMacAddr) :
+        res = HartMgrConnectorInternal.send(self, ['getSourceRoute'], {"destMacAddr" : destMacAddr})
+        return HartMgrConnector.Tuple_dn_getSourceRoute(**res)
+
+    ##
     # The named tuple returned by the dn_getMotes() function.
     # 
     # - <tt>moteId</tt>: 4-byte field formatted as a int.<br/>
@@ -269,6 +321,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #      - Lost: lost
     #      - Joining: joining
     #      - Operational: operational
+    #      - Disconnecting: disconnecting
     # - <tt>numJoins</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>joinTime</tt>: 8-byte field formatted as a int.<br/>
@@ -289,9 +342,9 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>productName</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>hwModel</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>hwModel</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>hwRev</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>hwRev</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>swRev</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -309,14 +362,20 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>pipeStatus</tt>: 4-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - on: on
     #      - off: off
+    #      - pending: Pipe activation pending
+    #      - on_bi: Bidirection pipe on
+    #      - on_up: Upstream pipe on
+    #      - on_down: Downstream pipe on
     # - <tt>advertisingStatus</tt>: 4-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
     #      - on: on
     #      - off: off
+    #      - pending: pending
     # - <tt>locationTag</tt>: 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - supported: supported
+    #      - not supported: not supported
     # 
     Tuple_dn_getMotes = collections.namedtuple("Tuple_dn_getMotes", ['moteId', 'macAddr', 'name', 'state', 'numJoins', 'joinTime', 'reason', 'isAccessPoint', 'powerSource', 'dischargeCurrent', 'dischargeTime', 'recoveryTime', 'enableRouting', 'productName', 'hwModel', 'hwRev', 'swRev', 'voltage', 'numNeighbors', 'needNeighbor', 'goodNeighbors', 'allocatedPkPeriod', 'allocatedPipePkPeriod', 'pipeStatus', 'advertisingStatus', 'locationTag'])
 
@@ -350,7 +409,6 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #      - all: all
     #      - upstream: upstream
     #      - downstream: downstream
-    #      - used: used
     #      - unused: unused
     # - <tt>pathQuality</tt>: 0-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
@@ -383,7 +441,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>abPwr</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>stability</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>stability</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_getPathStatistics = collections.namedtuple("Tuple_dn_getPathStatistics", ['index', 'startTime', 'baPwr', 'abPwr', 'stability'])
@@ -409,15 +467,80 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return HartMgrConnector.Tuple_dn_getPathStatistics(**res)
 
     ##
+    # The named tuple returned by the dn_getSecurity() function.
+    # 
+    # - <tt>securityMode</tt>: 20-byte field formatted as a string.<br/>
+    #     This field can only take one of the following values:
+    #      - acceptACL: Accept ACL
+    #      - acceptCommonJoinKey: Accept common join key
+    # - <tt>acceptHARTDevicesOnly</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_getSecurity = collections.namedtuple("Tuple_dn_getSecurity", ['securityMode', 'acceptHARTDevicesOnly'])
+
+    ##
+    # Get the Security configuration
+    # 
+    # 
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_getSecurity named tuple.
+    # 
+    def dn_getSecurity(self, ) :
+        res = HartMgrConnectorInternal.send(self, ['getSecurity'], {})
+        return HartMgrConnector.Tuple_dn_getSecurity(**res)
+
+    ##
+    # The named tuple returned by the dn_getAcls() function.
+    # 
+    # - <tt>macAddr</tt>: 25-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_getAcls = collections.namedtuple("Tuple_dn_getAcls", ['macAddr'])
+
+    ##
+    # Get the list of devices on the ACL
+    # 
+    # 
+    # 
+    # \returns The response to the command, formatted as a list of #Tuple_dn_getAcls named tuple.
+    # 
+    def dn_getAcls(self, ) :
+        res = HartMgrConnectorInternal.send(self, ['getAcls'], {})
+        tupleList = []
+        for r in res :
+            tupleList.append(HartMgrConnector.Tuple_dn_getAcls(**r))
+        return tupleList
+
+    ##
+    # The named tuple returned by the dn_getAcl() function.
+    # 
+    # - <tt>macAddr</tt>: 25-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_getAcl = collections.namedtuple("Tuple_dn_getAcl", ['macAddr'])
+
+    ##
+    # Check whether a device is part of the ACL
+    # 
+    # \param macAddr 25-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_getAcl named tuple.
+    # 
+    def dn_getAcl(self, macAddr) :
+        res = HartMgrConnectorInternal.send(self, ['getAcl'], {"macAddr" : macAddr})
+        return HartMgrConnector.Tuple_dn_getAcl(**res)
+
+    ##
     # The named tuple returned by the dn_getBlacklist() function.
     # 
-    # - <tt>frequency</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>frequency</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_getBlacklist = collections.namedtuple("Tuple_dn_getBlacklist", ['frequency'])
 
     ##
-    # 
+    # Get the channel blacklist
     # 
     # 
     # 
@@ -431,21 +554,53 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return tupleList
 
     ##
+    # The named tuple returned by the dn_getRedundancy() function.
+    # 
+    # - <tt>localMode</tt>: 16-byte field formatted as a string.<br/>
+    #     This field can only take one of the following values:
+    #      - standalone: standalone
+    #      - transToMaster: Transitioning to master
+    #      - transToSlave: Transitioning to slave
+    #      - master: master
+    #      - slave: slave
+    #      - failed: Manager failed
+    # - <tt>peerStatus</tt>: 16-byte field formatted as a string.<br/>
+    #     This field can only take one of the following values:
+    #      - unknown: unknown
+    #      - connected: connected
+    #      - synchronized: synchronized
+    # - <tt>peerControllerSwRev</tt>: 16-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_getRedundancy = collections.namedtuple("Tuple_dn_getRedundancy", ['localMode', 'peerStatus', 'peerControllerSwRev'])
+
+    ##
+    # Get the redundancy state
+    # 
+    # 
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_getRedundancy named tuple.
+    # 
+    def dn_getRedundancy(self, ) :
+        res = HartMgrConnectorInternal.send(self, ['getRedundancy'], {})
+        return HartMgrConnector.Tuple_dn_getRedundancy(**res)
+
+    ##
     # The named tuple returned by the dn_getSla() function.
     # 
-    # - <tt>minNetReliability</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>minNetReliability</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>maxNetLatency</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>minNetPathStability</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>minNetPathStability</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>apRdntCoverageThreshold</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>apRdntCoverageThreshold</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_getSla = collections.namedtuple("Tuple_dn_getSla", ['minNetReliability', 'maxNetLatency', 'minNetPathStability', 'apRdntCoverageThreshold'])
 
     ##
-    # 
+    # Get the Service Level Agreement (SLA) configuration
     # 
     # 
     # 
@@ -469,7 +624,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_getUsers = collections.namedtuple("Tuple_dn_getUsers", ['userName', 'privilege'])
 
     ##
-    # 
+    # Get the list of users
     # 
     # 
     # 
@@ -496,7 +651,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_getUser = collections.namedtuple("Tuple_dn_getUser", ['userName', 'privilege'])
 
     ##
-    # 
+    # Get the description of a user 
     # 
     # \param userName 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -520,7 +675,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_setSystem = collections.namedtuple("Tuple_dn_setSystem", ['systemName', 'location', 'cliTimeout'])
 
     ##
-    # 
+    # Set system-level configuration
     # 
     # \param systemName 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -542,20 +697,14 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>networkId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>optimizationEnable</tt>: 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
     # - <tt>maxMotes</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>accessPointPA</tt>: 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
-    # - <tt>ccaEnabled</tt>: 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
+    # - <tt>optimizationEnable</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>accessPointPA</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>ccaEnabled</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
     # - <tt>requestedBasePkPeriod</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>minServicesPkPeriod</tt>: 4-byte field formatted as a int.<br/>
@@ -564,9 +713,9 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>bandwidthProfile</tt>: 16-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - Manual: manual
-    #      - P1: p1
-    #      - P2: p2
+    #      - Manual: manual profile
+    #      - P1: normal profile
+    #      - P2: low-power profile
     # - <tt>manualUSFrameSize</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>manualDSFrameSize</tt>: 4-byte field formatted as a int.<br/>
@@ -577,30 +726,28 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     This field can only take one of the following values:
     #      - on: on
     #      - off: off
+    # - <tt>backboneEnabled</tt>: 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # - <tt>backboneSize</tt>: 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_setNetwork = collections.namedtuple("Tuple_dn_setNetwork", ['netName', 'networkId', 'optimizationEnable', 'maxMotes', 'accessPointPA', 'ccaEnabled', 'requestedBasePkPeriod', 'minServicesPkPeriod', 'minPipePkPeriod', 'bandwidthProfile', 'manualUSFrameSize', 'manualDSFrameSize', 'manualAdvFrameSize', 'locationMode'])
+    Tuple_dn_setNetwork = collections.namedtuple("Tuple_dn_setNetwork", ['netName', 'networkId', 'maxMotes', 'optimizationEnable', 'accessPointPA', 'ccaEnabled', 'requestedBasePkPeriod', 'minServicesPkPeriod', 'minPipePkPeriod', 'bandwidthProfile', 'manualUSFrameSize', 'manualDSFrameSize', 'manualAdvFrameSize', 'locationMode', 'backboneEnabled', 'backboneSize'])
 
     ##
-    # 
+    # Set network configuration
     # 
     # \param netName 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     # \param networkId 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param optimizationEnable 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
     # \param maxMotes 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param accessPointPA 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
-    # \param ccaEnabled 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
+    # \param optimizationEnable 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # \param accessPointPA 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    # \param ccaEnabled 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
     # \param requestedBasePkPeriod 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # \param minServicesPkPeriod 4-byte field formatted as a int.<br/>
@@ -609,9 +756,9 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # \param bandwidthProfile 16-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - Manual: manual
-    #      - P1: p1
-    #      - P2: p2
+    #      - Manual: manual profile
+    #      - P1: normal profile
+    #      - P2: low-power profile
     # \param manualUSFrameSize 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # \param manualDSFrameSize 4-byte field formatted as a int.<br/>
@@ -625,8 +772,8 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setNetwork named tuple.
     # 
-    def dn_setNetwork(self, netName, networkId, optimizationEnable, maxMotes, accessPointPA, ccaEnabled, requestedBasePkPeriod, minServicesPkPeriod, minPipePkPeriod, bandwidthProfile, manualUSFrameSize, manualDSFrameSize, manualAdvFrameSize, locationMode) :
-        res = HartMgrConnectorInternal.send(self, ['setNetwork'], {"netName" : netName, "networkId" : networkId, "optimizationEnable" : optimizationEnable, "maxMotes" : maxMotes, "accessPointPA" : accessPointPA, "ccaEnabled" : ccaEnabled, "requestedBasePkPeriod" : requestedBasePkPeriod, "minServicesPkPeriod" : minServicesPkPeriod, "minPipePkPeriod" : minPipePkPeriod, "bandwidthProfile" : bandwidthProfile, "manualUSFrameSize" : manualUSFrameSize, "manualDSFrameSize" : manualDSFrameSize, "manualAdvFrameSize" : manualAdvFrameSize, "locationMode" : locationMode})
+    def dn_setNetwork(self, netName, networkId, maxMotes, optimizationEnable, accessPointPA, ccaEnabled, requestedBasePkPeriod, minServicesPkPeriod, minPipePkPeriod, bandwidthProfile, manualUSFrameSize, manualDSFrameSize, manualAdvFrameSize, locationMode) :
+        res = HartMgrConnectorInternal.send(self, ['setNetwork'], {"netName" : netName, "networkId" : networkId, "maxMotes" : maxMotes, "optimizationEnable" : optimizationEnable, "accessPointPA" : accessPointPA, "ccaEnabled" : ccaEnabled, "requestedBasePkPeriod" : requestedBasePkPeriod, "minServicesPkPeriod" : minServicesPkPeriod, "minPipePkPeriod" : minPipePkPeriod, "bandwidthProfile" : bandwidthProfile, "manualUSFrameSize" : manualUSFrameSize, "manualDSFrameSize" : manualDSFrameSize, "manualAdvFrameSize" : manualAdvFrameSize, "locationMode" : locationMode})
         return HartMgrConnector.Tuple_dn_setNetwork(**res)
 
     ##
@@ -644,6 +791,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #      - Lost: lost
     #      - Joining: joining
     #      - Operational: operational
+    #      - Disconnecting: disconnecting
     # - <tt>numJoins</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>joinTime</tt>: 8-byte field formatted as a int.<br/>
@@ -664,9 +812,9 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>productName</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>hwModel</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>hwModel</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>hwRev</tt>: 4-byte field formatted as a int.<br/>
+    # - <tt>hwRev</tt>: 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>swRev</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -684,28 +832,32 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # - <tt>pipeStatus</tt>: 4-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - on: on
     #      - off: off
+    #      - pending: Pipe activation pending
+    #      - on_bi: Bidirection pipe on
+    #      - on_up: Upstream pipe on
+    #      - on_down: Downstream pipe on
     # - <tt>advertisingStatus</tt>: 4-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
     #      - on: on
     #      - off: off
+    #      - pending: pending
     # - <tt>locationTag</tt>: 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - supported: supported
+    #      - not supported: not supported
     # 
     Tuple_dn_setMote = collections.namedtuple("Tuple_dn_setMote", ['moteId', 'macAddr', 'name', 'state', 'numJoins', 'joinTime', 'reason', 'isAccessPoint', 'powerSource', 'dischargeCurrent', 'dischargeTime', 'recoveryTime', 'enableRouting', 'productName', 'hwModel', 'hwRev', 'swRev', 'voltage', 'numNeighbors', 'needNeighbor', 'goodNeighbors', 'allocatedPkPeriod', 'allocatedPipePkPeriod', 'pipeStatus', 'advertisingStatus', 'locationTag'])
 
     ##
-    # 
+    # Set mote configuration
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     # \param name 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # \param enableRouting 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
+    # \param enableRouting 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setMote named tuple.
     # 
@@ -716,27 +868,27 @@ class HartMgrConnector(HartMgrConnectorInternal):
     ##
     # The named tuple returned by the dn_setSla() function.
     # 
-    # - <tt>minNetReliability</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>minNetReliability</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # - <tt>maxNetLatency</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>minNetPathStability</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>minNetPathStability</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>apRdntCoverageThreshold</tt>: 0-byte field formatted as a float.<br/>
+    # - <tt>apRdntCoverageThreshold</tt>: 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # 
     Tuple_dn_setSla = collections.namedtuple("Tuple_dn_setSla", ['minNetReliability', 'maxNetLatency', 'minNetPathStability', 'apRdntCoverageThreshold'])
 
     ##
+    # Set SLA configuration
     # 
-    # 
-    # \param minNetReliability 0-byte field formatted as a float.<br/>
+    # \param minNetReliability 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # \param maxNetLatency 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param minNetPathStability 0-byte field formatted as a float.<br/>
+    # \param minNetPathStability 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
-    # \param apRdntCoverageThreshold 0-byte field formatted as a float.<br/>
+    # \param apRdntCoverageThreshold 8-byte field formatted as a float.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setSla named tuple.
@@ -748,32 +900,26 @@ class HartMgrConnector(HartMgrConnectorInternal):
     ##
     # The named tuple returned by the dn_setSecurity() function.
     # 
-    # - <tt>securityMode</tt>: 16-byte field formatted as a string.<br/>
+    # - <tt>securityMode</tt>: 20-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - acceptACL: acceptacl
-    #      - acceptCommonJoinKey: acceptcommonjoinkey
-    # - <tt>commonJoinKey</tt>: 33-byte field formatted as a string.<br/>
+    #      - acceptACL: Accept ACL
+    #      - acceptCommonJoinKey: Accept common join key
+    # - <tt>acceptHARTDevicesOnly</tt>: 1-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>acceptHARTDevicesOnly</tt>: 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
     # 
-    Tuple_dn_setSecurity = collections.namedtuple("Tuple_dn_setSecurity", ['securityMode', 'commonJoinKey', 'acceptHARTDevicesOnly'])
+    Tuple_dn_setSecurity = collections.namedtuple("Tuple_dn_setSecurity", ['securityMode', 'acceptHARTDevicesOnly'])
 
     ##
+    # Set security configuration
     # 
-    # 
-    # \param securityMode 25-byte field formatted as a string.<br/>
+    # \param securityMode 20-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
-    #      - acceptACL: acceptacl
-    #      - acceptCommonJoinKey: acceptcommonjoinkey
-    # \param commonJoinKey 33-byte field formatted as a string.<br/>
+    #      - acceptACL: Accept ACL
+    #      - acceptCommonJoinKey: Accept common join key
+    # \param commonJoinKey 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
-    # \param acceptHARTDevicesOnly 6-byte field formatted as a string.<br/>
-    #     This field can only take one of the following values:
-    #      - true: true
-    #      - false: false
+    # \param acceptHARTDevicesOnly 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setSecurity named tuple.
     # 
@@ -786,18 +932,16 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # 
     # - <tt>userName</tt>: 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>password</tt>: 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
     # - <tt>privilege</tt>: 16-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
     #      - viewer: viewer
     #      - user: user
     #      - superuser: superuser
     # 
-    Tuple_dn_setUser = collections.namedtuple("Tuple_dn_setUser", ['userName', 'password', 'privilege'])
+    Tuple_dn_setUser = collections.namedtuple("Tuple_dn_setUser", ['userName', 'privilege'])
 
     ##
-    # 
+    # Add or update user configuration
     # 
     # \param userName 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -820,17 +964,15 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # 
     # - <tt>macAddr</tt>: 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # - <tt>joinKey</tt>: 33-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_setAcl = collections.namedtuple("Tuple_dn_setAcl", ['macAddr', 'joinKey'])
+    Tuple_dn_setAcl = collections.namedtuple("Tuple_dn_setAcl", ['macAddr'])
 
     ##
-    # 
+    # Add or update a device in the ACL
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # \param joinKey 33-byte field formatted as a string.<br/>
+    # \param joinKey 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_setAcl named tuple.
@@ -840,27 +982,27 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return HartMgrConnector.Tuple_dn_setAcl(**res)
 
     ##
-    # The named tuple returned by the dn_setBlackList() function.
+    # The named tuple returned by the dn_setBlacklist() function.
     # 
     # - <tt>frequency</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_setBlackList = collections.namedtuple("Tuple_dn_setBlackList", ['frequency'])
+    Tuple_dn_setBlacklist = collections.namedtuple("Tuple_dn_setBlacklist", ['frequency'])
 
     ##
-    # 
+    # Update the channel blacklist
     # 
     # \param frequency 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_setBlackList named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_setBlacklist named tuple.
     # 
-    def dn_setBlackList(self, frequency) :
-        res = HartMgrConnectorInternal.send(self, ['setBlackList'], {"frequency" : frequency})
-        return HartMgrConnector.Tuple_dn_setBlackList(**res)
+    def dn_setBlacklist(self, frequency) :
+        res = HartMgrConnectorInternal.send(self, ['setBlacklist'], {"frequency" : frequency})
+        return HartMgrConnector.Tuple_dn_setBlacklist(**res)
 
     ##
-    # 
+    # Remove a device from the ACL
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -872,7 +1014,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return res
 
     ##
-    # 
+    # Remove a user
     # 
     # \param userName 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -884,7 +1026,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return res
 
     ##
-    # 
+    # Remove a mote from the manager configuration
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -904,7 +1046,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_sendRequest = collections.namedtuple("Tuple_dn_sendRequest", ['callbackId'])
 
     ##
-    # 
+    # Send downstream (request) data
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -917,7 +1059,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #      - high: high
     # \param reliable 0-byte field formatted as a bool.<br/>
     #     There is no restriction on the value of this field.
-    # \param data 128-byte field formatted as a hex.<br/>
+    # \param data None-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_sendRequest named tuple.
@@ -929,13 +1071,13 @@ class HartMgrConnector(HartMgrConnectorInternal):
     ##
     # The named tuple returned by the dn_sendResponse() function.
     # 
-    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
+    # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_sendResponse = collections.namedtuple("Tuple_dn_sendResponse", ['result'])
+    Tuple_dn_sendResponse = collections.namedtuple("Tuple_dn_sendResponse", ['callbackId'])
 
     ##
-    # 
+    # Send downstream data as a response. sendResponse should only be used in special cases.
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -950,7 +1092,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     # \param callbackId 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    # \param data 128-byte field formatted as a hex.<br/>
+    # \param data None-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_sendResponse named tuple.
@@ -968,7 +1110,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_exchangeNetworkKey = collections.namedtuple("Tuple_dn_exchangeNetworkKey", ['callbackId'])
 
     ##
-    # Exchange network key
+    # Exchange the network key
     # 
     # 
     # 
@@ -987,9 +1129,9 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_exchangeJoinKey = collections.namedtuple("Tuple_dn_exchangeJoinKey", ['callbackId'])
 
     ##
-    # Exchange common join key
+    # Exchange the common join key
     # 
-    # \param newKey 33-byte field formatted as a string.<br/>
+    # \param newKey 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_exchangeJoinKey named tuple.
@@ -1007,11 +1149,11 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_exchangeMoteJoinKey = collections.namedtuple("Tuple_dn_exchangeMoteJoinKey", ['callbackId'])
 
     ##
-    # Exchange mote join key
+    # Exchange a mote's join key
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    # \param newKey 33-byte field formatted as a string.<br/>
+    # \param newKey 16-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_exchangeMoteJoinKey named tuple.
@@ -1029,7 +1171,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_exchangeNetworkId = collections.namedtuple("Tuple_dn_exchangeNetworkId", ['callbackId'])
 
     ##
-    # Exchange network ID
+    # Exchange the network ID
     # 
     # \param newId 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1049,7 +1191,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_exchangeMoteNetworkId = collections.namedtuple("Tuple_dn_exchangeMoteNetworkId", ['callbackId'])
 
     ##
-    # Exchange network ID for mote
+    # Exchange the network ID for a mote
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -1071,7 +1213,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_exchangeSessionKey = collections.namedtuple("Tuple_dn_exchangeSessionKey", ['callbackId'])
 
     ##
-    # Exchange mote session key
+    # Exchange a mote's session key
     # 
     # \param macAddrA 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -1173,12 +1315,12 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return HartMgrConnector.Tuple_dn_getTime(**res)
 
     ##
-    # The named tuple returned by the dn_advertising() function.
+    # The named tuple returned by the dn_activateAdvertising() function.
     # 
     # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_advertising = collections.namedtuple("Tuple_dn_advertising", ['result'])
+    Tuple_dn_activateAdvertising = collections.namedtuple("Tuple_dn_activateAdvertising", ['result'])
 
     ##
     # Activate advertisement frame
@@ -1188,39 +1330,117 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # \param timeout 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_advertising named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_activateAdvertising named tuple.
     # 
-    def dn_advertising(self, macAddr, timeout) :
-        res = HartMgrConnectorInternal.send(self, ['advertising'], {"macAddr" : macAddr, "timeout" : timeout})
-        return HartMgrConnector.Tuple_dn_advertising(**res)
+    def dn_activateAdvertising(self, macAddr, timeout) :
+        res = HartMgrConnectorInternal.send(self, ['activateAdvertising'], {"macAddr" : macAddr, "timeout" : timeout})
+        return HartMgrConnector.Tuple_dn_activateAdvertising(**res)
 
     ##
-    # The named tuple returned by the dn_decommission() function.
+    # The named tuple returned by the dn_startOtap() function.
     # 
     # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_decommission = collections.namedtuple("Tuple_dn_decommission", ['result'])
+    Tuple_dn_startOtap = collections.namedtuple("Tuple_dn_startOtap", ['result'])
 
     ##
-    # Device decommission
+    # This command initiates the OTAP (Over-The-Air-Programming) process to upgrade software on motes and the Access Point. By default, the process will retry the OTAP file transmission 100 times.
+    # 
+    # 
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_startOtap named tuple.
+    # 
+    def dn_startOtap(self, ) :
+        res = HartMgrConnectorInternal.send(self, ['startOtap'], {})
+        return HartMgrConnector.Tuple_dn_startOtap(**res)
+
+    ##
+    # The named tuple returned by the dn_startOtapWithRetries() function.
+    # 
+    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_startOtapWithRetries = collections.namedtuple("Tuple_dn_startOtapWithRetries", ['result'])
+
+    ##
+    # This command initiates the OTAP (Over-The-Air-Programming) process to upgrade software for motes and the Access Point, using the specified number of retries.
+    # 
+    # \param retries 1-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_startOtapWithRetries named tuple.
+    # 
+    def dn_startOtapWithRetries(self, retries) :
+        res = HartMgrConnectorInternal.send(self, ['startOtapWithRetries'], {"retries" : retries})
+        return HartMgrConnector.Tuple_dn_startOtapWithRetries(**res)
+
+    ##
+    # The named tuple returned by the dn_cancelOtap() function.
+    # 
+    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_cancelOtap = collections.namedtuple("Tuple_dn_cancelOtap", ['result'])
+
+    ##
+    # This command cancels the OTAP (Over-The-Air-Programming) process to upgrade software on motes and the access point.
+    # 
+    # 
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_cancelOtap named tuple.
+    # 
+    def dn_cancelOtap(self, ) :
+        res = HartMgrConnectorInternal.send(self, ['cancelOtap'], {})
+        return HartMgrConnector.Tuple_dn_cancelOtap(**res)
+
+    ##
+    # The named tuple returned by the dn_decommissionDevice() function.
+    # 
+    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_decommissionDevice = collections.namedtuple("Tuple_dn_decommissionDevice", ['result'])
+
+    ##
+    # Decommission a device in the network
     # 
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_decommission named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_decommissionDevice named tuple.
     # 
-    def dn_decommission(self, macAddr) :
-        res = HartMgrConnectorInternal.send(self, ['decommission'], {"macAddr" : macAddr})
-        return HartMgrConnector.Tuple_dn_decommission(**res)
+    def dn_decommissionDevice(self, macAddr) :
+        res = HartMgrConnectorInternal.send(self, ['decommissionDevice'], {"macAddr" : macAddr})
+        return HartMgrConnector.Tuple_dn_decommissionDevice(**res)
 
     ##
-    # The named tuple returned by the dn_ping() function.
+    # The named tuple returned by the dn_promoteToOperational() function.
+    # 
+    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_promoteToOperational = collections.namedtuple("Tuple_dn_promoteToOperational", ['result'])
+
+    ##
+    # Promote a quarantined device to operational
+    # 
+    # \param macAddr 25-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_promoteToOperational named tuple.
+    # 
+    def dn_promoteToOperational(self, macAddr) :
+        res = HartMgrConnectorInternal.send(self, ['promoteToOperational'], {"macAddr" : macAddr})
+        return HartMgrConnector.Tuple_dn_promoteToOperational(**res)
+
+    ##
+    # The named tuple returned by the dn_pingMote() function.
     # 
     # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     # 
-    Tuple_dn_ping = collections.namedtuple("Tuple_dn_ping", ['callbackId'])
+    Tuple_dn_pingMote = collections.namedtuple("Tuple_dn_pingMote", ['callbackId'])
 
     ##
     # Ping the specified mote. A Net Ping Reply event notification will contain the mote's response.
@@ -1228,11 +1448,11 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # \param macAddr 25-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     # 
-    # \returns The response to the command, formatted as a #Tuple_dn_ping named tuple.
+    # \returns The response to the command, formatted as a #Tuple_dn_pingMote named tuple.
     # 
-    def dn_ping(self, macAddr) :
-        res = HartMgrConnectorInternal.send(self, ['ping'], {"macAddr" : macAddr})
-        return HartMgrConnector.Tuple_dn_ping(**res)
+    def dn_pingMote(self, macAddr) :
+        res = HartMgrConnectorInternal.send(self, ['pingMote'], {"macAddr" : macAddr})
+        return HartMgrConnector.Tuple_dn_pingMote(**res)
 
     ##
     # The named tuple returned by the dn_getLicense() function.
@@ -1243,7 +1463,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_getLicense = collections.namedtuple("Tuple_dn_getLicense", ['license'])
 
     ##
-    # Get license
+    # Get the software license key.
     # 
     # 
     # 
@@ -1262,7 +1482,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_setLicense = collections.namedtuple("Tuple_dn_setLicense", ['result'])
 
     ##
-    # Set license
+    # Set the software license key.
     # 
     # \param license 40-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
@@ -1274,26 +1494,6 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return HartMgrConnector.Tuple_dn_setLicense(**res)
 
     ##
-    # The named tuple returned by the dn_stopLocation() function.
-    # 
-    # - <tt>callbackId</tt>: 4-byte field formatted as a int.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_stopLocation = collections.namedtuple("Tuple_dn_stopLocation", ['callbackId'])
-
-    ##
-    # Stop location
-    # 
-    # \param macAddr 25-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_stopLocation named tuple.
-    # 
-    def dn_stopLocation(self, macAddr) :
-        res = HartMgrConnectorInternal.send(self, ['stopLocation'], {"macAddr" : macAddr})
-        return HartMgrConnector.Tuple_dn_stopLocation(**res)
-
-    ##
     # The named tuple returned by the dn_reset() function.
     # 
     # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
@@ -1302,13 +1502,13 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_reset = collections.namedtuple("Tuple_dn_reset", ['result'])
 
     ##
-    # Reset
+    # Reset the system or network
     # 
     # \param object 25-byte field formatted as a string.<br/>
     #     This field can only take one of the following values:
     #      - network: network
     #      - system: system
-    #      - stat: stat
+    #      - stat: statistics
     #      - eventLog: eventLog
     # 
     # \returns The response to the command, formatted as a #Tuple_dn_reset named tuple.
@@ -1364,26 +1564,6 @@ class HartMgrConnector(HartMgrConnectorInternal):
         return HartMgrConnector.Tuple_dn_resetWithMac(**res)
 
     ##
-    # The named tuple returned by the dn_cli() function.
-    # 
-    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    Tuple_dn_cli = collections.namedtuple("Tuple_dn_cli", ['result'])
-
-    ##
-    # Run CLI command
-    # 
-    # \param command 128-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
-    # 
-    # \returns The response to the command, formatted as a #Tuple_dn_cli named tuple.
-    # 
-    def dn_cli(self, command) :
-        res = HartMgrConnectorInternal.send(self, ['cli'], {"command" : command})
-        return HartMgrConnector.Tuple_dn_cli(**res)
-
-    ##
     # The named tuple returned by the dn_subscribe() function.
     # 
     # - <tt>notif_token</tt>: 32-byte field formatted as a string.<br/>
@@ -1412,7 +1592,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     Tuple_dn_unsubscribe = collections.namedtuple("Tuple_dn_unsubscribe", ['result'])
 
     ##
-    # Unsubscribe from notifications. This function clears any existing notification subscription and stops the notification thread. 
+    # Unsubscribe from notifications. This function clears the existing notification subscription of the client and stops the notification thread. 
     # 
     # 
     # 
@@ -1421,6 +1601,26 @@ class HartMgrConnector(HartMgrConnectorInternal):
     def dn_unsubscribe(self, ) :
         res = HartMgrConnectorInternal.send(self, ['unsubscribe'], {})
         return HartMgrConnector.Tuple_dn_unsubscribe(**res)
+
+    ##
+    # The named tuple returned by the dn_cli() function.
+    # 
+    # - <tt>result</tt>: 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    Tuple_dn_cli = collections.namedtuple("Tuple_dn_cli", ['result'])
+
+    ##
+    # This command tunnels a given command through to the manager's Command Line Interface (CLI). The CLI command can be called by only one XML API client at a time. The response to the given CLI command is tunneled back to the client via the notifications channel. To receive the CLI notification, the client must be subscribed to CLI notifications (see Notification Channel)
+    # 
+    # \param command 128-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    # 
+    # \returns The response to the command, formatted as a #Tuple_dn_cli named tuple.
+    # 
+    def dn_cli(self, command) :
+        res = HartMgrConnectorInternal.send(self, ['cli'], {"command" : command})
+        return HartMgrConnector.Tuple_dn_cli(**res)
 
     #======================== notifications ===================================
     
@@ -1440,7 +1640,10 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>channel</tt> 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - cli: Manager CLI
+    #      - config: API control
+    #      - notif: API notifications
     #   - <tt>ipAddr</tt> 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
@@ -1460,7 +1663,10 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>channel</tt> 16-byte field formatted as a string.<br/>
-    #     There is no restriction on the value of this field.
+    #     This field can only take one of the following values:
+    #      - cli: Manager CLI
+    #      - config: API control
+    #      - notif: API notifications
     #   - <tt>ipAddr</tt> 16-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
@@ -1488,6 +1694,114 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # 
     MANUALMOTERESET = "ManualMoteReset"
     notifTupleTable[MANUALMOTERESET] = Tuple_ManualMoteReset = collections.namedtuple("Tuple_ManualMoteReset", ['timeStamp', 'eventId', 'userName', 'moteId', 'macAddr'])
+
+    ##
+    # \brief MANUALMOTEDELETE notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ManualMoteDelete named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>moteId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MANUALMOTEDELETE = "ManualMoteDelete"
+    notifTupleTable[MANUALMOTEDELETE] = Tuple_ManualMoteDelete = collections.namedtuple("Tuple_ManualMoteDelete", ['timeStamp', 'eventId', 'userName', 'moteId', 'macAddr'])
+
+    ##
+    # \brief MANUALMOTEDECOMMISSION notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ManualMoteDecommission named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>moteId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MANUALMOTEDECOMMISSION = "ManualMoteDecommission"
+    notifTupleTable[MANUALMOTEDECOMMISSION] = Tuple_ManualMoteDecommission = collections.namedtuple("Tuple_ManualMoteDecommission", ['timeStamp', 'eventId', 'userName', 'moteId', 'macAddr'])
+
+    ##
+    # \brief MANUALNETRESET notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ManualNetReset named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MANUALNETRESET = "ManualNetReset"
+    notifTupleTable[MANUALNETRESET] = Tuple_ManualNetReset = collections.namedtuple("Tuple_ManualNetReset", ['timeStamp', 'eventId', 'userName'])
+
+    ##
+    # \brief MANUALDCCRESET notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ManualDccReset named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MANUALDCCRESET = "ManualDccReset"
+    notifTupleTable[MANUALDCCRESET] = Tuple_ManualDccReset = collections.namedtuple("Tuple_ManualDccReset", ['timeStamp', 'eventId', 'userName'])
+
+    ##
+    # \brief MANUALSTATRESET notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ManualStatReset named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MANUALSTATRESET = "ManualStatReset"
+    notifTupleTable[MANUALSTATRESET] = Tuple_ManualStatReset = collections.namedtuple("Tuple_ManualStatReset", ['timeStamp', 'eventId', 'userName'])
+
+    ##
+    # \brief CONFIGCHANGE notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ConfigChange named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userName</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>objectType</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>objectId</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    CONFIGCHANGE = "ConfigChange"
+    notifTupleTable[CONFIGCHANGE] = Tuple_ConfigChange = collections.namedtuple("Tuple_ConfigChange", ['timeStamp', 'eventId', 'userName', 'objectType', 'objectId'])
 
     ##
     # \brief BOOTUP notification.
@@ -1529,11 +1843,15 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     #   - <tt>callbackId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    #   - <tt>result</tt> 1-byte field formatted as a int.<br/>
+    #   - <tt>objectType</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>resultCode</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.    
     # 
     COMMANDFINISHED = "CommandFinished"
-    notifTupleTable[COMMANDFINISHED] = Tuple_CommandFinished = collections.namedtuple("Tuple_CommandFinished", ['timeStamp', 'eventId', 'callbackId', 'result'])
+    notifTupleTable[COMMANDFINISHED] = Tuple_CommandFinished = collections.namedtuple("Tuple_CommandFinished", ['timeStamp', 'eventId', 'callbackId', 'objectType', 'macAddr', 'resultCode'])
 
     ##
     # \brief PACKETSENT notification.
@@ -1546,10 +1864,12 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>callbackId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.    
     # 
     PACKETSENT = "PacketSent"
-    notifTupleTable[PACKETSENT] = Tuple_PacketSent = collections.namedtuple("Tuple_PacketSent", ['timeStamp', 'eventId', 'callbackId'])
+    notifTupleTable[PACKETSENT] = Tuple_PacketSent = collections.namedtuple("Tuple_PacketSent", ['timeStamp', 'eventId', 'callbackId', 'macAddr'])
 
     ##
     # \brief MOTEJOIN notification.
@@ -1592,6 +1912,48 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # 
     MOTELIVE = "MoteLive"
     notifTupleTable[MOTELIVE] = Tuple_MoteLive = collections.namedtuple("Tuple_MoteLive", ['timeStamp', 'eventId', 'moteId', 'macAddr', 'reason'])
+
+    ##
+    # \brief MOTEQUARANTINE notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_MoteQuarantine named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>moteId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>reason</tt> 64-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MOTEQUARANTINE = "MoteQuarantine"
+    notifTupleTable[MOTEQUARANTINE] = Tuple_MoteQuarantine = collections.namedtuple("Tuple_MoteQuarantine", ['timeStamp', 'eventId', 'moteId', 'macAddr', 'reason'])
+
+    ##
+    # \brief MOTEJOINQUARANTINE notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_MoteJoinQuarantine named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>moteId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>reason</tt> 64-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>userData</tt> 64-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    MOTEJOINQUARANTINE = "MoteJoinQuarantine"
+    notifTupleTable[MOTEJOINQUARANTINE] = Tuple_MoteJoinQuarantine = collections.namedtuple("Tuple_MoteJoinQuarantine", ['timeStamp', 'eventId', 'moteId', 'macAddr', 'reason', 'userData'])
 
     ##
     # \brief MOTEUNKNOWN notification.
@@ -1748,6 +2110,26 @@ class HartMgrConnector(HartMgrConnectorInternal):
     notifTupleTable[PATHDEACTIVATE] = Tuple_PathDeactivate = collections.namedtuple("Tuple_PathDeactivate", ['timeStamp', 'eventId', 'pathId', 'moteAMac', 'moteBMac'])
 
     ##
+    # \brief PATHALERT notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_PathAlert named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>pathId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>moteAMac</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>moteBMac</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    PATHALERT = "PathAlert"
+    notifTupleTable[PATHALERT] = Tuple_PathAlert = collections.namedtuple("Tuple_PathAlert", ['timeStamp', 'eventId', 'pathId', 'moteAMac', 'moteBMac'])
+
+    ##
     # \brief PIPEON notification.
     # 
     # 
@@ -1758,10 +2140,12 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>macAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>allocatedPipePkPeriod</tt> 4-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.    
     # 
     PIPEON = "PipeOn"
-    notifTupleTable[PIPEON] = Tuple_PipeOn = collections.namedtuple("Tuple_PipeOn", ['timeStamp', 'eventId', 'macAddr'])
+    notifTupleTable[PIPEON] = Tuple_PipeOn = collections.namedtuple("Tuple_PipeOn", ['timeStamp', 'eventId', 'macAddr', 'allocatedPipePkPeriod'])
 
     ##
     # \brief PIPEOFF notification.
@@ -1778,6 +2162,37 @@ class HartMgrConnector(HartMgrConnectorInternal):
     # 
     PIPEOFF = "PipeOff"
     notifTupleTable[PIPEOFF] = Tuple_PipeOff = collections.namedtuple("Tuple_PipeOff", ['timeStamp', 'eventId', 'macAddr'])
+
+    ##
+    # \brief SERVICEDENIED notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_ServiceDenied named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>serviceId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>requestingMacAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>peerMacAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>appDomain</tt> 32-byte field formatted as a string.<br/>
+    #     This field can only take one of the following values:
+    #      - maintenance: maintenance
+    #   - <tt>isSource</tt> 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>isSink</tt> 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>isIntermittent</tt> 1-byte field formatted as a bool.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>period</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    SERVICEDENIED = "ServiceDenied"
+    notifTupleTable[SERVICEDENIED] = Tuple_ServiceDenied = collections.namedtuple("Tuple_ServiceDenied", ['timeStamp', 'eventId', 'serviceId', 'requestingMacAddr', 'peerMacAddr', 'appDomain', 'isSource', 'isSink', 'isIntermittent', 'period'])
 
     ##
     # \brief PINGREPLY notification.
@@ -1806,6 +2221,28 @@ class HartMgrConnector(HartMgrConnectorInternal):
     notifTupleTable[PINGREPLY] = Tuple_PingReply = collections.namedtuple("Tuple_PingReply", ['timeStamp', 'eventId', 'macAddr', 'callbackId', 'latency', 'temperature', 'voltage', 'hopCount'])
 
     ##
+    # \brief TRANSPORTTIMEOUT notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_TransportTimeout named tuple. It contains the following fields:
+    #   - <tt>timeStamp</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>eventId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>srcMacAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>destMacAddr</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>timeoutType</tt> 32-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>callbackId</tt> 4-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    TRANSPORTTIMEOUT = "TransportTimeout"
+    notifTupleTable[TRANSPORTTIMEOUT] = Tuple_TransportTimeout = collections.namedtuple("Tuple_TransportTimeout", ['timeStamp', 'eventId', 'srcMacAddr', 'destMacAddr', 'timeoutType', 'callbackId'])
+
+    ##
     # \brief DATA notification.
     # 
     # 
@@ -1817,7 +2254,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     #   - <tt>time</tt> 8-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
-    #   - <tt>payload</tt> 256-byte field formatted as a hex.<br/>
+    #   - <tt>payload</tt> None-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.
     #   - <tt>payloadType</tt> 1-byte field formatted as a int.<br/>
     #     There is no restriction on the value of this field.
@@ -1849,7 +2286,7 @@ class HartMgrConnector(HartMgrConnectorInternal):
     #     There is no restriction on the value of this field.
     #   - <tt>dest</tt> 32-byte field formatted as a string.<br/>
     #     There is no restriction on the value of this field.
-    #   - <tt>payload</tt> 256-byte field formatted as a hex.<br/>
+    #   - <tt>payload</tt> None-byte field formatted as a hex.<br/>
     #     There is no restriction on the value of this field.    
     # 
     LOCATION = "Location"
@@ -1886,6 +2323,38 @@ class HartMgrConnector(HartMgrConnectorInternal):
     notifTupleTable[LOG] = Tuple_log = collections.namedtuple("Tuple_log", ['time', 'severity', 'message'])
 
     ##
+    # \brief STDMOTEREPORT notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_stdMoteReport named tuple. It contains the following fields:
+    #   - <tt>time</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 16-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>payload</tt> None-byte field formatted as a hex.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    STDMOTEREPORT = "stdMoteReport"
+    notifTupleTable[STDMOTEREPORT] = Tuple_stdMoteReport = collections.namedtuple("Tuple_stdMoteReport", ['time', 'macAddr', 'payload'])
+
+    ##
+    # \brief VENDORMOTEREPORT notification.
+    # 
+    # 
+    #
+    # Formatted as a Tuple_vendorMoteReport named tuple. It contains the following fields:
+    #   - <tt>time</tt> 8-byte field formatted as a int.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>macAddr</tt> 16-byte field formatted as a string.<br/>
+    #     There is no restriction on the value of this field.
+    #   - <tt>payload</tt> None-byte field formatted as a hex.<br/>
+    #     There is no restriction on the value of this field.    
+    # 
+    VENDORMOTEREPORT = "vendorMoteReport"
+    notifTupleTable[VENDORMOTEREPORT] = Tuple_vendorMoteReport = collections.namedtuple("Tuple_vendorMoteReport", ['time', 'macAddr', 'payload'])
+
+    ##
     # \brief Get a notification from the notification queue, and returns
     #        it properly formatted.
     #
@@ -1903,3 +2372,8 @@ class HartMgrConnector(HartMgrConnectorInternal):
                 return (ids[-1], None)
         except KeyError :
             raise ApiException.NotificationError(ids, param)
+
+##
+# end of HartMgrConnector
+# \}
+# 

@@ -22,7 +22,6 @@ class VizFields(VizjQuery.VizjQuery):
     templateBody = '''
 <script type='text/javascript'>
     autorefresh_{VIZID} = {AUTOREFRESH};
-    var fields = new VizFields('{VIZID}', '{RESOURCE}', {RELOAD_PERIOD}, {AUTOREFRESH}); 
-
+    var fields = new VizFields('{VIZID}', '{RESOURCE}', {RELOAD_PERIOD}, {AUTOREFRESH});
 </script>
 '''

@@ -1,8 +1,3 @@
-import sys
-import os
-
-sys.path.insert(0, os.path.join(sys.path[0], '..'))
-
 import logging
 class NullHandler(logging.Handler):
     def emit(self, record):
@@ -11,17 +6,18 @@ log = logging.getLogger('IpMoteConnectorInternal')
 log.setLevel(logging.ERROR)
 log.addHandler(NullHandler())
 
-from SerialConnector import SerialConnector
-import ApiDefinition.IpMoteDefinition
+from   SmartMeshSDK.SerialConnector import SerialConnector
+from   SmartMeshSDK.ApiDefinition   import IpMoteDefinition
 
 class IpMoteConnectorInternal(SerialConnector.SerialConnector):
     '''
     \ingroup ApiConnector
+    
     \brief Internal class for HART mote connector, over Serial.
     '''
     
     def __init__(self, maxQSize=100):
-        api_def = ApiDefinition.IpMoteDefinition.IpMoteDefinition()
+        api_def = IpMoteDefinition.IpMoteDefinition()
         SerialConnector.SerialConnector.__init__(self,api_def, maxQSize)
     
     #======================== TX ==============================================
@@ -86,6 +82,7 @@ class IpMoteConnectorInternal(SerialConnector.SerialConnector):
         self.paramLock.acquire()
         result = True
         isRepeatId = False
+        updateRxPacketId  = True
         if self.RxPacketId==None:
             result = True
         else:
@@ -96,7 +93,7 @@ class IpMoteConnectorInternal(SerialConnector.SerialConnector):
                                   packetId==self.RxPacketId
                         )
         self.paramLock.release()
-        return (result, isRepeatId)
+        return (result, isRepeatId, updateRxPacketId)
 
     
     #======================== packetId ========================================
@@ -107,4 +104,5 @@ class IpMoteConnectorInternal(SerialConnector.SerialConnector):
         else:
             self.TxPacketId=0
         
-        log.debug("TxPacketId={0}".format(self.TxPacketId))
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug("TxPacketId={0}".format(self.TxPacketId))

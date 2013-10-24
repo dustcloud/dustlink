@@ -66,13 +66,13 @@ class VizAppFields(VizjQuery.VizjQuery):
                 }},
                 500: function() {{
                     updateStatus(statusDivId,'failure','Internal server error.');
-                }},
+                }}
             }},
             error: function(jqXHR, textStatus, errorThrown) {{
                 if (textStatus=='timeout') {{
                     updateStatus(statusDivId,'failure','Server unreachable.');
                 }}
-            }},
+            }}
         }});
     }}
     
@@ -83,25 +83,25 @@ class VizAppFields(VizjQuery.VizjQuery):
         
         // description
         tempDiv = $('<div/>', {{
-            'id': 'description_div_{VIZID}',
+            'id': 'description_div_{VIZID}'
         }}).appendTo('#chart_div_{VIZID}');
         drawDescription_{VIZID}(tempDiv,data.description);
         
         // transport
         tempDiv = $('<div/>', {{
-            'id': 'transport_div_{VIZID}',
+            'id': 'transport_div_{VIZID}'
         }}).appendTo('#chart_div_{VIZID}');
         drawTransport_{VIZID}(tempDiv,data.transport);
         
         // fromMote
         tempDiv = $('<div/>', {{
-            'id': 'fromMote_div_{VIZID}',
+            'id': 'fromMote_div_{VIZID}'
         }}).appendTo('#chart_div_{VIZID}');
         drawFields_{VIZID}(tempDiv,'fromMote',data.fromMote);
         
         // toMote
         tempDiv = $('<div/>', {{
-            'id': 'toMote_div_{VIZID}',
+            'id': 'toMote_div_{VIZID}'
         }}).appendTo('#chart_div_{VIZID}');
         drawFields_{VIZID}(tempDiv,'toMote',data.toMote);
         
@@ -116,41 +116,43 @@ class VizAppFields(VizjQuery.VizjQuery):
         
         // title
         $('<h1/>', {{
-            'html': 'Description',
+            'html': 'Description'
         }}).appendTo(divToPopulate);
         
         // description
         $('<p/>', {{
-            'html': 'Enter a description about your application.<br/>This description is for humans to read, and does not influence the operation of the program.',
+            'html': 'Enter a description about your application.<br/>This description is for humans to read, and does not influence the operation of the program.'
         }}).appendTo(divToPopulate);
         
         $('<textarea/>', {{
             'rows':     3,
             'cols':     80,
             'html':     descriptionData,
-            'id':       'descriptionElem_{VIZID}',
+            'id':       'descriptionElem_{VIZID}'
         }}).appendTo(divToPopulate);
     }}
     
     function drawTransport_{VIZID}(divToPopulate,transportData) {{
         
-        var cells,
-            thisCell,
+        var table,
+            row,
+            cell,
+            cellBody,
             optidx;
         
         // title
         $('<h1/>', {{
-            'html': 'Transport',
+            'html': 'Transport'
         }}).appendTo(divToPopulate);
         
         // description
         $('<p/>', {{
-            'html': 'Select the type of transport your mote application uses to send data.<br/>This website uses the information you enter to "listen" for data from your application.<br/>The meaning of the resource field depends on the type of transport chosen. For <strong>UDP</strong>, it is the port to listen to, i.e. an decimal integer smaller than 65535, e.g. "61626". For <strong>CoAP</strong>, it is a comma-separated list of OAP resources, e.g. "5,3".',
+            'html': 'Select the type of transport your mote application uses to send data.<br/>This website uses the information you enter to "listen" for data from your application.<br/>The meaning of the resource field depends on the type of transport chosen. For <strong>UDP</strong>, it is the port to listen to, i.e. an decimal integer smaller than 65535, e.g. "61626". For <strong>CoAP</strong>, it is a comma-separated list of OAP resources, e.g. "5,3".'
         }}).appendTo(divToPopulate);
         
         // create table
         $('<table/>', {{
-            'id': 'transportTable_{VIZID}',
+            'id': 'transportTable_{VIZID}'
         }}).appendTo(divToPopulate);
         
         // add header
@@ -159,55 +161,51 @@ class VizAppFields(VizjQuery.VizjQuery):
         }}).appendTo('#transportTable_{VIZID}');
         
         // populate the body
-        cells           = [];
-        // type
-        thisCell        = '';
-        thisCell       += '<td>';
-        thisCell       += '<select';
-        thisCell       += ' id="transportType_{VIZID}"';
-        thisCell       += '>';
-        for (optidx = 0; optidx < transportOptions_{VIZID}.length; optidx++) {{
-            thisCell += '<option value="'+transportOptions_{VIZID}[optidx]+'"';
-            if (transportOptions_{VIZID}[optidx]==transportData.type) {{
-                thisCell += ' selected="selected"';
-            }}
-            thisCell   += '>';
-            thisCell   += transportOptions_{VIZID}[optidx];
-            thisCell   += '</option>';
-        }}
-        thisCell       += '</select>';
-        thisCell       += '</td>';
-        cells.push(thisCell);
-        // resource
-        thisCell        = '';
-        thisCell       += '<td>';
-        thisCell       += '<input type="text"';
-        thisCell       += ' id="transportResource_{VIZID}"';
-        thisCell       += ' value="'+transportData.resource+'"';
-        thisCell       += '/>';
-        thisCell       += '</td>';
-        cells.push(thisCell);
         // add row
-        table           = document.getElementById("transportTable_{VIZID}");
-        row             = table.insertRow(-1);
-        row.innerHTML   = cells.join('');
+        table                = document.getElementById("transportTable_{VIZID}");
+        row                  = table.insertRow(-1);
+        // type cell
+        cellBody             = '';
+        cellBody            += '<select';
+        cellBody            += ' id="transportType_{VIZID}"';
+        cellBody            += '>';
+        for (optidx = 0; optidx < transportOptions_{VIZID}.length; optidx++) {{
+            cellBody        += '<option value="'+transportOptions_{VIZID}[optidx]+'"';
+            if (transportOptions_{VIZID}[optidx]==transportData.type) {{
+                cellBody    += ' selected="selected"';
+            }}
+            cellBody        += '>';
+            cellBody        += transportOptions_{VIZID}[optidx];
+            cellBody        += '</option>';
+        }}
+        cellBody            += '</select>';
+        cell                 = row.insertCell(-1);
+        cell.innerHTML       = cellBody
+        // resource cell
+        cellBody             = '';
+        cellBody            += '<input type="text"';
+        cellBody            += ' id="transportResource_{VIZID}"';
+        cellBody            += ' value="'+transportData.resource+'"';
+        cellBody            += '/>';
+        cell                 = row.insertCell(-1);
+        cell.innerHTML       = cellBody
     }}
     
     function drawFields_{VIZID}(divToPopulate,direction,fieldsData) {{
         
         // title
         $('<h1/>', {{
-            'html': 'Fields '+direction,
+            'html': 'Fields '+direction
         }}).appendTo(divToPopulate);
         
         // description
         $('<p/>', {{
-            'html': 'Select whether the multi-byte fields you enter below are encoded little-endian or big-endian.',
+            'html': 'Select whether the multi-byte fields you enter below are encoded little-endian or big-endian.'
         }}).appendTo(divToPopulate);
         
         // endianness
         selector = $('<select/>', {{
-            'id': 'endiannessSelector_{VIZID}',
+            'id': 'endiannessSelector_{VIZID}'
         }}).appendTo(divToPopulate);
         for (optidx = 0; optidx < endiannessOptions_{VIZID}.length; optidx++) {{
             optionString          = ''
@@ -224,12 +222,12 @@ class VizAppFields(VizjQuery.VizjQuery):
         
         // description
         $('<p/>', {{
-            'html': 'Enter the fields present in this application\\'s payload.',
+            'html': 'Enter the fields present in this application\\'s payload.'
         }}).appendTo(divToPopulate);
         
         // create table
         $('<table/>', {{
-            'id': 'fieldsTable_{VIZID}_'+direction,
+            'id': 'fieldsTable_{VIZID}_'+direction
         }}).appendTo(divToPopulate);
         
         // add header
@@ -253,51 +251,50 @@ class VizAppFields(VizjQuery.VizjQuery):
     }}
     
     function addFieldRow_{VIZID}(direction,format,name) {{
-        var cells,
-            thisCell,
-            optidx,
-            table,
-            row;
-            
-        cells           = [];
-        // format
-        thisCell        = '';
-        thisCell       += '<td>';
-        thisCell       += '<select';
-        thisCell       += ' class="fieldTableElems_{VIZID}_'+direction+'"';
-        thisCell       += '>';
-        for (optidx = 0; optidx < fieldFormatOptions_{VIZID}.length; optidx++) {{
-            thisCell += '<option value="'+fieldFormatOptions_{VIZID}[optidx]+'"';
-            if (fieldFormatOptions_{VIZID}[optidx]==format) {{
-                thisCell += ' selected="selected"';
-            }}
-            thisCell   += '>';
-            thisCell   += fieldFormatOptions_{VIZID}[optidx];
-            thisCell   += '</option>';
-        }}
-        thisCell       += '</select>';
-        thisCell       += '</td>';
-        cells.push(thisCell);
-        // name
-        thisCell        = '';
-        thisCell       += '<td>';
-        thisCell       += '<input type="text"';
-        thisCell       += ' value="'+name+'"';
-        thisCell       += ' class="fieldTableElems_{VIZID}_'+direction+'"';
-        thisCell       += '/>';
-        thisCell       += '</td>';
-        cells.push(thisCell);
-        // action
-        thisCell        = '';
-        thisCell       += '<td>';
-        thisCell       += '<a onClick="deleteFieldRow_{VIZID}(\\''+direction+'\\','+fieldRowCounter_{VIZID}+')">delete</a>';
-        thisCell       += '</td>';
-        cells.push(thisCell);
+        var table,
+            row,
+            cell,
+            cellBody
+            optidx;
+        
         // add row
-        table           = document.getElementById("fieldsTable_{VIZID}_"+direction);
-        row             = table.insertRow(table.rows.length-1);
-        row.innerHTML   = cells.join('');
-        row.id          = 'fieldsTable_{VIZID}_'+direction+'_row_'+fieldRowCounter_{VIZID};
+        table                = document.getElementById("fieldsTable_{VIZID}_"+direction);
+        row                  = table.insertRow(table.rows.length-1);
+        row.id               = 'fieldsTable_{VIZID}_'+direction+'_row_'+fieldRowCounter_{VIZID};
+        
+        // format cell
+        cellBody             = '';
+        cellBody            += '<select';
+        cellBody            += ' class="fieldTableElems_{VIZID}_'+direction+'"';
+        cellBody            += '>';
+        for (optidx = 0; optidx < fieldFormatOptions_{VIZID}.length; optidx++) {{
+            cellBody        += '<option value="'+fieldFormatOptions_{VIZID}[optidx]+'"';
+            if (fieldFormatOptions_{VIZID}[optidx]==format) {{
+                cellBody    += ' selected="selected"';
+            }}
+            cellBody        += '>';
+            cellBody        += fieldFormatOptions_{VIZID}[optidx];
+            cellBody        += '</option>';
+        }}
+        cellBody            += '</select>';
+        cell                 = row.insertCell(-1);
+        cell.innerHTML       = cellBody
+        
+        // name cell
+        cellBody             = '';
+        cellBody            += '<input type="text"';
+        cellBody            += ' value="'+name+'"';
+        cellBody            += ' class="fieldTableElems_{VIZID}_'+direction+'"';
+        cellBody            += '/>';
+        cell                 = row.insertCell(-1);
+        cell.innerHTML       = cellBody
+        
+        // action cell
+        cellBody             = '';
+        cellBody            += '<a onClick="deleteFieldRow_{VIZID}(\\''+direction+'\\','+fieldRowCounter_{VIZID}+')">delete</a>';
+        cell                 = row.insertCell(-1);
+        cell.innerHTML       = cellBody
+        
         fieldRowCounter_{VIZID}++;
     }}
     
@@ -400,13 +397,13 @@ class VizAppFields(VizjQuery.VizjQuery):
                 }},
                 500: function() {{
                     updateStatus(statusDivId,'failure','Internal server error.');
-                }},
+                }}
             }},
             error: function(jqXHR, textStatus, errorThrown) {{
                 if (textStatus=='timeout') {{
                     updateStatus(statusDivId,'failure','Server unreachable.');
                 }}
-            }},
+            }}
         }});
     }}
     

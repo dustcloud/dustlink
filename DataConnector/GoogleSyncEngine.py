@@ -10,6 +10,7 @@ log.addHandler(NullHandler())
 
 import re
 import time
+import copy
 import threading
 import traceback
 
@@ -32,20 +33,35 @@ class GoogleSyncEngine(threading.Thread):
         self.name                 = 'DataConnector_GoogleSyncEngine'
         
         # local variables
-        self.goOn                 = True
-        self.connectedToGoogle    = False
-        self.spreadsheetKey       = None
-        self.worksheetName        = None
-        self.googleUsername       = None
-        self.googlePassword       = None
-        self.googleClient         = None
-        self.syncLock             = threading.Lock()
+        self.goOn                           = True
+        self.spreadsheetKey                 = None
+        self.worksheetName                  = None
+        self.googleUsername                 = None
+        self.googlePassword                 = None
+        self.googleClient                   = None
+        self.syncLock                       = threading.Lock()
         self.syncLock.acquire()
+        self.statusLock                     = threading.Lock()
+        self.status                         = {}
+        self.status['usernameSet']          = 'WAIT...'
+        self.status['passwordSet']          = 'WAIT...'
+        self.status['status']               = 'DISCONNECTED'
+        self.status['numConnectionsOK']     = 0
+        self.status['numConnectionsFailed'] = 0
+        self.status['lastConnected']        = None
+        self.status['lastDisconnected']     = None
+        self.status['numPublishedOK']       = 0
+        self.status['numPublishedFail']     = 0
         
         # connect to dispatcher
         dispatcher.connect(
             self.indicateNewData,
             signal = 'newDataMirrored',
+            weak   = False,
+        )
+        dispatcher.connect(
+            self.getStatus,
+            signal = "googlestatus",
             weak   = False,
         )
         
@@ -81,6 +97,11 @@ class GoogleSyncEngine(threading.Thread):
                 signal = 'newDataMirrored',
                 weak   = False,
             )
+            dispatcher.disconnect(
+                self.getStatus,
+                signal = "googlestatus",
+                weak   = False,
+            )
             
             # log
             log.info('thread ended')
@@ -98,6 +119,10 @@ class GoogleSyncEngine(threading.Thread):
             raise
     
     #======================== public ==========================================
+    
+    def getStatus(self):
+        with self.statusLock:
+           return copy.deepcopy(self.status)
     
     def indicateNewData(self):
         try:
@@ -120,66 +145,107 @@ class GoogleSyncEngine(threading.Thread):
     
     def _syncToGoogle(self):
         
+        now = time.time()
         dld = DustLinkData.DustLinkData()
-        mirrorSettings = dld.get(['system','mirror'])
+        
+        # we need to use "raw" access because dld.getPublisherSettings()
+        # does not return all settings
+        googleSettings = dld.get(['system','publishers','google'])
+        
+        # update status
+        with self.statusLock:
+            if googleSettings['googleUsername']:
+                self.status['usernameSet']            = 'YES'
+            else:
+                self.status['usernameSet']            = 'NO'
+            if googleSettings['googlePassword']:
+                self.status['passwordSet']            = 'YES'
+            else:
+                self.status['passwordSet']            = 'NO'
         
         #==== manage connection to Google Spreadsheet
         
-        if     (not mirrorSettings['spreadsheetKey']):
+        if     (not googleSettings['spreadsheetKey']):
             # disconnect from Google Spreadsheet
             
             if self.googleClient:
+                # log
                 log.info('disconnecting from Google Spreadsheet')
             
-            self.spreadsheetKey       = None
-            self.worksheetName        = None
-            self.googleUsername       = None
-            self.googlePassword       = None
-            self.googleClient         = None
+                # update status
+                with self.statusLock:
+                    self.status['status']             = 'DISCONNECTED'
+                    self.status['lastDisconnected']   = dld.timestampToStringShort(now)
+            
+            self.spreadsheetKey        = None
+            self.worksheetName         = None
+            self.googleUsername        = None
+            self.googlePassword        = None
+            self.googleClient          = None
             
         elif  (
-                mirrorSettings['spreadsheetKey']!=self.spreadsheetKey or
-                mirrorSettings['worksheetName'] !=self.worksheetName  or
-                mirrorSettings['googleUsername']!=self.googleUsername or
-                mirrorSettings['googlePassword']!=self.googlePassword
+                googleSettings['spreadsheetKey']!=self.spreadsheetKey or
+                googleSettings['worksheetName'] !=self.worksheetName  or
+                googleSettings['googleUsername']!=self.googleUsername or
+                googleSettings['googlePassword']!=self.googlePassword
             ):
             # (re)connect to Google Spreadsheet
             
             try:
-                self.spreadsheetKey            = mirrorSettings['spreadsheetKey']
-                self.worksheetName             = mirrorSettings['worksheetName']
-                self.googleUsername            = mirrorSettings['googleUsername']
-                self.googlePassword            = mirrorSettings['googlePassword']
+                self.spreadsheetKey         = googleSettings['spreadsheetKey']
+                self.worksheetName          = googleSettings['worksheetName']
+                self.googleUsername         = googleSettings['googleUsername']
+                self.googlePassword         = googleSettings['googlePassword']
                 
-                self.googleClient              = self._connectToGoogle(
-                                                    self.googleUsername,
-                                                    self.googlePassword
-                                                 )
+                self.googleClient           = self._connectToGoogle(
+                    self.googleUsername,
+                    self.googlePassword
+                )
                 
-                self.worksheetId               = self._getWorksheetId(
-                                                        self.googleClient,
-                                                        self.spreadsheetKey,
-                                                        self.worksheetName,
-                                                   )
+                self.worksheetId            = self._getWorksheetId(
+                    self.googleClient,
+                    self.spreadsheetKey,
+                    self.worksheetName,
+                )
+                
+                # log
                 log.info('(re)connected to Google Spreadsheet')
+                
+                # update status
+                with self.statusLock:
+                    self.status['status']             = 'CONNECTED'
+                    self.status['numConnectionsOK']  += 1
+                    self.status['lastConnected']      = dld.timestampToStringShort(now)
+                
             except:
-                self.spreadsheetKey       = None
-                self.worksheetName        = None
-                self.googleUsername       = None
-                self.googlePassword       = None
-                self.googleClient         = None
+                self.spreadsheetKey         = None
+                self.worksheetName          = None
+                self.googleUsername         = None
+                self.googlePassword         = None
+                self.googleClient           = None
+                
+                # log
                 log.error('unable to connect to Google spreadsheet')
+                
+                # update status
+                with self.statusLock:
+                    self.status['status']                  = 'CONNECTION FAILED'
+                    self.status['numConnectionsFailed']   += 1
         
         #==== get mirrorData
         
         if self.googleClient:
             # obtain a copy of the mirror data
             mirrorData = dispatcher.send(
-                    signal        = 'getMirrorData',
-                    data          = None,
-                )
+                signal        = 'getMirrorData',
+                data          = None,
+            )
             assert len(mirrorData)==1
             mirrorData = mirrorData[0][1]
+        
+            # convert MAC addresses to string
+            for d in mirrorData:
+                d['mac'] = DustLinkData.DustLinkData.macToString(d['mac'])
         
         #==== push mirrorData to Google Spreadsheet
         
@@ -194,7 +260,15 @@ class GoogleSyncEngine(threading.Thread):
             except Exception as err:
                 
                 # log
-                log.warning('pushing data to Google failed, err={0}'.format(err))
+                log.warning('pushing data to Google failed: (0) {1}'.format(
+                       type(err),
+                       err,
+                    )
+                )
+                
+                # update status
+                with self.statusLock:
+                    self.status['numPublishedFail']  += 1
                 
                 # force a reconnect next time
                 self.spreadsheetKey       = None
@@ -202,6 +276,11 @@ class GoogleSyncEngine(threading.Thread):
                 self.googleUsername       = None
                 self.googlePassword       = None
                 self.googleClient         = None
+            
+            else:
+                # update status
+                with self.statusLock:
+                    self.status['numPublishedOK']    += 1
     
     def _pushData(self,googleClient,spreadsheetKey,worksheetId,mirrorData):
         
@@ -216,14 +295,26 @@ class GoogleSyncEngine(threading.Thread):
             rowToUpdate  = None
             for e in googleData.entry:
                 googleRow = self._rowToDict(e)
+                
                 if  (
-                    googleRow['source']==mirrorRow['source'] and
+                    googleRow['mac']==mirrorRow['mac'] and
                     googleRow['type']==mirrorRow['type']
                 ):
                     insertNewRow = False
                     if googleRow!=mirrorRow:
                         rowToUpdate = e
                     break
+            
+            # copy 'mac' to 'source'
+            mirrorRow['source'] = mirrorRow['mac']
+            
+            # delete all keys not in standard headers
+            SPREADSHEET_ROWS = ['source','type','min','lastvalue','max','lastupdated']
+            for k in mirrorRow.keys():
+                if k in SPREADSHEET_ROWS:
+                    mirrorRow[k] = str(mirrorRow[k])
+                else:
+                    del mirrorRow[k]
             
             # update or add row
             if insertNewRow:
@@ -278,7 +369,7 @@ class GoogleSyncEngine(threading.Thread):
     @classmethod
     def _rowToDict(self,e):
         thisLine = {}
-        thisLine['source'] = e.title.text
+        thisLine['mac'] = e.title.text
         m = re.match('type: (\S+), min: (\S+), lastvalue: (\S+), max: (\S+), lastupdated: (\S+)', e.content.text)
         if m:
             thisLine['type']          = m.group(1)

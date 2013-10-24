@@ -28,7 +28,7 @@ class DustLink(threading.Thread):
         log.info('creating instance')
         
         # store params
-        self.refresh_period  = refresh_period
+        self.refresh_period       = refresh_period
         
         # initialize parent class
         threading.Thread.__init__(self)

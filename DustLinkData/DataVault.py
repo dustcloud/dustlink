@@ -166,7 +166,6 @@ class DataVault(object):
         datawalker = self.data
         log.debug("start walking")
         for i in range(len(resource)):
-            log.debug("datawalker:{0}".format(datawalker))
             if resource[i] not in datawalker:
                 datawalker[resource[i]] = {}
             if  (

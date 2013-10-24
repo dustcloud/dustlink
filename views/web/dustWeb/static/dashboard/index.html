@@ -1,31 +1,91 @@
+<!--
+You can run this dashboard in standalone mode (i.e. static HTML). Just
+double-click to open it with you browser.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
    <meta name="apple-mobile-web-app-capable" content="yes">
    
    <title>Demo Dashboard</title>
    
    <script type="text/javascript" src="jquery-1.8.0.min.js"></script>
    <script type="text/javascript" src="dragdropresize.js"></script>
-   <script type="text/javascript" src="demoselection_google.js"></script>
+   <script type="text/javascript" src="inputselection.js"></script>
    <script type="text/javascript" src="dashboard.js"></script>
+   <script type="text/javascript" src="xivelyjs-1.0.4.min.js"></script>
    
    <link type="text/css" rel="stylesheet" href="dashboard.css"/>
 </head>
 <body>
    <div id="demodashboard"></div>
-   <img class="logo" id="logo" src="logo.png">
+   <div class="logo" id="logo">
+      
+      <img src="logo.png" alt="logo" />
+   </div>
    <script type="text/javascript">
       $(document).ready(function(){
          
          // position the logo
          positionLogo();
          
-         // initialize the demo
-         initDemoselection();
+         /*
+         By default, the dashboard present a form allowing you to enter
+         information to display data from a set of Xively feeds, or from a
+         Google spreadsheet.
          
-         // load initial content right away
+         You can pre-install that information in the dashboard by changing the
+         parameters of the initInputSelection() function.
+         
+         BE CAREFUL ABOUT THE KEYING MATERIAL YOU PUSH TO A REPOSITORY, SINCE
+         IT WILL BE PUBLICLY ACCESSIBLE. THIS IS ALSO ESPECIALLY TRUE FOR
+         github.io WHICH ARE PUBLIC, EVEN IF THE UNDERLYING REPOSITORY IS
+         PRIVATE.
+         
+         To read from Xively, you need to list the feedIds you want to see
+         ('myFeedId1' and 'myFeedId2' below).
+         To read a feed, the dashboard uses the 'readApiKey' configured for
+         that the feedId. If the 'readApiKey' attribute is set to null, the
+         xivelyMasterApiKey is used instead.
+         To update a feed, the dashboard uses the 'updateApiKey' configured for
+         that the feedId. If the 'updateApiKey' attribute is set to null, the
+         xivelyMasterApiKey is used instead.
+         
+         initInputSelection({
+            xivelyMasterApiKey:        'myXivelyMasterApiKey',
+            xivelyFeeds:          [
+               {
+                  'feedId':            'myFeedId1',
+                  'readApiKey':        null,
+                  'updateApiKey':      'myUpdateKey1',
+               },
+               {
+                  'feedId':            'myFeedId2',
+                  'readApiKey':        'myReadKey2',
+                  'updateApiKey':      null,
+               },
+            ]
+         });
+         
+         To always read data from the Google Spreadsheet 'mySpreadsheetKey'
+         and the worksheet 'myWorksheet', use:
+         
+         initInputSelection({
+            googleSpreadsheetKey:      'mySpreadsheetKey',
+            googleWorksheetId:         'myWorksheet'
+         });
+         */
+         
+         // initialize the data input
+         // TO CUSTOMIZE, CHANGE THE PARAMETERS BELOW, PER DESCRIPTION ABOVE.
+         initInputSelection({
+            googleSpreadsheetKey: '0AlATqW9wxWYldHBrRF8yZ3RpQklJcHd5X3FtNXJCN1E'
+         });
+         
+         // load initial content
          refreshDashboard();
          
          // periodically refresh the dashboard

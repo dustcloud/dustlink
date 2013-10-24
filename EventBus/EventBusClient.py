@@ -25,7 +25,7 @@ class EventBusClient(threading.Thread):
         assert callable(cb)
         
         # log
-        log.info("creating instance")
+        log.info('creating instance ({0})'.format(self.__class__.__name__))
         
         # store params
         self._signal                   = signal
@@ -76,7 +76,7 @@ class EventBusClient(threading.Thread):
         try:
         
             # log
-            log.info('thread started')
+            log.info('thread started ({0})'.format(self.__class__.__name__))
         
             while self.goOn:
             
@@ -88,8 +88,8 @@ class EventBusClient(threading.Thread):
                 
                 if newEvent==self.DISCONNECT_INSTRUCTION:
                     
-                    #log
-                    log.info("disconnect received from dispatcher")
+                    # log
+                    log.info('disconnect received from dispatcher ({0})'.format(self.__class__.__name__))
                     
                     # disconnect from dispatcher
                     if self._cb:
@@ -117,16 +117,24 @@ class EventBusClient(threading.Thread):
                 else:
                     # log
                     if log.isEnabledFor(logging.DEBUG):
-                        log.debug("got event: {0}".format(newEvent))
+                        log.debug(
+                            "got event ({0}): {1}".format(
+                                self.__class__.__name__,
+                                newEvent,
+                            )
+                        )
                     
                     # call the callback
                     try:
                         self._cb(*newEvent)
                     except Exception as err:
-                        log.error("Calling {0} failed. err={0}".format(
+                        log.error(
+                            "({0}) Calling {1} failed. err={2}".format(
+                                self.__class__.__name__,
                                 self._cb,
-                                err)
+                                err,
                             )
+                        )
                         log.error(traceback.format_exc())
                         self._incrementStats('numProcessFailed')
                     else:
@@ -136,11 +144,11 @@ class EventBusClient(threading.Thread):
                 self._teardown_cb()
             
             # log
-            log.info('thread ended')
+            log.info('thread ended ({0})'.format(self.__class__.__name__))
             
         except Exception as err:
             output  = []
-            output += ['===== crash in thread {0} ====='.format(self.name)]
+            output += ['===== crash in thread {0} ({1}) ====='.format(self.name,self.__class__.__name__)]
             output += ['\nerror:\n']
             output += [str(err)]
             output += ['\ncall stack:\n']
@@ -161,7 +169,7 @@ class EventBusClient(threading.Thread):
     
     def tearDown(self):
         # log
-        log.warning("tearDown() called")
+        log.warning('tearDown() called ({0})'.format(self.__class__.__name__))
         
         # put disconnect instruction in queue
         self.eventQueue.put(self.DISCONNECT_INSTRUCTION)
@@ -175,7 +183,13 @@ class EventBusClient(threading.Thread):
     
         # log
         if log.isEnabledFor(logging.DEBUG):
-            log.debug('dispatching {0}: {1}'.format(signal,data))
+            log.debug(
+                '({0}) dispatching {1}: {2}'.format(
+                    self.__class__.__name__,
+                    signal,
+                    data
+                )
+            )
         
         # dispatch
         dispatcher.send(
@@ -190,11 +204,16 @@ class EventBusClient(threading.Thread):
         try:
             self.eventQueue.put_nowait((sender,signal,data))
         except Queue.Full:
-            log.error('Queue full')
+            log.error('Queue full ({0})'.format(self.__class__.__name__))
             self._incrementStats('numQueuedFail')
         else:
             if log.isEnabledFor(logging.DEBUG):
-                log.debug('Queuing succesful, fill={0}'.format(self.eventQueue.qsize()))
+                log.debug(
+                    '({0}) Queuing succesful, fill={1}'.format(
+                        self.__class__.__name__,
+                        self.eventQueue.qsize(),
+                    )
+                )
             self._incrementStats('numQueuedOk')
     
     def _incrementStats(self,statsName):

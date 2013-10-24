@@ -53,8 +53,17 @@ class AppPayloadParser(EventBusClient.EventBusClient):
                 )
         
         # make sure payload length is correct
-        if struct.Struct(self.fields['fieldFormats']).size!=len(data['payload']):
-            raise ValueError('can not parse {0} with \"{1}\"'.format(data['payload'],self.fields['fieldFormats']))
+        expectedNumBytes = struct.Struct(self.fields['fieldFormats']).size
+        receivedNumBytes = len(data['payload'])
+        if expectedNumBytes!=receivedNumBytes:
+            raise ValueError('for {0} app, cannot parse payload {1} ({2} bytes) with format \"{3}\" ({4} bytes)'.format(
+                    self._appName,
+                    data['payload'],
+                    receivedNumBytes,
+                    self.fields['fieldFormats'],
+                    expectedNumBytes,
+                )
+            )
         
         # unpack the payload
         try:

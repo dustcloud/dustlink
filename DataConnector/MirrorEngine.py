@@ -12,13 +12,13 @@ import re
 import threading
 import copy
 
-from   pydispatch import dispatcher
+from pydispatch                                  import dispatcher
 
-from DustLinkData import DustLinkData
-from EventBus import EventBusClient
+from SmartMeshSDK.protocols.DC2126AConverters    import DC2126AConverters
+from EventBus                                    import EventBusClient
 
 class MirrorEngine(EventBusClient.EventBusClient):
-
+    
     def __init__(self):
         
         # store params
@@ -28,43 +28,48 @@ class MirrorEngine(EventBusClient.EventBusClient):
         
         # initialize parent class
         EventBusClient.EventBusClient.__init__(self,
-            signal='parsedAppData_OAPTemperature',
-            cb=self._publish,
-            teardown_cb=self._cleanup,
+            signal      = 'parsedAppData_OAPTemperature',
+            cb          = self._publish,
+            teardown_cb = self._cleanup,
         )
-        self.name  = 'DataConnector_MirrorEngine'
+        self.name       = 'DataConnector_MirrorEngine'
         
         # connect extra applications
         dispatcher.connect(
             self._addToQueue,
-            signal = 'parsedAppData_SPIPressure',
-            weak   = False,
+            signal      = 'parsedAppData_DC2126A',
+            weak        = False,
         )
         dispatcher.connect(
             self._addToQueue,
-            signal = 'parsedAppData_GPIONet',
-            weak   = False,
+            signal      = 'parsedAppData_SPIPressure',
+            weak        = False,
         )
         dispatcher.connect(
             self._addToQueue,
-            signal = 'parsedAppData_SPIAcceleration',
-            weak   = False,
+            signal      = 'parsedAppData_GPIONet',
+            weak        = False,
+        )
+        dispatcher.connect(
+            self._addToQueue,
+            signal      = 'parsedAppData_LIS331',
+            weak        = False,
         )
         
         dispatcher.connect(
             self.getMirrorData,
-            signal = 'getMirrorData',
-            weak   = False,
+            signal      = 'getMirrorData',
+            weak        = False,
         )
         dispatcher.connect(
             self.calibrateMirrorData,
-            signal = 'calibrateMirrorData',
-            weak   = False,
+            signal      = 'calibrateMirrorData',
+            weak        = False,
         )
         dispatcher.connect(
             self.clearMirrorData,
-            signal = 'clearMirrorData',
-            weak   = False,
+            signal      = 'clearMirrorData',
+            weak        = False,
         )
         
         # add stats
@@ -73,26 +78,20 @@ class MirrorEngine(EventBusClient.EventBusClient):
         self.dataLock             = threading.Lock()
         self.pressureOffsets      = {}
         self.mirrordata           = []
+        self.dc2126Aconverters    = DC2126AConverters.DC2126AConverters()
         
     #======================== public ==========================================
     
     def getMirrorData(self,sender,signal,data):
-        try:
-            self.dataLock.acquire()
-            returnVal = copy.deepcopy(self.mirrordata)
-            return returnVal
-        finally:
-            self.dataLock.release()
+        with self.dataLock:
+            return copy.deepcopy(self.mirrordata)
     
     def calibrateMirrorData(self,sender,signal,data):
-        
-        try:
-            self.dataLock.acquire()
-            
+        with self.dataLock:
             pressures = {}
             for row in self.mirrordata:
                 if row['type']=='pressure':
-                    pressures[row['source']] = int(row['lastvalue'].split('_')[0])
+                    pressures[row['mac']] = int(row['lastvalue'].split('_')[0])
             
             if len(pressures)==2:
                 macs   = pressures.keys()
@@ -100,21 +99,21 @@ class MirrorEngine(EventBusClient.EventBusClient):
                 self.pressureOffsets = {}
                 self.pressureOffsets[macs[0]] = -offset
                 self.pressureOffsets[macs[1]] = 0
-        finally:
-            self.dataLock.release()
     
     def clearMirrorData(self,sender,signal,data):
-        try:
-            self.dataLock.acquire()
+        with self.dataLock:
             self.mirrordata            = []
-        finally:
-            self.dataLock.release()
     
     #======================== private =========================================
     
     def _cleanup(self):
         
         # disconnect extra applications
+        dispatcher.disconnect(
+            self._addToQueue,
+            signal      = 'parsedAppData_DC2126A',
+            weak        = False,
+        )
         dispatcher.disconnect(
             self._addToQueue,
             signal = 'parsedAppData_SPIPressure',
@@ -127,7 +126,7 @@ class MirrorEngine(EventBusClient.EventBusClient):
         )
         dispatcher.disconnect(
             self._addToQueue,
-            signal = 'parsedAppData_SPIAcceleration',
+            signal = 'parsedAppData_LIS331',
             weak   = False,
         )
         
@@ -150,39 +149,86 @@ class MirrorEngine(EventBusClient.EventBusClient):
     def _publish(self,sender,signal,data):
         
         # format the data to publish
-        newData = None
+        newData    = []
+        
+        mac        = data['mac']
+        
         if   signal in ['parsedAppData_OAPTemperature']:
             
-            newData = {
-                'source':         DustLinkData.DustLinkData.macToString(data['mac']),
-                'type':           'temperature',
-                'min':            str(-40),
-                'lastvalue':      str(data['fields']['temperature']),
-                'max':            str(85),
-                'lastupdated':    str(data['timestamp']),
-            }
+            # temperature reported in 1/100th C, displayed in C
+            temperature_C = float(data['fields']['temperature'])/100.0
+            
+            # format newData entry
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'temperature',
+                    'lastvalue':       str(temperature_C),
+                    'lastupdated':     str(data['timestamp']),
+                    'subscribeToLed':  True,
+                }
+            ]
+        
+        elif signal in ['parsedAppData_DC2126A']:
+            
+            # publish temperature
+            temperature   = self.dc2126Aconverters.convertTemperature(
+                data['fields']['temperature'],
+            )
+            if temperature!=None:
+                newData += [
+                    {
+                        'mac':         mac,
+                        'type':        'temperature',
+                        'lastvalue':   str(temperature),
+                        'lastupdated': str(data['timestamp']),
+                    }
+                ]
+            
+            # publish adcValue
+            adcValue      = self.dc2126Aconverters.convertAdcValue(
+                data['fields']['adcValue'],
+            )
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'voltage',
+                    'lastvalue':       adcValue,
+                    'lastupdated':     str(data['timestamp']),
+                }
+            ]
+            
+            # publish energysource
+            energysource  = self.dc2126Aconverters.convertEnergySource(
+                mac,adcValue,
+            )
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'energysource',
+                    'lastvalue':       energysource,
+                    'lastupdated':     str(data['timestamp']),
+                }
+            ]
         
         elif signal in ['parsedAppData_SPIPressure']:
-            sourceStr = DustLinkData.DustLinkData.macToString(data['mac'])
-            try:
-                self.dataLock.acquire()
             
-                if sourceStr in self.pressureOffsets:
-                    offset = self.pressureOffsets[DustLinkData.DustLinkData.macToString(data['mac'])]
+            with self.dataLock:
+                if mac in self.pressureOffsets:
+                    offset = self.pressureOffsets[mac]
                 else:
                     offset = 0
-            finally:
-                self.dataLock.release()
             
-            newData = {
-                'source':         sourceStr,
-                'type':           'pressure',
-                'min':            None,
-                'lastvalue':      str(data['fields']['adcPressure']) + "_" + str(offset),
-                'max':            None,
-                'lastupdated':    str(data['timestamp']),
-            }
-            
+            # format newData entry
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'pressure',
+                    'lastvalue':       str(data['fields']['adcPressure']) + "_" + str(offset),
+                    'lastupdated':     str(data['timestamp']),
+                }
+            ]
+        
         elif signal in ['parsedAppData_GPIONet']:
             
             # convert 'pinVal' field to meaning
@@ -196,27 +242,30 @@ class MirrorEngine(EventBusClient.EventBusClient):
                 energysource = 'battery'
             
             # format newData entry
-            newData = {
-                'source':         DustLinkData.DustLinkData.macToString(data['mac']),
-                'type':           'energysource',
-                'min':            None,
-                'lastvalue':      energysource,
-                'max':            None,
-                'lastupdated':    str(data['timestamp']),
-            }
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'energysource',
+                    'lastvalue':       energysource,
+                    'lastupdated':     str(data['timestamp']),
+                }
+            ]
         
-        elif signal in ['parsedAppData_SPIAcceleration']:
+        elif signal in ['parsedAppData_LIS331']:
             
-            newData = {
-                'source':         DustLinkData.DustLinkData.macToString(data['mac']),
-                'type':           'acceleration',
-                'min':            None,
-                'lastvalue':      '{0}_{1}_{2}'.format(data['fields']['x'],
-                                                       data['fields']['y'],
-                                                       data['fields']['z']),
-                'max':            None,
-                'lastupdated':    str(data['timestamp']),
-            }
+            # format newData entry
+            newData += [
+                {
+                    'mac':             mac,
+                    'type':            'acceleration',
+                    'lastvalue':       '{0}_{1}_{2}'.format(
+                                           data['fields']['x'],
+                                           data['fields']['y'],
+                                           data['fields']['z'],
+                                       ),
+                    'lastupdated':     str(data['timestamp']),
+                }
+            ]
         
         else:
             
@@ -224,22 +273,23 @@ class MirrorEngine(EventBusClient.EventBusClient):
         
         # store local mirror of data
         with self.dataLock:
-            if newData:
-                found = False
-                newDataSource = newData['source']
-                newDataType = newData['type']
+            for nd in newData:
+                found             = False
+                newDataSource     = nd['mac']
+                newDataType       = nd['type']
                 for i,e in enumerate(self.mirrordata):
-                    if e['source']==newDataSource and e['type']==newDataType:
-                        found = True
-                        self.mirrordata[i] = newData
+                    if e['mac']==newDataSource and e['type']==newDataType:
+                        found     = True
+                        self.mirrordata[i] = nd
                         break
                 if not found:
-                    self.mirrordata.append(newData)
+                    self.mirrordata.append(nd)
         
-        # dispatch
-        if newData:
-            dispatcher.send(
-                signal        = 'newDataMirrored',
-                data          = None,
-            )
+        # dispatch (once even if multiple data points)
+        with self.dataLock:
+            for nd in newData:
+                dispatcher.send(
+                    signal        = 'newDataMirrored',
+                    data          = copy.deepcopy(nd),
+                )
     

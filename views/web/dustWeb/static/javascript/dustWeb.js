@@ -20,8 +20,8 @@ function disableAutoRefresh(VIZID) {
    window["autorefresh_"+VIZID] = false;
    $("#autorefreshlink_"+VIZID).attr('checked', false);
 }
-function toggleAutoRefresh(VIZID) {
-   // toggle autorefresh_{VIZID} state and update link text
+function updateAutoRefresh(VIZID) {
+   // update autorefresh_{VIZID} state from checkbox
    window["autorefresh_"+VIZID] = $("#autorefreshlink_"+VIZID).is(":checked")
 }
 

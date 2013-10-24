@@ -225,9 +225,9 @@ class MoteDataPages(WebPage.WebPage):
                 assert isinstance(receivedData,dict)
                 assert len(receivedData.keys())==3
                 assert 'app' in receivedData.keys()
-                del receivedData['app']
+                del    receivedData['app']
                 assert 'mac' in receivedData.keys()
-                del receivedData['mac']
+                del    receivedData['mac']
                 
                 formData = json.loads(receivedData.keys()[0])
                 formData = DustWeb.simplifyWebInputFormat(formData)
@@ -247,12 +247,12 @@ class MoteDataPages(WebPage.WebPage):
                     fields[fieldName] = formData[fieldName]
                 
                 dispatcher.send(
-                        signal        = 'fieldsToMesh_{0}'.format(appName),
-                        data          = {
-                            'mac':    mac,
-                            'fields': fields,
-                        }
-                    )
+                    signal        = 'fieldsToMesh_{0}'.format(appName),
+                    data          = {
+                        'mac':    mac,
+                        'fields': fields,
+                    }
+                )
             
             elif subResource==['clear']:
                 

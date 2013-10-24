@@ -9,7 +9,8 @@ log.addHandler(NullHandler())
 import os
 import urllib
 import web
-from viz import Viz
+from viz import Viz, \
+                VizBanner
 
 TEMPLATE_PATH  = os.path.join('templates')
 LOOK_AND_FEEL  = 'dust'
@@ -69,6 +70,15 @@ class WebPage(object):
         assert isinstance(visualizations,list)
         for v in visualizations:
             assert isinstance(v,Viz.Viz)
+        
+        # add a banner
+        visualizations += [
+            VizBanner.VizBanner(
+                webServer           = self.webServer,
+                username            = username,
+                resourcePath        = ['banner'],
+            ),
+        ]
         
         # get the pageTitle from the current path
         pageTitle       = self.webServer.getPageTitle(currentPath)
@@ -328,7 +338,6 @@ class WebPage(object):
         urlList = [u for u in urlList if u]
         
         # convert elements to string (can be unicode)
-        # and quote elements as web.py unquotes them
-        urlList = [urllib.quote(str(u)) for u in urlList]
+        urlList = [str(u) for u in urlList]
     
         return urlList

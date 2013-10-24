@@ -6,28 +6,21 @@ log = logging.getLogger('NetworksPages')
 log.setLevel(logging.ERROR)
 log.addHandler(NullHandler())
 
-import random
+from dustWeb                      import web, \
+                                         WebPage, \
+                                         WebPageDyn, \
+                                         WebHandler
+from dustWeb.viz                  import VizFields, \
+                                         VizForm, \
+                                         VizHtml, \
+                                         VizTable, \
+                                         VizTopology
+from dustWeb.thirdparty           import gviz_api
 
-# For topology string building
-from cStringIO import StringIO
-
-from dustWeb import web
-from DustLinkData import DataVaultException, \
-                         DustLinkData
-
-from ApiDefinition import IpMgrDefinition
-
-from Gateway import FormatUtils
-
-from dustWeb import WebPage
-from dustWeb import WebPageDyn
-from dustWeb import WebHandler
-from dustWeb.viz import VizFields
-from dustWeb.viz import VizForm
-from dustWeb.viz import VizHtml
-from dustWeb.viz import VizTable
-from dustWeb.viz import VizTopology
-from dustWeb.thirdparty import gviz_api
+from DustLinkData                 import DataVaultException, \
+                                         DustLinkData
+from SmartMeshSDK                 import FormatUtils
+from SmartMeshSDK.ApiDefinition   import IpMgrDefinition
 
 #============================ object ==========================================
 
@@ -57,25 +50,38 @@ class NetworksPages(WebPageDyn.WebPageDyn):
             username    = web.ctx.session.username
             currentPath = WebPage.WebPage.urlStringTolist(web.ctx.path)
             
+            visualizations  =   [
+                VizHtml.VizHtml(
+                    webServer          = webServer,
+                    username           = username,
+                    resourcePath       = currentPath,
+                    subResourcePath    = 'padding',
+                ),
+            ]
+            # enable the following code to be able to add/delete network by hand.
+            '''
+            visualizations +=   [
+                VizForm.VizForm(
+                    webServer          = webServer,
+                    username           = username,
+                    resourcePath       = currentPath,
+                    subResourcePath    = 'add',
+                    title              = 'Add a network',
+                ),
+                VizForm.VizForm(
+                    webServer          = webServer,
+                    username           = username,
+                    resourcePath       = currentPath,
+                    subResourcePath    = 'delete',
+                    title              = 'Delete a network',
+                ),
+            ]
+            '''
+            
             page = thisWebApp.createPage(
-                username        = username,
-                currentPath     = currentPath,
-                visualizations  =   [
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'add',
-                                            title               = 'Add a network',
-                                        ),
-                                        VizForm.VizForm(
-                                            webServer           = webServer,
-                                            username            = username,
-                                            resourcePath        = currentPath,
-                                            subResourcePath     = 'delete',
-                                            title               = 'Delete a network',
-                                        ),
-                                    ],
+                username               = username,
+                currentPath            = currentPath,
+                visualizations         = visualizations,
             )
             
             return page
@@ -84,7 +90,12 @@ class NetworksPages(WebPageDyn.WebPageDyn):
             
             dld = DustLinkData.DustLinkData()
             
-            if subResource==['add']:
+            if   subResource==['padding']:
+                return {'rawHtml':'<div style="position:relative;height:200px;"></div>'}
+                
+                # enable the following code to be able to add/delete network by hand.
+                '''
+            elif subResource==['add']:
                 return [
                     {
                         'name':           'netname',
@@ -93,8 +104,8 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                     },
                 ]
             elif subResource==['delete']:
+                
                 netnames = dld.getNetnames(username=username)
-                netnames = [FormatUtils.unquote(n) for n in netnames]
                 return [
                     {
                         'name':           'netname',
@@ -105,9 +116,12 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                         'editable':       True,
                     },
                 ]
+                '''
             else:
                 raise web.notfound()
         
+        # enable the following code to be able to add/delete network by hand.
+        '''
         def postData(self,receivedData,subResource,username):
             
             dld = DustLinkData.DustLinkData()
@@ -118,7 +132,6 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                 assert isinstance(receivedData['netname'],str)
                 
                 netname = receivedData['netname']
-                netname = FormatUtils.quote(netname)
                 dld.addNetwork(netname, username=username)
             
             elif subResource==['delete']:
@@ -127,15 +140,16 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                 assert isinstance(receivedData['netname'],str)
                 
                 netname = receivedData['netname']
-                netname = FormatUtils.quote(netname)
                 dld.deleteNetwork(netname, username=username)
             
             else:
                 raise web.notfound()
+        '''
     
     class pageNetworksSub(WebPageDyn.WebHandlerDyn):
         
         def getPageDyn(self,dynPath,subResource,username):
+            
             global webServer
             global thisWebApp
             
@@ -159,8 +173,8 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                                             resourcePath        = currentPath,
                                             subResourcePath     = 'topology',
                                             title               = 'Topology',
-                                            width               = 500,
-                                            height              = 500,
+                                            width               = 700,
+                                            height              = 700,
                                         ),
                                         VizTable.VizTable(
                                             webServer           = webServer,
@@ -183,7 +197,7 @@ class NetworksPages(WebPageDyn.WebPageDyn):
         
         def getDataDyn(self,dynPath,subResource,username):
             
-            netname = dynPath
+            netname = FormatUtils.unquote(dynPath)
             dld     = DustLinkData.DustLinkData()
             
             if   subResource==['info']:
@@ -227,14 +241,20 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                     pathsToReturn = dld.getNetworkPaths(netname,username=username)
                     
                     # columnNames
-                    columnNames = ['from','to','direction']
+                    columnNames = ['from','to','direction','numLinks','quality']
                     
                     # data
                     if pathsToReturn:
                         data = []
                         for p in pathsToReturn:
                             pathInfo = dld.getPathInfo(netname,p[0],p[1],username=username)
-                            if pathInfo and ('direction' in pathInfo):
+                            if  (
+                                    pathInfo                         and
+                                    ('direction' in pathInfo)        and
+                                    (pathInfo['direction'] in [2,3]) and
+                                    ('numLinks'  in pathInfo)        and 
+                                    ('quality'   in pathInfo)
+                                ):
                                 data += [
                                     [
                                         DustLinkData.DustLinkData.macToString(p[0]),
@@ -242,7 +262,9 @@ class NetworksPages(WebPageDyn.WebPageDyn):
                                         IpMgrDefinition.IpMgrDefinition.fieldOptionToShortDesc(
                                             'pathDirection',
                                             pathInfo['direction']
-                                        )
+                                        ),
+                                        pathInfo['numLinks'],
+                                        pathInfo['quality'],
                                     ]
                                 ]
                     else:
@@ -255,7 +277,7 @@ class NetworksPages(WebPageDyn.WebPageDyn):
         
         def postDataDyn(self,receivedData,dynPath,subResource,username):
             
-            netname = dynPath
+            netname = FormatUtils.unquote(dynPath)
             
             raise web.notfound()
     
@@ -405,8 +427,8 @@ class NetworksPages(WebPageDyn.WebPageDyn):
         try:
             return [
                 {
-                    'url':   n,
-                    'title': FormatUtils.unquote(n),
+                    'url':   FormatUtils.quote(n),
+                    'title': n,
                 }
                 for n in dld.getNetnames(username=username)
             ]

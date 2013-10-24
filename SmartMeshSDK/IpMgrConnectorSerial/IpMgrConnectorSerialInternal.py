@@ -1,18 +1,15 @@
-import sys
-import os
 
-sys.path.insert(0, os.path.join(sys.path[0], '..'))
-
-from SerialConnector import SerialConnector
-from ApiDefinition import ApiDefinition,IpMgrDefinition
-from  ApiException import ConnectionError
+from SmartMeshSDK.SerialConnector import SerialConnector
+from SmartMeshSDK.ApiDefinition   import ApiDefinition,    \
+                                         IpMgrDefinition
+from SmartMeshSDK.ApiException    import ConnectionError
 
 API_VERSION = [4, 3,]
-
 
 class IpMgrConnectorSerialInternal(SerialConnector.SerialConnector):
     '''
     \ingroup ApiConnector
+    
     \brief Internal class for IP manager connector, over Serial.
     '''
 
@@ -118,19 +115,32 @@ class IpMgrConnectorSerialInternal(SerialConnector.SerialConnector):
     
     def isValidPacketId(self,cmdId,isResponse,packetId):
         self.paramLock.acquire()
-        result = True
-        isRepeatId = False
+        isValidId            = True
+        isDuplicate          = False
+        updateRxPacketId  = True
         if ((self.RxPacketId==None) or
             (cmdId in self.helloCmdIds)):
-            result = True
+            isValidId             = True
+            isDuplicate           = False
+            updateRxPacketId   = True
         else:
-            if isResponse :
-                result = packetId==self.TxPacketId
-            else :
-                result = packetId==self.RxPacketId or packetId==(self.RxPacketId+1)%256
-                isRepeatId = packetId==self.RxPacketId 
+            if isResponse:
+                isValidId              = packetId==self.TxPacketId
+                isDuplicate            = False
+                updateRxPacketId    = True
+            else:
+                if self.shouldAck:
+                    # reliable transport
+                    isValidId               = packetId==self.RxPacketId or packetId==(self.RxPacketId+1)%256
+                    isDuplicate             = packetId==self.RxPacketId 
+                    updateRxPacketId     = True
+                else:
+                    # unreliable transport
+                    isValidId               = True
+                    isDuplicate             = False
+                    updateRxPacketId     = False
         self.paramLock.release()
-        return (result, isRepeatId)
+        return (isValidId, isDuplicate, updateRxPacketId)
     
     #======================== packetId ========================================
     

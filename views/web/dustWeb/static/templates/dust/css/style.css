@@ -1650,11 +1650,13 @@ p.image-left {
 }
 
 /* Only in the top menu */
-#menubar .demomode {
+#menubar #nice-menu-1 > li > .demomode {
     color: LawnGreen;       
+}
+#menubar #nice-menu-1 > li > ul .demomode {
+    color: green;       
 }
 
 /* Only in main content */
-#center .demomode {
-    color: green;       
+#center .demomode {    color: green;       
 }

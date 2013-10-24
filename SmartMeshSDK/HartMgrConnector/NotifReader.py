@@ -5,7 +5,7 @@ import ssl
 import threading
 import traceback
 
-import ApiException
+from SmartMeshSDK import ApiException
 
 # Set up logging
 
@@ -30,7 +30,7 @@ class NotifSeparator(object):
     In the HartMgrConnector, the notification XML string is parsed by
     the HartMgrDefinition. 
     """
-    NOTIF_TYPES = [ 'data', 'event', 'measurement', 'log', 'cli' ]
+    NOTIF_TYPES = [ 'data', 'event', 'measurement', 'log', 'cli', 'stdMoteReport', 'vendorMoteReport' ]
 
     def __init__(self, cb):
         self.notif_handler = cb

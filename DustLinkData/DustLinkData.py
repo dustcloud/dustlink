@@ -77,7 +77,18 @@ class DustLinkData(DataVault.DataVault):
             self.timestampCacheLock    = threading.Lock()
             self.timestampCache        = {}
             self.scratchpad            = []
-        DataVault.DataVault.__init__(self, *args, **kwargs)
+            self.banner                = ''
+            
+            # initialize the DataVault (includes loading backup file)
+            DataVault.DataVault.__init__(self, *args, **kwargs)
+            
+            # delete old networks. Will be re-discovered.
+            netnames = self.getNetnames()
+            for netname in netnames:
+                try:
+                    self.deleteNetwork(netname)
+                except ValueError:
+                    pass # happens if network was already deleted
     
     #======================== parent methods ==================================
     
@@ -223,14 +234,47 @@ class DustLinkData(DataVault.DataVault):
     
     #--- defines
     
+    @synchronized
     def _resetScratchpad(self):
         self.scratchpad  = []
     
+    @synchronized
     def _addScratchpad(self,stringToAdd):
         self.scratchpad += [(time.time(),stringToAdd)]
     
+    @synchronized
     def _getScratchpad(self):
         return self.scratchpad
+    
+    #--- admin
+    
+    #--- helpers
+    
+    ##
+    # \}
+    #
+    
+    #========== banner
+    
+    ##
+    # \defgroup banner banner
+    # \ingroup DustLinkData
+    # \{
+    #
+    
+    #--- defines
+    
+    @synchronized
+    def _resetBanner(self):
+        self.banner  = ''
+    
+    @synchronized
+    def _setBanner(self,bannerText):
+        self.banner  = bannerText
+    
+    @synchronized
+    def _getBanner(self):
+        return self.banner
     
     #--- admin
     
@@ -279,6 +323,27 @@ class DustLinkData(DataVault.DataVault):
                                                MANAGERCONNECTION_STATE_DISCONNECTING,
                                                MANAGERCONNECTION_STATE_FAIL)
     
+    PUBLISHER_XIVELY                        = 'xively'
+    PUBLISHER_GOOGLE                        = 'google'
+    PUBLISHER_ALL                           = (PUBLISHER_XIVELY,
+                                               PUBLISHER_GOOGLE)
+    
+    PUBLISHER_XIVELY_KEY_XIVELYAPIKEY       = 'xivelyApiKey'
+    PUBLISHER_XIVELY_KEY_ALL                = (
+        PUBLISHER_XIVELY_KEY_XIVELYAPIKEY,
+    )
+    
+    PUBLISHER_GOOGLE_KEY_SPREADSHEETKEY     = 'spreadsheetKey'
+    PUBLISHER_GOOGLE_KEY_WORKSHEETNAME      = 'worksheetName'
+    PUBLISHER_GOOGLE_KEY_GOOGLEUSERNAME     = 'googleUsername'
+    PUBLISHER_GOOGLE_KEY_GOOGLEPASSWORD     = 'googlePassword'
+    PUBLISHER_GOOGLE_KEY_ALL                = (
+        PUBLISHER_GOOGLE_KEY_SPREADSHEETKEY,
+        PUBLISHER_GOOGLE_KEY_WORKSHEETNAME,
+        PUBLISHER_GOOGLE_KEY_GOOGLEUSERNAME,
+        PUBLISHER_GOOGLE_KEY_GOOGLEPASSWORD,
+    )
+    
     #--- admin
     
     def _system_putDefaultData(self):
@@ -289,10 +354,10 @@ class DustLinkData(DataVault.DataVault):
         self.put(['system','modules',    self.MODULE_GATEWAY],            self.ON)
         self.put(['system','modules',    self.MODULE_LBR],                self.OFF)
         self.put(['system','modules',    self.MODULE_DATACONNECTOR],      self.ON)
-        self.put(['system','mirror', 'spreadsheetKey'],                   None)
-        self.put(['system','mirror', 'worksheetName'],                    None)
-        self.put(['system','mirror', 'googleUsername'],                   None)
-        self.put(['system','mirror', 'googlePassword'],                   None)
+        for k in self.PUBLISHER_XIVELY_KEY_ALL:
+            self.put(['system','publishers',self.PUBLISHER_XIVELY,k],     None)
+        for k in self.PUBLISHER_GOOGLE_KEY_ALL:
+            self.put(['system','publishers',self.PUBLISHER_GOOGLE,k],     None)
         self.put(['system','persistence',self.PERSISTENCE_FILE],          self.ON)
         self.put(['system','managerConnections'],                         None)
         self.put(self.DB_FAST_MODE,                                       False)
@@ -311,10 +376,10 @@ class DustLinkData(DataVault.DataVault):
         self.get(['system','modules',self.MODULE_GATEWAY])
         self.get(['system','modules',self.MODULE_LBR])
         self.get(['system','modules',self.MODULE_DATACONNECTOR])
-        self.get(['system','mirror', 'spreadsheetKey'])
-        self.get(['system','mirror', 'worksheetName'])
-        self.get(['system','mirror', 'googleUsername'])
-        self.get(['system','mirror', 'googlePassword'])
+        for k in self.PUBLISHER_XIVELY_KEY_ALL:
+            self.get(['system','publishers',self.PUBLISHER_XIVELY,k])
+        for k in self.PUBLISHER_GOOGLE_KEY_ALL:
+            self.get(['system','publishers',self.PUBLISHER_GOOGLE,k])
         self.get(['system','persistence',self.PERSISTENCE_FILE])
         self.get(['system','managerConnections'])
         self.get(self.DB_FAST_MODE)
@@ -619,14 +684,16 @@ class DustLinkData(DataVault.DataVault):
                         self.setAppFields(k, self.APP_DIRECTION_TOMOTE,   v['toMoteFields'][0],   v['toMoteFields'][1])
             
             # grant privileges to user anonymous
-            self.grantPrivilege(['apps',    '*'], self.USER_ANONYMOUS, self.ACTION_GET)
-            self.grantPrivilege(['apps',    '*'], self.USER_ANONYMOUS, self.ACTION_PUT)
-            self.grantPrivilege(['apps',    '*'], self.USER_ANONYMOUS, self.ACTION_DELETE)
-            self.grantPrivilege(['motes',   '*'], self.USER_ANONYMOUS, self.ACTION_GET)
-            self.grantPrivilege(['motes',   '*'], self.USER_ANONYMOUS, self.ACTION_PUT)
-            self.grantPrivilege(['motes',   '*'], self.USER_ANONYMOUS, self.ACTION_DELETE)
-            self.grantPrivilege(['networks','*'], self.USER_ANONYMOUS, self.ACTION_GET)
-            self.grantPrivilege(['system'      ], self.USER_ANONYMOUS, self.ACTION_GET)
+            self.grantPrivilege(['apps',       '*'], self.USER_ANONYMOUS, self.ACTION_GET)
+            self.grantPrivilege(['apps',       '*'], self.USER_ANONYMOUS, self.ACTION_PUT)
+            self.grantPrivilege(['apps',       '*'], self.USER_ANONYMOUS, self.ACTION_DELETE)
+            self.grantPrivilege(['motes',      '*'], self.USER_ANONYMOUS, self.ACTION_GET)
+            self.grantPrivilege(['motes',      '*'], self.USER_ANONYMOUS, self.ACTION_PUT)
+            self.grantPrivilege(['motes',      '*'], self.USER_ANONYMOUS, self.ACTION_DELETE)
+            self.grantPrivilege(['networks',   '*'], self.USER_ANONYMOUS, self.ACTION_GET)
+            self.grantPrivilege(['system'         ], self.USER_ANONYMOUS, self.ACTION_GET)
+            self.grantPrivilege(['testResults','*'], self.USER_ANONYMOUS, self.ACTION_GET)
+            self.grantPrivilege(['testResults','*'], self.USER_ANONYMOUS, self.ACTION_DELETE)
             
             # add default demoMode manager connections
             if self.addDefaultManagerConnections:
@@ -725,67 +792,109 @@ class DustLinkData(DataVault.DataVault):
         self.delete(['system','managerConnections',desc],username)
     
     @synchronized
-    def getMirrorSettings(self,username=USER_SYSTEM):
+    def getPublishersSettings(self,publisherName,username=USER_SYSTEM):
         '''
-        \brief Retrieve the currently used mirror setting.
+        \brief Retrieve the currently used publisher setting.
         
+        \param publisherName The name of the publisher. Acceptable values
+            are <tt>xively</tt> and <tt>google</tt>.
         \param username  The username of the requestor. If you don't
                          specify this parameter, the admin user will be assumed.
         
-        \returns A dictionnary with keys spreadsheetKey and worksheetName. Note
-                 that the Google username and password can be set, but not
-                 retrieved.
-        '''
-        # get all details
-        returnVal = self.get(['system','mirror'],username)
+        \note The following fields do not contain the actual value, only True
+            if the field is set, False otherwise:
+            - xivelyApiKey
+            - googleUsername
+            - googlePassword
         
-        # remove Google username and password
-        del returnVal['googleUsername']
-        del returnVal['googlePassword']
+        \returns A dictionary with keys corresponding to the settings of the
+            selected publisher. 
+        '''
+        if not publisherName in self.PUBLISHER_ALL:
+            raise ValueError("invalid publisherName {0}".format(publisherName))
+        
+        # get all details
+        returnVal = self.get(['system','publishers',publisherName],username)
+        
+        # remove clear-text credentials
+        for k in [
+                self.PUBLISHER_XIVELY_KEY_XIVELYAPIKEY,
+                self.PUBLISHER_GOOGLE_KEY_GOOGLEUSERNAME,
+                self.PUBLISHER_GOOGLE_KEY_GOOGLEPASSWORD,
+            ]:
+            if k in returnVal:
+                returnVal[k] = (returnVal[k]!=None and returnVal[k]!='')
         
         return returnVal
     
     @synchronized
-    def setMirrorSettings(self,spreadsheetKey,worksheetName,googleUsername,googlePassword,username=USER_SYSTEM):
+    def setPublisherSettings(self,publisherName,settings,username=USER_SYSTEM):
         '''
-        \brief Set the mirror setting.
+        \brief Set the settings for the publishers.
         
-        \note The username and password, while they can not be read from the
-              web interface, are store in clear in the database. For security
-              reasons, we recommend to set up a Google account speicifically
-              for managing demo spreadsheet. DO NOT USE YOUR PERSONAL ACCOUNT. 
+        \note The xivelyApiKey, googleUsername and googlePassword, while they
+            cannot be read from the web interface, are store in clear in the
+            database. For security reasons, we recommend to set up a Xively or
+            Google account specifically for managing demo data.
+            DO NOT USE YOUR PERSONAL ACCOUNT. 
         
-        \param spreadsheetKey The key of the Google spreadsheet, a string.
-        \param worksheetName  The name of the worksheet of interest in the
-                              spreadsheet, a string.
-        \param googleUsername The Google username associated with that
-                              spreadsheet. Note that the user needs to be able
-                              to write to the spreadsheet.
-        \param googlePassword The passsword associated with that username.
+        \param publisherName The name of the publisher. Acceptable values
+            are <tt>xively</tt> and <tt>google</tt>.
+        \param settings The new parameters, a dictionary.
+            For Xively, must contain exactly the following key:
+                - <tt>xivelyApiKey</tt>, a Xively API master key with
+                    privileges to create and activate devices, create
+                    datastreams, and create data points.
+            For Google, must contain exactly the following keys:
+                - <tt>spreadsheetKey</tt>, the key of the Google spreadsheet,
+                    a string.
+                - <tt>worksheetName</tt>, the name of the worksheet of interest
+                    in the spreadsheet, a string.
+                - <tt>googleUsername</tt>, the Google username associated with
+                    that spreadsheet. This user needs to be able to write to
+                    the spreadsheet.
+                - <tt>googlePassword</tt>, the passsword associated with that
+                    username.
         \param username  The username of the requestor. If you don't
                          specify this parameter, the admin user will be assumed.
         '''
-        if not isinstance(spreadsheetKey,str):
-            raise ValueError("spreadsheetKey should be string, {0} is not".format(spreadsheetKey))
-        if not isinstance(worksheetName,str):
-            raise ValueError("worksheetName should be string, {0} is not".format(worksheetName))
-        if not isinstance(googleUsername,str):
-            raise ValueError("googleUsername should be string")
-        if not isinstance(googlePassword,str):
-            raise ValueError("googlePassword should be string")
         
-        self.put(['system','mirror','spreadsheetKey'],
-                 spreadsheetKey,
-                 username=username)
-        self.put(['system','mirror','worksheetName'],
-                 worksheetName,
-                 username=username)
-        self.put(['system','mirror','googleUsername'],
-                 googleUsername,
-                 username=username)
-        self.put(['system','mirror','googlePassword'],
-                 googlePassword,
-                 username=username)
+        # validate params
+        if   publisherName==self.PUBLISHER_XIVELY:
+            if sorted(settings.keys())!=sorted(self.PUBLISHER_XIVELY_KEY_ALL):
+                raise ValueError(
+                    "wrong keys, got {0}, expected {1}".format(
+                        sorted(settings.keys()),
+                        sorted(self.PUBLISHER_XIVELY_KEY_ALL)
+                    )
+                )
+        elif publisherName==self.PUBLISHER_GOOGLE:
+            if sorted(settings.keys())!=sorted(self.PUBLISHER_GOOGLE_KEY_ALL):
+                raise ValueError(
+                    "wrong keys, got {0}, expected {1}".format(
+                        sorted(settings.keys()),
+                        sorted(self.PUBLISHER_GOOGLE_KEY_ALL)
+                    )
+                )
+        else:
+            raise ValueError("invalid publisherName {0}".format(publisherName))
+        for (k,v) in settings.items():
+            if type(v)!=str:
+                raise ValueError(
+                    "{0} should be a string, {1} is a {2}".format(
+                        k,
+                        v,
+                        type(v),
+                    )
+                )
+        
+        # update database
+        for (k,v) in settings.items():
+            self.put(
+                ['system','publishers',publisherName,k],
+                v,
+                username=username
+            )
     
     @synchronized
     def factoryReset(self,username=USER_SYSTEM):
@@ -2075,7 +2184,7 @@ class DustLinkData(DataVault.DataVault):
             fieldsDataPassed.sort()
         fieldsDataExpected = self.getAppFields(appname,self.APP_DIRECTION_FROMMOTE, createCopy=False)['fieldNames']
         if fieldsDataExpected:
-            fieldsDataExpected.sort()
+            fieldsDataExpected = sorted(fieldsDataExpected)
         
         if fieldsDataPassed!=fieldsDataExpected:
             raise ValueError("malformed data, expected fields {0}, got {1}".format(fieldsDataExpected,fieldsDataPassed))
@@ -2200,7 +2309,7 @@ class DustLinkData(DataVault.DataVault):
         if users:
             for u in users:
                 p = self.getUserPrivileges(u)
-                if ('motes' in p) and (mac in p['motes']):
+                if p and ('motes' in p) and (mac in p['motes']):
                     self.delete(['users',u,'privileges','motes',mac])
         
         # delete mote from networks (motes and paths)
@@ -2588,11 +2697,12 @@ class DustLinkData(DataVault.DataVault):
         \brief Delete a network from the system.
         
         \note Calling this command will have the following side-effects:
-               - you will loose all path data associated with that network.
-               - all users will loose their privileges to this network.
-               - the 'info' attached to each of the motes in the network is deleted.
+            - you will loose all path data associated with that network.
+            - all users will loose their privileges to this network.
+            - the 'info' attached to each of the motes in the network is deleted.
+        
         \note Calling this command does NOT affect the motes. It is OK to have
-              mote not associated with any mote.
+              mote not associated with any network.
         
         \param netname   The name of the network to delete.
         \param username  The username of the requestor. If you don't
@@ -2616,7 +2726,7 @@ class DustLinkData(DataVault.DataVault):
         if users:
             for u in users:
                 p = self.getUserPrivileges(u)
-                if ('networks' in p) and (netname in p['networks']):
+                if p and ('networks' in p) and (netname in p['networks']):
                     self.delete(['users',u,'privileges','networks',netname])
         
         # delete network from firewall
@@ -2656,8 +2766,9 @@ class DustLinkData(DataVault.DataVault):
     TEST_OUTCOME_ALL    = [TEST_OUTCOME_PASS,
                            TEST_OUTCOME_FAIL,
                            TEST_OUTCOME_NOTRUN]
+    TEST_HISTORY_LENGTH = 5
     
-    MAXNUMTESTRESULTSSTOREDDEFAULT = 100
+    TESTPERIOD_DEFAULT  = 60*60
     
     #--- admin
     
@@ -2670,57 +2781,45 @@ class DustLinkData(DataVault.DataVault):
     #--- public
     
     @synchronized
-    def getNumTestResults(self,netname,username=USER_SYSTEM):
+    def setTestPeriod(self,netname,testPeriod,username=USER_SYSTEM):
         '''
-        \brief Retrieve the number of test results for a network, grouped by
-               outcome.
+        \brief Set the test period for a particular network.
         
-        \param netname   The name of the network of interest.
+        \param netname   The network name.
+        \param testPeriod The new test period, in seconds.
         \param username  The username of the requestor. If you don't
                          specify this parameter, the admin user will be assumed.
         '''
-        if netname not in self._getTestResultsNetnames():
-            raise ValueError("netname {0} not in testResults".format(netname))
         
-        return self.get(['testResults',netname,'info','numTestResults'],username)
+        if netname not in self.getNetnames(username):
+            raise ValueError("unknown network {0}".format(netname))
+        if type(testPeriod)!=int:
+            raise ValueError("testPeriod needs to be an int, {0} is {1}".format(testPeriod,type(testPeriod)))
+            
+        return self.put(['testResults',netname,'info','testperiod'],
+                        testPeriod,
+                        username=username)
     
     @synchronized
-    def getLastResults(self,netname,numResults=MAXNUMTESTRESULTSSTOREDDEFAULT,
-                            username=USER_SYSTEM):
+    def getTestPeriod(self,netname,username=USER_SYSTEM):
         '''
-        \brief Retrieve a list of the last run results.
+        \brief Retrieve the test period for a particular network.
         
-        \param netname   The name of the network of interest.
-        \param numResults How many results to return. When passed, returns only
-                         the last numResults test results. If this parameters is
-                         omitted, all stored data is returned.
+        \param netname   The network name.
         \param username  The username of the requestor. If you don't
                          specify this parameter, the admin user will be assumed.
+        
+        \return The test period for that network, in seconds.
         '''
-        if netname not in self._getTestResultsNetnames():
-            raise ValueError("netname {0} not in testResults".format(netname))
         
-        allResults = self.get(['testResults',netname,'results'],
-                              username=username)
+        if netname not in self.getNetnames(username):
+            raise ValueError("unknown network {0}".format(netname))
         
-        if allResults and numResults<len(allResults):
-            returnData = {}
-            allResultsTimestamps = allResults.keys()
-            allResultsTimestamps.sort(reverse=True)
-            for i in range(numResults):
-                returnData[allResultsTimestamps[i]]=allResults[allResultsTimestamps[i]]
-        else:
-            returnData = allResults
-        
-        return returnData
-        
-        if allResults:
-            return allResults
-        else:
-            return []
+        return self.get(['testResults',netname,'info','testperiod'],
+                        username=username)
     
     @synchronized
-    def addResult(self,netname,testName,outcome,timestamp=None,description='',username=USER_SYSTEM):
+    def addResult(self,netname,testName,testDesc,outcome,timestamp=None,description='',username=USER_SYSTEM):
         '''
         \brief Add a test result for a given network.
         
@@ -2751,33 +2850,90 @@ class DustLinkData(DataVault.DataVault):
         if netname not in self._getTestResultsNetnames():
             raise ValueError("netname {0} not in testResults".format(netname))
         
-        # increment number of tests
-        self.put(['testResults',netname,'info','numTestResults',outcome],
-            self.get(['testResults',netname,'info','numTestResults',outcome])+1)
+        # add testName if needed
+        try:
+            self.checkExists(['testResults',netname,'results',testName])
+        except DataVaultException.NotFound:
+            
+            # 'description'
+            self.put(['testResults',netname,'results',testName,'description'],  None,username)
+            
+            # 'last'
+            self.put(['testResults',netname,'results',testName,'last','timestamp'],  None,username)
+            self.put(['testResults',netname,'results',testName,'last','outcome'],    None,username)
+            self.put(['testResults',netname,'results',testName,'last','description'],None,username)
+            
+            # 'lastSuccess' and 'lastFailure'
+            for category in ['lastSuccess','lastFailure']:
+                self.put(['testResults',netname,'results',testName,category,'timestamp'],  None,username)
+                self.put(['testResults',netname,'results',testName,category,'description'],None,username)
+            
+            # 'history'
+            self.put(['testResults',netname,'results',testName,'history'],[],username)
         
-        # remove oldest test results, if needed
-        if self.getLastResults(netname):
-            while len(self.getLastResults(netname))> \
-                    self.get(['testResults',netname,'info','maxNumTestResultsStored'])-1:
-                self._testResults_deleteOldestTestResult(netname)
+        # record description
+        self.put(['testResults',netname,'results',testName,'description'],   testDesc)
         
-        # store new test result
-        self.put(['testResults',netname,'results',timestamp],
-                 (testName,outcome,description))
+        # record last
+        self.put(['testResults',netname,'results',testName,'last','timestamp'],   timestamp)
+        self.put(['testResults',netname,'results',testName,'last','outcome'],     outcome)
+        self.put(['testResults',netname,'results',testName,'last','description'], description)
+        
+        # update 'lastSuccess' or 'lastFailure'
+        category  = None
+        if outcome==self.TEST_OUTCOME_PASS:
+            category = 'lastSuccess'
+        if outcome==self.TEST_OUTCOME_FAIL:
+            category = 'lastFailure'
+        if category:
+            self.put(['testResults',netname,'results',testName,category,'timestamp'],   timestamp)
+            self.put(['testResults',netname,'results',testName,category,'description'], description)
+        
+        # record history
+        history    = self.get(['testResults',netname,'results',testName,'history'])
+        history   += [outcome]
+        while len(history)>self.TEST_HISTORY_LENGTH:
+            history.pop(0)
+        self.put(['testResults',netname,'results',testName,'history'],history)
+    
+    @synchronized
+    def getResults(self,netname,username=USER_SYSTEM):
+        '''
+        \brief Get the latest results.
+        
+        \param netname   The name of the network of interest.
+        \param username  The username of the requestor. If you don't
+                         specify this parameter, the admin user will be assumed.
+        '''
+        if not isinstance(netname,str):
+            raise ValueError("netname should be a string, {0} is {1}".format(netname,type(netname)))
+        
+        # authorize
+        self.authorize(username,['testResults',netname],self.ACTION_GET)
+        
+        # if you get here, authorization is granted, do the rest as ADMIN
+        
+        if netname not in self._getTestResultsNetnames():
+            raise ValueError("netname {0} not in testResults".format(netname))
+        
+        return self.get(['testResults',netname,'results'],username=username)
     
     #--- private
     
     def _addTestResultsNetname(self,netname,username=USER_SYSTEM):
+        '''
+        \brief Add a new network to the test results.
+        
+        \param netname   The name of the new network.
+        \param username  The username of the requestor. If you don't
+                         specify this parameter, the admin user will be assumed.
+        '''
         if netname not in self.getNetnames(username):
             raise ValueError("unknown network {0}".format(netname))
         if netname in self._getTestResultsNetnames(username):
             raise ValueError("netname {0} already in testResults".format(netname))
         
-        for outcome in self.TEST_OUTCOME_ALL:
-            self.put(['testResults',netname,'info','numTestResults',outcome],0,username)
-        self.put(['testResults',netname,'info','maxNumTestResultsStored'],
-                 self.MAXNUMTESTRESULTSSTOREDDEFAULT,
-                 username)
+        self.put(['testResults',netname,'info','testperiod'],self.TESTPERIOD_DEFAULT,username)
         self.put(['testResults',netname,'results'],None,username)
     
     def _getTestResultsNetnames(self,username=USER_SYSTEM):
@@ -2794,13 +2950,6 @@ class DustLinkData(DataVault.DataVault):
             return net_names.keys()
     
     #--- helpers
-    
-    def _testResults_deleteOldestTestResult(self,netname):
-        
-        resultTimestamps = self.getLastResults(netname).keys()
-        resultTimestamps.sort()
-        
-        self.delete(['testResults',netname,'results',resultTimestamps[0]])
     
     ##
     # \}
@@ -3240,15 +3389,25 @@ class DustLinkData(DataVault.DataVault):
     
     DEMO_MODE_APPS     = {
         'OAPTemperature': {
-            'description':   "This application is built into the default SmartMesh IP mote firmware and reports temperature periodically.",
-            'transport':     (APP_TRANSPORT_OAP, (5,)),
-            'fromMoteFields':('h', ['temperature']),
-            'toMoteFields':  ('l', ['rate']),
+            'description':       "This application is built into the default SmartMesh IP mote firmware and reports temperature periodically.",
+            'transport':         (APP_TRANSPORT_OAP, (5,)),
+            'fromMoteFields':    ('>h', ['temperature']),
+            'toMoteFields':      ('>l', ['rate']),
         },
         'OAPLED': {
-            'description':   "This application is built into the default SmartMesh IP mote firmware and turns the blue LED on/off.",
-            'transport':     (APP_TRANSPORT_OAP, (2,3)),
-            'toMoteFields':  ('b', ['status']),
+            'description':       "This application is built into the default SmartMesh IP mote firmware and turns an LED on/off.",
+            'transport':         (APP_TRANSPORT_OAP, (2,3)),
+            'toMoteFields':      ('>b', ['status']),
+        },
+        'DC2126A': {
+            'description':       "Received and parses data from a DC2126A board.",
+            'transport':         (APP_TRANSPORT_UDP, 60102),
+            'fromMoteFields':    ('>HLH', ['cmdId','temperature','adcValue']),
+        },
+        'LIS331': {
+            'description':       "Receives and parses data from a mote running the LIS331 application.",
+            'transport':         (APP_TRANSPORT_UDP, 60103),
+            'fromMoteFields':    ('>hhh', ['x','y','z']),
         },
     }
     
@@ -3394,6 +3553,10 @@ class DustLinkData(DataVault.DataVault):
     def timestampToString(self,t):
         return time.strftime("%A, %d %B %Y %H:%M:%S", time.localtime(t))
     
+    @classmethod
+    def timestampToStringShort(self,t):
+        return time.strftime("%m/%d/%Y %H:%M:%S", time.localtime(t))
+    
     #----- configFile
     @classmethod
     def parseConfigString(self,config):
@@ -3434,8 +3597,9 @@ class DustLinkData(DataVault.DataVault):
                     if transportString:
                         m = re.search('([a-zA-Z]+).(\(?[a-zA-Z0-9,]+\)?)', transportString)
                         if not m:
-                            log.warning('invalid transport string {0}'.format(transportString))
-                            return None
+                            output = 'invalid transport string {0}'.format(transportString)
+                            log.warning(output)
+                            raise ValueError(output)
                         transport = {}
                         transport['type']             = m.group(1)
                         resourceString                = m.group(2).strip()
@@ -3465,8 +3629,9 @@ class DustLinkData(DataVault.DataVault):
                     if fieldsFromMoteString:
                         m = re.search('(\S+)=([a-zA-Z0-9.]+)', fieldsFromMoteString)
                         if not m:
-                            log.warning('invalid fieldsFromMoteString string {0}'.format(fieldsFromMoteString))
-                            return None
+                            output = 'invalid fieldsFromMoteString string {0}'.format(fieldsFromMoteString)
+                            log.warning(output)
+                            raise ValueError(output)
                         fieldsFromMote = {}
                         fieldsFromMote['fieldFormats']   = m.group(1)
                         fieldsFromMote['fieldNames']  = m.group(2).split('.')
@@ -3476,8 +3641,9 @@ class DustLinkData(DataVault.DataVault):
                     if fieldsToMoteString:
                         m = re.search('(\S+)=([a-zA-Z.]+)', fieldsToMoteString)
                         if not m:
-                            log.warning('invalid fieldsToMoteString string {0}'.format(fieldsToMoteString))
-                            return None
+                            output = 'invalid fieldsToMoteString string {0}'.format(fieldsToMoteString)
+                            log.warning(output)
+                            raise ValueError(output)
                         fieldsToMote = {}
                         fieldsToMote['fieldFormats']  = m.group(1)
                         fieldsToMote['fieldNames']    = m.group(2).split('.')
@@ -3587,14 +3753,26 @@ class DustLinkData(DataVault.DataVault):
                     
                     returnVal.append(lineVal)
             
-            #===== mirror
+            #===== publisherXively
             if not found:
             
-                m = re.match('type="mirror"\s+spreadsheetKey="(\S+)"\s+worksheetName="(\S+)"\s+googleUsername="(\S+)"\s+googlePassword="(\S+)"',line)
+                m = re.match('type="publisherXively"\s+xivelyApiKey="(\S+)"',line)
                 if m:
                     found = True
                 
-                    lineVal['type']                   = 'mirror'
+                    lineVal['type']                   = 'publisherXively'
+                    lineVal['xivelyApiKey']           = m.group(1)
+                    
+                    returnVal.append(lineVal)
+            
+            #===== publisherGoogle
+            if not found:
+            
+                m = re.match('type="publisherGoogle"\s+spreadsheetKey="(\S+)"\s+worksheetName="(\S+)"\s+googleUsername="(\S+)"\s+googlePassword="(\S+)"',line)
+                if m:
+                    found = True
+                
+                    lineVal['type']                   = 'publisherGoogle'
                     lineVal['spreadsheetKey']         = m.group(1)
                     lineVal['worksheetName']          = m.group(2)
                     lineVal['googleUsername']         = m.group(3)
@@ -3651,8 +3829,12 @@ class DustLinkData(DataVault.DataVault):
                     returnVal.append(lineVal)
             
             if not found:
-                log.warning('no match for line {0} ({1} chars)'.format(line,len(line)))
-                return None
+                output = 'no match for line the following line ({0} chars)\n{1}'.format(
+                    len(line),
+                    line,
+                )
+                log.warning(output)
+                raise ValueError(output)
         
         return returnVal
     
@@ -3693,9 +3875,9 @@ class AuthCache(object):
     '''
     \brief Simple bounded authentication cache.
     '''
-
+    
     BOUND = 1000
-
+    
     def __init__(self):
         self._cache = {}
         self._hit = 0
@@ -3730,7 +3912,7 @@ class AuthCache(object):
     def getMiss(self):
         with self._lock:
             return self._miss
-
+    
     def getSize(self):
         with self._lock:
             return len(self._cache)
